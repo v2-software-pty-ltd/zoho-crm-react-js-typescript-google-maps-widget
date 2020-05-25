@@ -8,7 +8,9 @@ body {
   grid-template-columns: repeat(auto-fit, 2);
   grid-gap: .5em;
   grid-auto-rows: auto;
-  grid-row-gap: 1em
+  grid-row-gap: 1em;
+  padding: 10px;
+  border: 1px solid black;
 }
 
 .one {

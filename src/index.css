@@ -17,12 +17,24 @@ body {
   color: #000000;
 }
 
+.button-wrapper {
+  padding: 20px;
+  display: flex;
+  /* align-items:  */
+}
+
+.search-params-wrapper {
+  padding: 10px;
+  margin: 10px;
+  border: 1px solid black;
+}
+
 .wrapper {
   display: grid;
   grid-template-columns: repeat(auto-fit, 2);
   grid-gap: .5em;
   grid-auto-rows: auto;
-  grid-row-gap: 1em
+  grid-row-gap: 1em;
 }
 
 .one {
@@ -110,18 +122,23 @@ button {
 }
 
 .button {
-  width: 115px;
   background-color: #E82620;
   border: 2px solid  #E82620;
   padding: 10px;
   text-align: center;
   color: white;
   font-weight: bold;
-  display: none;
+  margin-right: 15px;
 }
 
-#mapNote {
-  display: none;
+.download-button-wrapper {
+  display: flex;
+}
+
+button.danger {
+  background-color: black;
+  color: white;
+  border-color: black;
 }
 
 .wrapperBelowMap {
@@ -131,10 +148,6 @@ button {
   padding: 8px;
   padding-top: 16px;
   align-items: center;
-}
-
-.wrapperBelowMap strong {
-  display: none;
 }
 
 .break {
@@ -159,10 +172,6 @@ th {
 
 td {
   border-left: 2px solid #000000;
-}
-
-.loading {
-  display: none;
 }
 
 #map {

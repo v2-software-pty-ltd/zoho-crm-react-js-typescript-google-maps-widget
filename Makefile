@@ -6,7 +6,6 @@ build:
 	cp build/static/js/*.js.map app/static/js
 	rm -f app/static/css/*.css
 	cp build/static/css/*.css app/static/css
-	cp build/*.css app
 	npx zet pack
 
 .PHONY: build

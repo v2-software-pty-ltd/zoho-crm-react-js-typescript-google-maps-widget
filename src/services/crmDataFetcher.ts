@@ -1,13 +1,10 @@
 import { SearchParametersType, UnprocessedResultsFromCRM } from '../types'
 import { ZOHO } from '../vendor/ZSDK'
 
-export async function findMatchingProperties (searchParameters: SearchParametersType): Promise<UnprocessedResultsFromCRM[]> {
+export async function findMatchingProperties (searchParameters: SearchParametersType[]): Promise<UnprocessedResultsFromCRM[]> {
     const matchingResults = await ZOHO.CRM.FUNCTIONS.execute('find_nearby_contacts', {
         arguments: JSON.stringify({
-            search_address: searchParameters.searchAddress,
-            desired_property_type: searchParameters.propertyType,
-            radius_km: 999.0,
-            number_of_records: parseFloat(searchParameters.maximumResultsToDisplay.toString())
+            search_parameters: searchParameters
         })
     })
 
