@@ -31,7 +31,7 @@ export function SearchWidgetWrapper (props: SearchWidgetProps) {
                 )
             })}
             <div className='button-wrapper'>
-                <button onClick={() => {
+                <button className="secondary" onClick={() => {
                     const id = `search:${(Math.random() * 1000)}`
                     props.changeSearchParameters(props.searchParameters.concat([{ ...DEFAULT_SEARCH_PARAMS, id }]))
                 }}>Add New Search Group

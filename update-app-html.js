@@ -35,3 +35,7 @@ processedAppHTML = processedAppHTML.replace(
 )
 
 fs.writeFileSync(appFilePath, processedAppHTML)
+const filename = `index-v${(Math.random() * 100).toFixed(0)}.html`
+const newAppHTMLPath = `./app/${filename}`
+fs.writeFileSync(newAppHTMLPath, processedAppHTML)
+console.log(`Widget path: /${filename}`)

@@ -20,7 +20,6 @@ body {
 .button-wrapper {
   padding: 20px;
   display: flex;
-  /* align-items:  */
 }
 
 .search-params-wrapper {
@@ -69,6 +68,11 @@ input {
   clear: both;
   border: 2px solid #000000;
   font-size: small;
+}
+
+input.below-label {
+  float: initial;
+  clear: initial;
 }
 
 #numberOfRecords {
@@ -129,16 +133,40 @@ button {
   color: white;
   font-weight: bold;
   margin-right: 15px;
+  width: 180px;
 }
 
 .download-button-wrapper {
   display: flex;
 }
 
+.mail-comment-button-wrapper {
+  display: flex;
+  padding: 10px 0;
+}
+
+.mail-comment-button-wrapper button {
+  width: 205px;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.mail-comment-button-wrapper textarea {
+  margin-right: 13px;
+  width: 200px;
+}
+
 button.danger {
   background-color: black;
   color: white;
   border-color: black;
+  margin-left: 4px;
+}
+
+button.secondary {
+  background-color: orange;
+  color: white;
+  border-color: orange;
 }
 
 .wrapperBelowMap {
@@ -161,17 +189,20 @@ button.danger {
 
 table {
   border: 2px solid #000000;
-  border-bottom: none;
   border-collapse: collapse;
 }
 
 th {
   border-bottom: 2px solid #000000;
   border-left: 2px solid #000000;
+  text-align: left;
+  padding: 5px;
 }
 
 td {
   border-left: 2px solid #000000;
+  text-align: left;
+  padding: 5px;
 }
 
 #map {

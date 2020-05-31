@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import './index.css'
 import { SearchWidgetWrapper } from './components/SearchWidgets'
-import { findMatchingProperties, getGoogleMapsAPIKeyFromCRM } from './services/crmDataFetcher'
+import { findMatchingProperties, getGoogleMapsAPIKeyFromCRM } from './services/crmDataService'
 import { MapWidget } from './components/MapWidget'
 import { ResultsTableWidget } from './components/ResultsTable'
 import { DownloadMailingListButton } from './components/DownloadMailingListButton'
 import { DownloadContactListButton } from './components/DownloadContactListButton'
 import { UnprocessedResultsFromCRM, ResultsType, DEFAULT_SEARCH_PARAMS, SearchParametersType } from './types'
+import { UpdateLastMailedButton } from './components/UpdateLastMailedButton'
 
 function prepareDataForMap (results?: UnprocessedResultsFromCRM[]): ResultsType | undefined {
     if (!results || results.length === 0) {
@@ -38,11 +39,14 @@ function prepareDataForMap (results?: UnprocessedResultsFromCRM[]): ResultsType 
 
 function renderResultsWidgets (results: UnprocessedResultsFromCRM[] | undefined, googleMapsApiKey: string | undefined, isLoading: boolean, searchParameters: SearchParametersType[]) {
     if (isLoading) {
-        const totalRecords = searchParameters.reduce((totalMaxDisplay, searchParam) => totalMaxDisplay + searchParam.maximumResultsToDisplay, 0)
+        const totalRecords = searchParameters.reduce((totalMaxDisplay, searchParam) => totalMaxDisplay + (searchParam.neighboursSearchMaxRecords + searchParam.propertyTypesMaxResults + searchParam.propertyGroupsMaxResults), 0)
         const estimatedTotalDurationMinutes = totalRecords / 100
+        const estimatedDurationSeconds = estimatedTotalDurationMinutes * 60 + 20
+        const duration = estimatedTotalDurationMinutes < 1 ? `${estimatedDurationSeconds.toFixed(0)} seconds` : `${estimatedTotalDurationMinutes.toFixed(1)} minutes`
+
         return (
             <div style={{ padding: '20px' }}>
-                Loading ... estimated waiting time {estimatedTotalDurationMinutes.toFixed(1)} minutes
+                Loading ... estimated waiting time {duration}
             </div>
         )
     }
@@ -54,6 +58,7 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[] | undefined,
                     <DownloadContactListButton results={results} />
                     <DownloadMailingListButton results={results} />
                 </div>
+                <UpdateLastMailedButton results={results} />
                 <MapWidget addressesToRender={dataForMap.addressesToRender} centrePoint={dataForMap.centrePoint} mapsApiKey={googleMapsApiKey} />
                 <ResultsTableWidget results={results} />
             </div>

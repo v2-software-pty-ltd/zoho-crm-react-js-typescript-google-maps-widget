@@ -1,8 +1,8 @@
 import React, { ChangeEvent } from 'react'
 
 type DropdownProps = {
-    chosenPropertyType: string
-    changePropertyType: (propertyType: string) => void
+    chosenPropertyTypes: string[]
+    changePropertyTypes: (propertyType: string[]) => void
 }
 
 export function PropertyTypeDropdown (props: DropdownProps) {
@@ -25,10 +25,10 @@ export function PropertyTypeDropdown (props: DropdownProps) {
     ]
 
     return (
-        <label className="two">Property Type
-            <select value={props.chosenPropertyType} name="propertyType" id="#propertyType" onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                props.changePropertyType(e.target.value)
-            }}>
+        <label className="two">Property Type (Marketing)
+            <select multiple value={props.chosenPropertyTypes} name="propertyType" id="#propertyType" onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                props.changePropertyTypes([...e.target.selectedOptions].map((option) => option.value))
+            }} tabIndex={2} >
                 {possiblePropertyTypes.map((propertyType) => {
                     return <option key={propertyType} value={propertyType}>{propertyType}</option>
                 })}

@@ -17,8 +17,13 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                         <th>No.</th>
                         <th>Distance (km)</th>
                         <th>Property Address</th>
-                        <th>Contact Name</th>
-                        <th>Contact Address</th>
+                        <th>Property Type (Marketing)</th>
+                        <th>Owner</th>
+                        <th>Owner Mobile</th>
+                        <th>Owner Phone</th>
+                        <th>Contact</th>
+                        <th>Contact Mobile</th>
+                        <th>Contact Phone</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -28,24 +33,22 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                             propertyAddress = `${result.Deal_Name} - Geocordinates N/A, cannot display on map.`
                         }
 
-                        const ownerDetails = (result.owner_details || []).map((owner) => {
-                            return `${owner.Contact_Type}: ${owner.Name} (${owner.Company || 'No Company'})`
-                        }).join('\n')
-
-                        const ownerAddresses = (result.owner_details || []).map((owner) => {
-                            const ownerAddress = owner.Postal_Address
-                            const ownerState = owner.Postal_State || '-'
-                            const ownerPostCode = owner.Postal_Postcode || '-'
-                            return ownerAddress === null ? 'Address not available' : `${ownerAddress} ${ownerState} ${ownerPostCode}`
-                        }).join('\n')
+                        const propertyTypeMarketing = result.Property_Category_Mailing
+                        const ownerData = result.owner_details.find((owner) => owner.Contact_Type === 'Owner')
+                        const contactData = result.owner_details.find((owner) => owner.Contact_Type === 'Director')
 
                         return (
                             <tr key={result.id}>
                                 <td>{index + 1}</td>
-                                <td>{result.distance}</td>
+                                <td>{result.distance.toFixed(2)}</td>
                                 <td>{propertyAddress}</td>
-                                <td>{ownerDetails}</td>
-                                <td>{ownerAddresses}</td>
+                                <td>{propertyTypeMarketing}</td>
+                                <td>{ownerData?.Name || ''}</td>
+                                <td>{ownerData?.Mobile || ''}</td>
+                                <td>{ownerData?.Work_Phone || ''}</td>
+                                <td>{contactData?.Name || ''}</td>
+                                <td>{contactData?.Mobile || ''}</td>
+                                <td>{contactData?.Work_Phone || ''}</td>
                             </tr>
                         )
                     })}

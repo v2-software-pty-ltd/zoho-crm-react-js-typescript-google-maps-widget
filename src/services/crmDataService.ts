@@ -15,6 +15,24 @@ export async function findMatchingProperties (searchParameters: SearchParameters
     return JSON.parse(matchingResults.details.output)
 }
 
+export async function updateMailComment (comment: string, results: UnprocessedResultsFromCRM[]): Promise<void> {
+    const recordData = results.filter((result) => result.id).map((result) => result.owner_details).flat().map((owner) => {
+        return {
+            id: owner.id,
+            Last_Mailed_Date: owner.Last_Mailed_Date,
+            Last_Mailed: owner.Last_Mailed,
+            Postal_Address: owner.Postal_Address
+        }
+    })
+
+    await ZOHO.CRM.FUNCTIONS.execute('update_mail_comment', {
+        arguments: JSON.stringify({
+            results_str: recordData,
+            comment: comment
+        })
+    })
+}
+
 export async function getGoogleMapsAPIKeyFromCRM () {
     await ZOHO.embeddedApp.init()
     const googleMapsAPIKey = await ZOHO.CRM.API.getOrgVariable('ethicaltechnology_google_maps_api_key')
