@@ -10,13 +10,17 @@ export function DownloadContactListButton (props: DownloadButtonProps) {
 
     props.results.forEach((result) => {
         if (typeof result.owner_details !== 'undefined' && Array.isArray(result.owner_details)) {
+            const mobile = result.owner_details.find((owner) => owner.Mobile)
+            const workPhone = result.owner_details.find((owner) => owner.Work_Phone)
             const propertyAddress = result.Deal_Name
             const propertyTypeMarketing = result.Property_Category_Mailing
             const ownerData = result.owner_details.find((owner) => owner.Contact_Type === 'Owner')
             const contactData = result.owner_details.find((owner) => owner.Contact_Type === 'Director')
 
-            const newRow = `"${propertyAddress}","${propertyTypeMarketing}","${ownerData?.Name || ''}","${ownerData?.Mobile || ''}","${ownerData?.Work_Phone || ''}","${contactData?.Name || ''}","${contactData?.Mobile || ''}","${contactData?.Work_Phone || ''}"\r\n`
-            csvData += newRow.replace(/null/g, '-')
+            if (mobile === null && workPhone === null) {
+                const newRow = `"${propertyAddress}","${ownerData?.Name || ''}","${propertyTypeMarketing}","${ownerData?.Mobile || ''}","${ownerData?.Work_Phone || ''}","${contactData?.Name || ''}","${contactData?.Mobile || ''}","${contactData?.Work_Phone || ''}"\r\n`
+                csvData += newRow.replace(/null/g, '-')
+            }
         }
     })
 

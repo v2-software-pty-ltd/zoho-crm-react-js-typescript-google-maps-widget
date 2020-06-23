@@ -11,22 +11,24 @@ type SearchWidgetProps = {
 export function SearchWidget (props: SearchWidgetProps) {
     return (
         <form className="wrapper">
-            <label className="one">Search Address*
+            <label className="one">
+                <p>Search Address*</p>
+                <p className="smaller-font">* Must contain street, suburb, state & postcode with each separated by comma</p>
                 <input value={props.searchParameters.searchAddress} onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     props.changeSearchParameters({
                         ...props.searchParameters,
                         searchAddress: e.target.value
                     })
                 }} id="propertyAddress" required tabIndex={1} />
-                <p className="smaller-font align-paragraph">* Must contain street, suburb, state & postcode with each separated by comma</p>
             </label>
+
             <PropertyTypeDropdown chosenPropertyTypes={props.searchParameters.propertyTypes} changePropertyTypes={(newPropertyTypes) => {
                 props.changeSearchParameters({
                     ...props.searchParameters,
                     propertyTypes: newPropertyTypes
                 })
             }} />
-            <label className="four">Neighbours Search (max records)
+            <label className="two">Neighbours Search (max records) <br />
                 <input className="below-label" id="numberOfRecords" value={props.searchParameters.neighboursSearchMaxRecords} onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     props.changeSearchParameters({
                         ...props.searchParameters,
@@ -34,7 +36,7 @@ export function SearchWidget (props: SearchWidgetProps) {
                     })
                 }} placeholder="Enter max number of neighbour records. Defaults to 100" type="number" tabIndex={4} />
             </label>
-            <label className="four">Property Types Filter Max Records
+            <label className="three">Property Types Filter Max Records <br />
                 <input className="below-label" id="propertyTypeNumberOfRecords" value={props.searchParameters.propertyTypesMaxResults} onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     props.changeSearchParameters({
                         ...props.searchParameters,
@@ -48,7 +50,7 @@ export function SearchWidget (props: SearchWidgetProps) {
                     propertyGroups: newPropertyGroups
                 })
             }} />
-            <label className="four">Property Groups Filter Max Records
+            <label className="four">Property Groups Filter Max Records <br />
                 <input className="below-label" id="propertyGroupNumberOfRecords" value={props.searchParameters.propertyGroupsMaxResults} onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     props.changeSearchParameters({
                         ...props.searchParameters,

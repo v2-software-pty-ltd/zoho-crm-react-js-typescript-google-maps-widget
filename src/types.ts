@@ -35,6 +35,9 @@ export type ResultsType = {
 }
 
 type OwnerType = {
+    Email: string
+    Do_Not_Mail: boolean
+    Return_to_Sender: boolean
     Postal_Postcode: string
     Postal_State: string
     Postal_Address: string

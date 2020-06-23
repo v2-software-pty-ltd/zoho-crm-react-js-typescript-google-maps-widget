@@ -25,35 +25,47 @@ body {
 .search-params-wrapper {
   padding: 10px;
   margin: 10px;
-  border: 1px solid black;
+  /* border: 1px solid black; */
 }
 
 .wrapper {
   display: grid;
-  grid-template-columns: repeat(auto-fit, 2);
-  grid-gap: .5em;
-  grid-auto-rows: auto;
+  grid-template-columns: repeat(auto-fit, 3);
+  grid-gap: 0.5em;
+  grid-auto-rows: 5;
   grid-row-gap: 1em;
+  height: 400px;
 }
 
 .one {
-  grid-column: auto;
+  grid-column: 1;
   grid-row: 1;
 }
 
 .two {
-  grid-column: auto;
-  grid-row: 1;
+  grid-column: 1;
+  grid-row: 2;
 }
 
 .three {
-  grid-column: auto;
-  grid-row: 2;
+  grid-column: 1;
+  grid-row: 3;
 }
 
 .four {
-  grid-column: auto;
-  grid-row: 2;
+  grid-column: 1;
+  grid-row: 4;
+}
+
+.five {
+  padding-top: 55px;
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.six {
+  grid-column: 2;
+  grid-row: 3;
 }
 
 label {
@@ -64,7 +76,6 @@ label {
 
 input {
   min-width: 70%;
-  float: right;
   clear: both;
   border: 2px solid #000000;
   font-size: small;
@@ -216,3 +227,46 @@ td {
   flex-direction: column;
   align-items: center;
 }
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 300px;
+  height: 80px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+.dropbtn {
+  float: right;
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  width: 400px;
+  height: 15px;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+/* 
+.downArrow {
+  font-size: 25px;
+} */
