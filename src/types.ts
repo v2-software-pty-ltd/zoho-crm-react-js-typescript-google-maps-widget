@@ -6,6 +6,7 @@ export type SearchParametersType = {
     propertyGroupsMaxResults: number
     propertyTypesMaxResults: number
     id: string
+    managed: string[]
 }
 
 export const DEFAULT_SEARCH_PARAMS = {
@@ -16,7 +17,8 @@ export const DEFAULT_SEARCH_PARAMS = {
     propertyTypes: ['All'],
     propertyGroups: ['All'],
     readyForSearch: false,
-    id: `search:${(Math.random() * 1000)}`
+    id: `search:${(Math.random() * 1000)}`,
+    managed: ['Yes']
 }
 
 export type PositionType = {
@@ -62,4 +64,5 @@ export type UnprocessedResultsFromCRM = {
     Postcode: string
     State: string
     Property_Category_Mailing: string[]
+    Managed: string
 }

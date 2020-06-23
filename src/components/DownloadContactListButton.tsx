@@ -10,17 +10,32 @@ export function DownloadContactListButton (props: DownloadButtonProps) {
 
     props.results.forEach((result) => {
         if (typeof result.owner_details !== 'undefined' && Array.isArray(result.owner_details)) {
-            const mobile = result.owner_details.find((owner) => owner.Mobile)
-            const workPhone = result.owner_details.find((owner) => owner.Work_Phone)
-            const propertyAddress = result.Deal_Name
-            const propertyTypeMarketing = result.Property_Category_Mailing
-            const ownerData = result.owner_details.find((owner) => owner.Contact_Type === 'Owner')
-            const contactData = result.owner_details.find((owner) => owner.Contact_Type === 'Director')
+            result.owner_details.forEach(owner => {
+                const newArr = [...new Set([owner])]
+                const noDuplicates = newArr.filter(filteredArr => filteredArr.id === owner.id)
+                const mobile = noDuplicates.find((owner) => owner.Mobile)
+                const workPhone = noDuplicates.find((owner) => owner.Work_Phone)
+                const propertyAddress = result.Deal_Name
+                const propertyTypeMarketing = result.Property_Category_Mailing
+                const ownerData = noDuplicates.find((owner) => owner.Contact_Type === 'Owner')
+                const contactData = noDuplicates.find((owner) => owner.Contact_Type === 'Director')
 
-            if (mobile === null && workPhone === null) {
-                const newRow = `"${propertyAddress}","${ownerData?.Name || ''}","${propertyTypeMarketing}","${ownerData?.Mobile || ''}","${ownerData?.Work_Phone || ''}","${contactData?.Name || ''}","${contactData?.Mobile || ''}","${contactData?.Work_Phone || ''}"\r\n`
-                csvData += newRow.replace(/null/g, '-')
-            }
+                if (mobile === null && workPhone === null) {
+                    const newRow = `"${propertyAddress}","${ownerData?.Name || ''}","${propertyTypeMarketing}","${ownerData?.Mobile || ''}","${ownerData?.Work_Phone || ''}","${contactData?.Name || ''}","${contactData?.Mobile || ''}","${contactData?.Work_Phone || ''}"\r\n`
+                    csvData += newRow.replace(/null/g, '-')
+                }
+            })
+            // const mobile = result.owner_details.find((owner) => owner.Mobile)
+            // const workPhone = result.owner_details.find((owner) => owner.Work_Phone)
+            // const propertyAddress = result.Deal_Name
+            // const propertyTypeMarketing = result.Property_Category_Mailing
+            // const ownerData = result.owner_details.find((owner) => owner.Contact_Type === 'Owner')
+            // const contactData = result.owner_details.find((owner) => owner.Contact_Type === 'Director')
+
+            // if (mobile === null && workPhone === null) {
+            //     const newRow = `"${propertyAddress}","${ownerData?.Name || ''}","${propertyTypeMarketing}","${ownerData?.Mobile || ''}","${ownerData?.Work_Phone || ''}","${contactData?.Name || ''}","${contactData?.Mobile || ''}","${contactData?.Work_Phone || ''}"\r\n`
+            //     csvData += newRow.replace(/null/g, '-')
+            // }
         }
     })
 
