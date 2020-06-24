@@ -1,5 +1,6 @@
 import { SearchParametersType, UnprocessedResultsFromCRM } from '../types'
 import { ZOHO } from '../vendor/ZSDK'
+import sortFunction from '../utils/sortFunction'
 
 export async function findMatchingProperties (searchParameters: SearchParametersType[]): Promise<UnprocessedResultsFromCRM[]> {
     const matchingResults = await ZOHO.CRM.FUNCTIONS.execute('find_nearby_contacts', {
@@ -8,11 +9,15 @@ export async function findMatchingProperties (searchParameters: SearchParameters
         })
     })
 
+    console.log('matching results', matchingResults)
+
     if (Object.keys(matchingResults).includes('Error')) {
         alert('Error retrieving search results')
     }
+    const sorted: any = sortFunction(matchingResults.details.output, searchParameters)
+    console.log('@@@@@sorted$$$$$$', sorted)
 
-    return JSON.parse(matchingResults.details.output)
+    return sorted
 }
 
 export async function updateMailComment (comment: string, results: UnprocessedResultsFromCRM[]): Promise<void> {
