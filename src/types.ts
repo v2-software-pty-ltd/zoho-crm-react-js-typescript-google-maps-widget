@@ -65,4 +65,4 @@ export type UnprocessedResultsFromCRM = {
     State: string
     Property_Category_Mailing: string[]
     Managed: string
-}
+    }

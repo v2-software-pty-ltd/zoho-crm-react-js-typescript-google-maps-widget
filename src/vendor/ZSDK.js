@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable */ // remove this when building
 import * as $ from 'jquery';
 
 var ZSDKUtil = (function(ZSDKUtil) {

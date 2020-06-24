@@ -25,7 +25,7 @@ body {
 .search-params-wrapper {
   padding: 10px;
   margin: 10px;
-  /* border: 1px solid black; */
+  border: 1px solid black;
 }
 
 .wrapper {
