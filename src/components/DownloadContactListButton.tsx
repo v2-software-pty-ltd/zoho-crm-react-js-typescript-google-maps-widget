@@ -22,7 +22,7 @@ export function DownloadContactListButton (props: DownloadButtonProps) {
             const ownerData = result.owner_details.find((owner: any) => owner.Contact_Type === 'Owner')
             const contactData = result.owner_details.find((owner: any) => owner.Contact_Type === 'Director')
 
-            if (mobile === null && workPhone === null) {
+            if (mobile !== null && workPhone !== null) {
                 const newRow = `"${propertyAddress}","${ownerData?.Name || ''}","${propertyTypeMarketing}","${ownerData?.Mobile || ''}","${ownerData?.Work_Phone || ''}","${contactData?.Name || ''}","${contactData?.Mobile || ''}","${contactData?.Work_Phone || ''}"\r\n`
                 csvData += newRow.replace(/null/g, '-')
             }
