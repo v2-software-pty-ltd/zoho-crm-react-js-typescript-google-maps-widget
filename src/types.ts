@@ -16,9 +16,9 @@ export const DEFAULT_SEARCH_PARAMS = {
     neighboursSearchMaxRecords: 100,
     propertyTypes: ['All'],
     propertyGroups: ['All'],
+    managed: ['Yes'],
     readyForSearch: false,
-    id: `search:${(Math.random() * 1000)}`,
-    managed: ['Yes']
+    id: `search:${(Math.random() * 1000)}`
 }
 
 export type PositionType = {
