@@ -8,7 +8,7 @@ export type SearchParametersType = {
     id: string
 }
 
-export const DEFAULT_SEARCH_PARAMS = {
+export const DEFAULT_SEARCH_PARAMS = [{
     searchAddress: '528 Kent St, Sydney, NSW, 2000',
     propertyGroupsMaxResults: 200,
     propertyTypesMaxResults: 200,
@@ -16,8 +16,9 @@ export const DEFAULT_SEARCH_PARAMS = {
     propertyTypes: ['All'],
     propertyGroups: ['All'],
     readyForSearch: false,
+    managed: ['Yes'],
     id: `search:${(Math.random() * 1000)}`
-}
+}]
 
 export type PositionType = {
     lat: number
@@ -54,7 +55,7 @@ export type UnprocessedResultsFromCRM = {
     Longitude: string
     Deal_Name: string
     id: string
-    distance: number
+    distance: number | string
     owner_details: OwnerType[]
     Postcode: string
     State: string

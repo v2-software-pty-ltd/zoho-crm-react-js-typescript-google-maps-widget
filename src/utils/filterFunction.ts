@@ -1,17 +1,22 @@
+// TODO - remove array from around params and change module: CommonJS to esnext in tsconfig file.
+import { DEFAULT_SEARCH_PARAMS } from '../types'
+import { results } from './zoho-result-json'
 export default function sortResultsFunction (rawUnsortedPropertyResults: any, searchParameters: any) {
     const unsortedPropertyResults = JSON.parse(rawUnsortedPropertyResults)
 
-    const maxNumNeigbours = searchParameters.neighboursSearchMaxRecords
-    const maxResultsForPropertyTypes = searchParameters.propertyTypesMaxResults
-    const maxResultsForPropertyGroups = searchParameters.propertyGroupsMaxResults
-    const desiredPropertyTypes = searchParameters.propertyTypes
-    const desiredPropertyGroups = searchParameters.propertyGroups
+    const maxNumNeigbours = searchParameters[0].neighboursSearchMaxRecords
+    const maxResultsForPropertyTypes = searchParameters[0].propertyTypesMaxResults
+    const maxResultsForPropertyGroups = searchParameters[0].propertyGroupsMaxResults
+    const desiredPropertyTypes = searchParameters[0].propertyTypes
+    const desiredPropertyGroups = searchParameters[0].propertyGroups
 
     let totalNeighboursAdded = 0
     let totalPropertyTypeAdded = 0
     let totalPropertyGroupAdded = 0
 
     const propertyDistances = Object.keys(unsortedPropertyResults[0])
+    console.log('propertyDistances', propertyDistances.length)
+
     const sortedPropertyDistances = propertyDistances.sort((propertyDistance1: any, propertyDistance2: any) => {
         return propertyDistance1.split('dist')[1] - propertyDistance2.split('dist')[1]
     })
@@ -22,6 +27,7 @@ export default function sortResultsFunction (rawUnsortedPropertyResults: any, se
         if (totalNeighboursAdded < maxNumNeigbours || totalPropertyTypeAdded < maxResultsForPropertyTypes || totalPropertyGroupAdded < maxResultsForPropertyGroups) {
             const property = unsortedPropertyResults[0][propertyDistance]
             const propertyAddress = property.Deal_Name === null ? property.Reversed_Geocoded_Address : property.Deal_Name
+
             if (!Object.keys(propertyMap).includes(propertyAddress)) {
                 let propertyTypeMatches = false
                 let propertyGroupMatches = false
@@ -51,6 +57,7 @@ export default function sortResultsFunction (rawUnsortedPropertyResults: any, se
                 if (!canAddBasedOnFilters && canAddAsNeighbour) {
                     totalNeighboursAdded++
                 }
+
                 if (canAddBasedOnFilters || canAddAsNeighbour) {
                     const ownerData: any[] = []
 
@@ -61,6 +68,7 @@ export default function sortResultsFunction (rawUnsortedPropertyResults: any, se
                     })
 
                     const parsedPropertyOwners = typeof property.Property_Owners === 'undefined' || typeof property.Property_Owners === 'object' ? [] : JSON.parse(property.Property_Owners)
+
                     parsedPropertyOwners.forEach((owner: any) => {
                         owner.Contact_Type = 'Owner'
                         ownerData.push(owner)
@@ -78,3 +86,7 @@ export default function sortResultsFunction (rawUnsortedPropertyResults: any, se
     })
     return matchedProperties
 }
+
+const result = sortResultsFunction(results, DEFAULT_SEARCH_PARAMS)
+
+console.log('result', result.length)
