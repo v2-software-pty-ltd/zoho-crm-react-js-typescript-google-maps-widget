@@ -10,6 +10,7 @@ export function MassMailButton (props: MassMailButton) {
         <div className="mail-comment-button-wrapper">
             <button onClick={async () => {
                 await massMailResults(props.results)
+                window.open('https://crm.zoho.com/crm/org673963570/tab/CustomModule7/custom-view/3430088000003565042/list', 'Mass_Email_Window', '"menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes"')
             }}>
                 Mass Email Results
             </button>

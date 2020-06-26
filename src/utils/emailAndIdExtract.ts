@@ -1,9 +1,14 @@
-export default function emailAndIdExtract (results: any) {
-    const propertyObjects: any = results.slice(1)
+import { UnprocessedResultsFromCRM } from '../types'
 
-    const emailsAndIds = propertyObjects.reduce((resultsArray: any[], property: any) => {
-        console.log('property', typeof property.owner_details[0].Email)
+type MassMailObject = {
+  email: string
+  id: string | number
+}
 
+export default function emailAndIdExtract (results: UnprocessedResultsFromCRM[]) {
+    const propertyObjects = results.slice(1)
+
+    const emailsAndIds = propertyObjects.reduce((resultsArray: MassMailObject[], property: UnprocessedResultsFromCRM) => {
         if (typeof property.owner_details[0].Email === 'string') {
             resultsArray.push(Object.assign({},
                 {
@@ -14,7 +19,7 @@ export default function emailAndIdExtract (results: any) {
         return resultsArray
     }, [])
 
-    const dupeEmailsRemoved = [...new Map(emailsAndIds.map((item: any) => [item.email, item])).values()]
+    const dupeEmailsRemoved = [...new Map(emailsAndIds.map((item: MassMailObject) => [item.email, item])).values()]
 
     return dupeEmailsRemoved
 }

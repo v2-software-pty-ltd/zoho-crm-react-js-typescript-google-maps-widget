@@ -47,6 +47,7 @@ type OwnerType = {
     id: number
     Last_Mailed: string
     Last_Mailed_Date: string
+    Email: string
 }
 
 export type UnprocessedResultsFromCRM = {

@@ -1,6 +1,6 @@
 import { SearchParametersType, UnprocessedResultsFromCRM } from '../types'
 import { ZOHO } from '../vendor/ZSDK'
-import emailAndIdExtract from '../../utils/emailAndIdExtract'
+import emailAndIdExtract from '../utils/emailAndIdExtract'
 
 export async function findMatchingProperties (searchParameters: SearchParametersType[]): Promise<UnprocessedResultsFromCRM[]> {
     const matchingResults = await ZOHO.CRM.FUNCTIONS.execute('find_nearby_contacts', {
@@ -36,7 +36,8 @@ export async function updateMailComment (comment: string, results: UnprocessedRe
 
 export async function massMailResults (results: UnprocessedResultsFromCRM[]): Promise<void> {
     const emailsAndIds = emailAndIdExtract(results)
-    await ZOHO.CRM.FUNCTIONS.execute('mass_mail_results', {
+
+    await ZOHO.CRM.FUNCTIONS.execute('mass_email_button', {
         arguments: JSON.stringify({
             emails_and_ids: emailsAndIds
         })
