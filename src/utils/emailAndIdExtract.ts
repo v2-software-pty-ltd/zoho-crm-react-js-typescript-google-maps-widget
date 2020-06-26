@@ -10,11 +10,10 @@ export default function emailAndIdExtract (results: UnprocessedResultsFromCRM[])
 
     const emailsAndIds = propertyObjects.reduce((resultsArray: MassMailObject[], property: UnprocessedResultsFromCRM) => {
         if (typeof property.owner_details[0].Email === 'string') {
-            resultsArray.push(Object.assign({},
-                {
-                    email: property.owner_details[0].Email,
-                    id: property.owner_details[0].id
-                }))
+            resultsArray.push({
+                email: property.owner_details[0].Email,
+                id: property.owner_details[0].id
+            })
         }
         return resultsArray
     }, [])
