@@ -1,7 +1,7 @@
 // TODO - remove array from around params and change module: CommonJS to esnext in tsconfig file.
-import { DEFAULT_SEARCH_PARAMS } from '../types'
-import { results } from './zoho-result-json'
-export default function sortResultsFunction (rawUnsortedPropertyResults: any, searchParameters: any) {
+import { SearchParametersType, UnprocessedResultsFromCRM } from '../types'
+
+export default function sortResultsFunction (rawUnsortedPropertyResults: string, searchParameters: SearchParametersType[]): UnprocessedResultsFromCRM[] {
     const unsortedPropertyResults = JSON.parse(rawUnsortedPropertyResults)
 
     const maxNumNeigbours = searchParameters[0].neighboursSearchMaxRecords
@@ -9,12 +9,13 @@ export default function sortResultsFunction (rawUnsortedPropertyResults: any, se
     const maxResultsForPropertyGroups = searchParameters[0].propertyGroupsMaxResults
     const desiredPropertyTypes = searchParameters[0].propertyTypes
     const desiredPropertyGroups = searchParameters[0].propertyGroups
+    const managed = searchParameters[0].managed[0]
 
     let totalNeighboursAdded = 0
     let totalPropertyTypeAdded = 0
     let totalPropertyGroupAdded = 0
 
-    const propertyDistances = Object.keys(unsortedPropertyResults[0])
+    const propertyDistances: string[] = Object.keys(unsortedPropertyResults[0])
     console.log('propertyDistances', propertyDistances.length)
 
     const sortedPropertyDistances = propertyDistances.sort((propertyDistance1: any, propertyDistance2: any) => {
@@ -23,7 +24,7 @@ export default function sortResultsFunction (rawUnsortedPropertyResults: any, se
 
     const propertyMap: any = {}
     const matchedProperties: any = []
-    sortedPropertyDistances.forEach((propertyDistance: any) => {
+    sortedPropertyDistances.forEach((propertyDistance: string) => {
         if (totalNeighboursAdded < maxNumNeigbours || totalPropertyTypeAdded < maxResultsForPropertyTypes || totalPropertyGroupAdded < maxResultsForPropertyGroups) {
             const property = unsortedPropertyResults[0][propertyDistance]
             const propertyAddress = property.Deal_Name === null ? property.Reversed_Geocoded_Address : property.Deal_Name
@@ -32,7 +33,7 @@ export default function sortResultsFunction (rawUnsortedPropertyResults: any, se
                 let propertyTypeMatches = false
                 let propertyGroupMatches = false
 
-                desiredPropertyTypes.forEach((propertyType: any) => {
+                desiredPropertyTypes.forEach((propertyType: string) => {
                     if (totalPropertyTypeAdded < maxResultsForPropertyTypes && (propertyTypeMatches || desiredPropertyTypes.includes('All') || property.Property_Category_Mailing.includes(propertyType))) {
                         if (!propertyTypeMatches) {
                             totalPropertyTypeAdded++
@@ -42,7 +43,7 @@ export default function sortResultsFunction (rawUnsortedPropertyResults: any, se
                 })
 
                 if (!propertyTypeMatches) {
-                    desiredPropertyGroups.forEach((propertyGroup: any) => {
+                    desiredPropertyGroups.forEach((propertyGroup: string) => {
                         if (totalPropertyGroupAdded < maxResultsForPropertyGroups && (propertyGroupMatches || desiredPropertyGroups.includes('All') || property.get('Property_Type_Portals').includes(propertyGroup))) {
                             if (!propertyGroupMatches) {
                                 totalPropertyGroupAdded++
@@ -77,8 +78,16 @@ export default function sortResultsFunction (rawUnsortedPropertyResults: any, se
                     if (ownerData.length > 0) {
                         property.owner_details = ownerData
                         property.distance = propertyDistance.split('dist')[1]
-                        matchedProperties.push(property)
-                        propertyMap[propertyAddress] = 'found'
+                        if (property.Managed === 'Yes' && managed === 'Yes') {
+                            matchedProperties.push(property)
+                            propertyMap[propertyAddress] = 'found'
+                        } else if (property.Managed === 'No' && managed === 'No') {
+                            matchedProperties.push(property)
+                            propertyMap[propertyAddress] = 'found'
+                        } else {
+                            matchedProperties.push(property)
+                            propertyMap[propertyAddress] = 'found'
+                        }
                     }
                 }
             }
@@ -86,7 +95,3 @@ export default function sortResultsFunction (rawUnsortedPropertyResults: any, se
     })
     return matchedProperties
 }
-
-const result = sortResultsFunction(results, DEFAULT_SEARCH_PARAMS)
-
-console.log('result', result.length)

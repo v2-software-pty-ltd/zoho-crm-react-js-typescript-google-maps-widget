@@ -1,6 +1,7 @@
 import React, { ChangeEvent } from 'react'
 import { PropertyTypeDropdown } from './PropertyTypeDropdown'
 import { PropertyGroupDropdown } from './PropertyGroupDropdown'
+import { ManagedDrop } from './ManagedDrop'
 import { SearchParametersType } from '../types'
 
 type SearchWidgetProps = {
@@ -56,6 +57,13 @@ export function SearchWidget (props: SearchWidgetProps) {
                     })
                 }} placeholder="Enter max number of records." type="number" tabIndex={6} />
             </label>
+
+            <ManagedDrop managed={props.searchParameters.managed} changedManaged={(isManaged) => {
+                props.changeSearchParameters({
+                    ...props.searchParameters,
+                    managed: isManaged
+                })
+            }} />
         </form>
     )
 }
