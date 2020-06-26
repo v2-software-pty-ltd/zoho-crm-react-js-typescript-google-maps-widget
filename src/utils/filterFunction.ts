@@ -1,4 +1,3 @@
-// TODO - remove array from around params and change module: CommonJS to esnext in tsconfig file.
 import { SearchParametersType, UnprocessedResultsFromCRM } from '../types'
 
 export default function sortResultsFunction (rawUnsortedPropertyResults: string, searchParameters: SearchParametersType[]): UnprocessedResultsFromCRM[] {
@@ -16,7 +15,6 @@ export default function sortResultsFunction (rawUnsortedPropertyResults: string,
     let totalPropertyGroupAdded = 0
 
     const propertyDistances: string[] = Object.keys(unsortedPropertyResults[0])
-    console.log('propertyDistances', propertyDistances.length)
 
     const sortedPropertyDistances = propertyDistances.sort((propertyDistance1: any, propertyDistance2: any) => {
         return propertyDistance1.split('dist')[1] - propertyDistance2.split('dist')[1]

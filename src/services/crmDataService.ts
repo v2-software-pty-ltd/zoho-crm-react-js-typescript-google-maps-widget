@@ -9,8 +9,6 @@ export async function findMatchingProperties (searchParameters: SearchParameters
         })
     })
 
-    console.log('matching results', searchParameters)
-
     if (Object.keys(matchingResults).includes('Error')) {
         alert('Error retrieving search results')
     }
