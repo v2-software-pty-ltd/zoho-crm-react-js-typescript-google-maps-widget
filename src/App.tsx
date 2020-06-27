@@ -54,7 +54,7 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[] | undefined,
     if (results && dataForMap && googleMapsApiKey) {
         return (
             <div style={{ padding: '20px' }}>
-                <div className="download-button-wrapper">
+                <div className="download-button-wrapper pagebreak">
                     <DownloadContactListButton results={results} />
                     <DownloadMailingListButton results={results} />
                 </div>
@@ -101,7 +101,7 @@ function App () {
     }, [])
 
     return (
-        <div className="App pagebreak">
+        <div className="App">
             <SearchWidgetWrapper changeSearchParameters={changeSearchParameters} searchParameters={searchParameters} setReadyForSearch={setReadyForSearch} />
             {renderResultsWidgets(results, googleMapsApiKey, isLoading, searchParameters)}
         </div>
