@@ -7,6 +7,7 @@ type DropdownProps = {
 
 export function ManagedDrop (props: DropdownProps) {
     const yesNo = [
+        'None',
         'Yes',
         'No'
     ]

@@ -5,8 +5,8 @@ export type SearchParametersType = {
     neighboursSearchMaxRecords: number
     propertyGroupsMaxResults: number
     propertyTypesMaxResults: number
-    id: string
     managed: string[]
+    id: string
 }
 
 export const DEFAULT_SEARCH_PARAMS = {
@@ -59,7 +59,7 @@ export type UnprocessedResultsFromCRM = {
     Longitude: string
     Deal_Name: string
     id: string
-    distance: number
+    distance: number | string
     owner_details: OwnerType[]
     Postcode: string
     State: string
