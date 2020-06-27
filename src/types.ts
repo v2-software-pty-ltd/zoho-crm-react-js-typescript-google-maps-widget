@@ -11,9 +11,9 @@ export type SearchParametersType = {
 
 export const DEFAULT_SEARCH_PARAMS = {
     searchAddress: '528 Kent St, Sydney, NSW, 2000',
-    propertyGroupsMaxResults: 5,
-    propertyTypesMaxResults: 10,
-    neighboursSearchMaxRecords: 5,
+    propertyGroupsMaxResults: 25,
+    propertyTypesMaxResults: 50,
+    neighboursSearchMaxRecords: 25,
     propertyTypes: ['All'],
     propertyGroups: ['All'],
     managed: ['Yes'],

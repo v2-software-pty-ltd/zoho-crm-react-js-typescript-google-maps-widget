@@ -7,13 +7,10 @@ export function DownloadContactListButton (props: DownloadButtonProps) {
     let downloadUrl = null
     let csvData = '"Property Address","Property Type (Marketing)","Owner","Owner Mobile","Owner Phone","Contact","Contact Mobile","Contact Work Phone"\r\n'
     const objectArr = props.results
-    // console.log('this is original arr', objectArr.length)
     function getUniqueListBy (arr: UnprocessedResultsFromCRM[], key: string) {
         return [...new Map(arr.map((propertyObject: any) => [propertyObject[key], propertyObject])).values()]
     }
     const filteredPropObject = getUniqueListBy(objectArr, 'id')
-    // console.log('filterecpropObject', filteredPropObject.length)
-
     filteredPropObject.forEach(result => {
         if (typeof result.owner_details !== 'undefined' && Array.isArray(result.owner_details)) {
             const mobile = result.owner_details.Mobile
