@@ -1,11 +1,14 @@
+
 import React from 'react'
 import { UnprocessedResultsFromCRM } from '../types'
 type DownloadButtonProps = {
     results: UnprocessedResultsFromCRM[]
 }
+
 export function DownloadContactListButton (props: DownloadButtonProps) {
     let downloadUrl = null
     let csvData = '"Property Address","Property Type (Marketing)","Owner","Owner Mobile","Owner Phone","Contact","Contact Mobile","Contact Work Phone"\r\n'
+
     const objectArr = props.results
     function getUniqueListBy (arr: UnprocessedResultsFromCRM[], key: string) {
         return [...new Map(arr.map((propertyObject: any) => [propertyObject[key], propertyObject])).values()]
