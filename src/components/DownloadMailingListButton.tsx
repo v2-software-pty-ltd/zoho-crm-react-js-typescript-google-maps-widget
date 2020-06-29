@@ -4,13 +4,13 @@ import { UnprocessedResultsFromCRM, OwnerType } from '../types'
 type DownloadButtonProps = {
     results: UnprocessedResultsFromCRM[]
 }
-const key = 'id'
+const keyForPropObject = 'id'
 
 export function DownloadMailingListButton (props: DownloadButtonProps) {
     let downloadUrl = null
     let csvData = '"Contact Name","Contact Type","Mailing Street Address","Mailing Suburb","Mailing State","Mailing Postcode","Property Address","Property Type (Marketing)","Company"\r\n'
 
-    const objectArr = props.results
+    const arrayOfObjectsFromCRM = props.results
     function mapFunc (propertyObject: UnprocessedResultsFromCRM) {
         let propertyString = ''
         const propertyAddress = propertyObject.Deal_Name
@@ -25,16 +25,15 @@ export function DownloadMailingListButton (props: DownloadButtonProps) {
         propertyString = `"${owner.Name}","${owner.Contact_Type}","${ownerAddress}","${owner.Postal_Suburb}","${owner.Postal_State}","${owner.Postal_Postcode}","${propertyAddress}","${company}"\r\n`
 
         propertyString = propertyString.replace(/null/g, '-')
-        return [propertyObject[key], propertyString]
+        return [propertyObject[keyForPropObject], propertyString]
     }
 
-    const uniqueIterables = objectArr.map(mapFunc).values()
+    const uniqueIterables = arrayOfObjectsFromCRM.map(mapFunc).values()
     let currentIterable = uniqueIterables.next()
     while (!currentIterable.done) {
         csvData += currentIterable.value
         currentIterable = uniqueIterables.next()
     }
-    console.log(csvData)
     const resultsBlob = new Blob(
         [csvData],
         {

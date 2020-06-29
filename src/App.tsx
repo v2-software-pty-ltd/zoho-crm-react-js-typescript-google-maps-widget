@@ -53,7 +53,6 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[] | undefined,
     }
     const dataForMap = prepareDataForMap(results)
     if (results && dataForMap && googleMapsApiKey && !isLoading) {
-        console.log("checking for 2 times load")
         return (
             <div style={{ padding: '20px' }}>
                 <div className="download-button-wrapper pagebreak">
