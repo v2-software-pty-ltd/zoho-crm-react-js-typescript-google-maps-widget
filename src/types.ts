@@ -5,13 +5,13 @@ export type SearchParametersType = {
     neighboursSearchMaxRecords: number
     propertyGroupsMaxResults: number
     propertyTypesMaxResults: number
-    id: string
     managed: string[]
+    id: string
 }
 
 export const DEFAULT_SEARCH_PARAMS = {
     searchAddress: '528 Kent St, Sydney, NSW, 2000',
-    propertyGroupsMaxResults: 200,
+    propertyGroupsMaxResults: 100,
     propertyTypesMaxResults: 200,
     neighboursSearchMaxRecords: 100,
     propertyTypes: ['All'],
@@ -36,7 +36,7 @@ export type ResultsType = {
     centrePoint: PositionType
 }
 
-type OwnerType = {
+export type OwnerType = {
     Email: string
     Do_Not_Mail: boolean
     Return_to_Sender: boolean
@@ -59,7 +59,7 @@ export type UnprocessedResultsFromCRM = {
     Longitude: string
     Deal_Name: string
     id: string
-    distance: number
+    distance: number | string
     owner_details: OwnerType[]
     Postcode: string
     State: string

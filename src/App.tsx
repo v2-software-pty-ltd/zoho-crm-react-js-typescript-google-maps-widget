@@ -40,8 +40,9 @@ function prepareDataForMap (results?: UnprocessedResultsFromCRM[]): ResultsType 
 function renderResultsWidgets (results: UnprocessedResultsFromCRM[] | undefined, googleMapsApiKey: string | undefined, isLoading: boolean, searchParameters: SearchParametersType[]) {
     if (isLoading) {
         const totalRecords = searchParameters.reduce((totalMaxDisplay, searchParam) => totalMaxDisplay + (searchParam.neighboursSearchMaxRecords + searchParam.propertyTypesMaxResults + searchParam.propertyGroupsMaxResults), 0)
-        const estimatedTotalDurationMinutes = totalRecords / 100
-        const estimatedDurationSeconds = estimatedTotalDurationMinutes * 60 + 20
+        // Divided by 2 b/c the performance enchancements just under halves the loading time
+        const estimatedTotalDurationMinutes = (totalRecords / 100) / 2
+        const estimatedDurationSeconds = (estimatedTotalDurationMinutes * 60 + 20) / 2
         const duration = estimatedTotalDurationMinutes < 1 ? `${estimatedDurationSeconds.toFixed(0)} seconds` : `${estimatedTotalDurationMinutes.toFixed(1)} minutes`
 
         return (
@@ -51,10 +52,10 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[] | undefined,
         )
     }
     const dataForMap = prepareDataForMap(results)
-    if (results && dataForMap && googleMapsApiKey) {
+    if (results && dataForMap && googleMapsApiKey && !isLoading) {
         return (
             <div style={{ padding: '20px' }}>
-                <div className="download-button-wrapper">
+                <div className="download-button-wrapper pagebreak">
                     <DownloadContactListButton results={results} />
                     <DownloadMailingListButton results={results} />
                 </div>
@@ -101,7 +102,7 @@ function App () {
     }, [])
 
     return (
-        <div className="App pagebreak">
+        <div className="App">
             <SearchWidgetWrapper changeSearchParameters={changeSearchParameters} searchParameters={searchParameters} setReadyForSearch={setReadyForSearch} />
             {renderResultsWidgets(results, googleMapsApiKey, isLoading, searchParameters)}
         </div>

@@ -1,276 +1,261 @@
-/* eslint-disable */ // remove this when building
-import * as $ from 'jquery';
+/* eslint-disable */
+import * as $ from 'jquery'
 
-var ZSDKUtil = (function(ZSDKUtil) {
+const ZSDKUtil = (function (ZSDKUtil) {
+    const QueryParams = GetQueryParams()
 
-  var QueryParams = GetQueryParams();
+    // Global Logger instance which will be acquired and shared by other modules.
+    let GlobalLogger
 
-  // Global Logger instance which will be acquired and shared by other modules.
-  var GlobalLogger;
-
-  // minimal Logging utility.
-  function ZLogger(mode) {}
-  ZLogger.prototype.Info = function() {
-    if (ZSDKUtil.isDevMode() || ZSDKUtil.isLogEnabled()) {
-        window.console.info.apply(null, arguments);
-    }
-  }
-  ZLogger.prototype.Error = function() {
-    if (ZSDKUtil.isDevMode() || ZSDKUtil.isLogEnabled()) {
-        window.console.error.apply(null, arguments);
-    }
-  }
-  function getLogger() {
-    if( !GlobalLogger || !(GlobalLogger instanceof ZLogger)) {
-      GlobalLogger = new ZLogger(); // Logging instance for Core Framework
-    }
-
-    return GlobalLogger;
-  }
-
-  function GetQueryParams(URL) {
-    //TODO: Handle hash case too.
-    var qParams = {};
-    URL = URL || window.location.href;
-    var splittedParams = URL.substr(URL.indexOf('?') + 1).split("&");
-    splittedParams.forEach(function (ele, idx) {
-      var miniSplit = ele.split('=');
-      qParams[miniSplit[0]] = miniSplit[1];
-    });
-
-    // decoding serviceOrigin URL
-    if( qParams.hasOwnProperty('serviceOrigin') ) {
-      qParams['serviceOrigin'] = decodeURIComponent(qParams['serviceOrigin']);
-    }
-
-    return qParams;
-  }
-  function isDevMode() {
-    return QueryParams && QueryParams['isDevMode'];
-  }
-  function isLogEnabled() {
-    return QueryParams && QueryParams['isLogEnabled'];
-  }
-
-
-  // Sleep
-  function Sleep(milliSeconds) {
-    var startTime = new Date().getTime();
-    while( (startTime + milliSeconds) > new Date().getTime()) {};
-  }
-  ZSDKUtil.GetQueryParams = GetQueryParams;
-  ZSDKUtil.isDevMode = isDevMode;
-  ZSDKUtil.isLogEnabled = isLogEnabled;
-  ZSDKUtil.getLogger = getLogger;
-  ZSDKUtil.Sleep = Sleep;
-
-  return ZSDKUtil;
-
-})(window.ZSDKUtil || {});
-
-var ZSDKMessageManager = (function(ZSDKMessageManager) {
-
-  var SDKContext;
-  var Logger = ZSDKUtil.getLogger();
-  var defaultPromiseTimeout = 10000; // Promise timeout
-  var promiseIDCtr = 100;
-  var PromiseQueue = {}; // Queue holding all the GetRequest promises
-
-  var AllowedOrigins = new RegExp("^https?:\/\/[a-zA-Z0-9-_]*.(sandbox.crm-oem.com|csez.zohocorpin.com|zoho.com|zoho.eu|zohoplatform.com|zohosandbox.com)(:[0-9]{0,4})?$");
-
-  var AuthParentWindow, AuthParentOrigin;
-
-  function Init(ctx, config) { // Config is for future use
-    if( !ctx || typeof ctx !== 'object' ) {
-      throw Error('Invalid Context object passed');
-    }
-    if( config && typeof config !== 'object') {
-      throw Error('Invalid Configuration Passed to MessageManager');
-    }
-
-    SDKContext = ctx;
-
-    return MessageHandler.bind(ZSDKMessageManager);
-  }
-
-  // Authorization Check in SDK side.
-  function isAuthorizedMessage(MEvent) {
-    var incomingSource = MEvent.source;
-    var incomingOrigin = MEvent.origin;
-
-    if( SDKContext.isAppRegistered() && AuthParentWindow === incomingSource && AuthParentOrigin === incomingOrigin ) {
-      return true;
-    }
-
-    return new Error('Un-Authorized Message.');
-  }
-  function MessageHandler(MessageEvent) {
-    /* Added for backward compatibility support */
-    try {
-      var data = typeof MessageEvent.data === 'string' ? JSON.parse(MessageEvent.data) : MessageEvent.data;
-    } catch(e) {
-      var data = MessageEvent.data;
-    }
-    var messageType = data.type;
-    var eventName = data.eventName;
-
-    try {
-
-      if( eventName === 'SET_CONTEXT' || isAuthorizedMessage(MessageEvent)) {
-        switch(messageType) {
-
-          case 'FRAMEWORK.EVENT':
-            HandleEvent(MessageEvent, data);
-            break;
-
-          default:
-            SDKContext.MessageInterceptor(MessageEvent, data); // Future Use.
-            break;
-
+    // minimal Logging utility.
+    function ZLogger (mode) {}
+    ZLogger.prototype.Info = function () {
+        if (ZSDKUtil.isDevMode() || ZSDKUtil.isLogEnabled()) {
+            window.console.info.apply(null, arguments)
         }
-      }
-    } catch(e) {
-      Logger.Error('[SDK.MessageHandler] => ', e.stack);
     }
-  }
-
-  function HandleEvent(MessageEvent, payload) {
-    var data = payload.data;
-    var eventName = payload.eventName;
-
-    var eventHandlers = {
-      'SET_CONTEXT': HandleSetContext,
-      'UPDATE_CONTEXT': HandleUpdateContext,
-      'EVENT_RESPONSE': HandleEventResponse,
-      'EVENT_RESPONSE_FAILURE': HandleEventFailure
-    };
-
-    var eventHandler = eventHandlers[eventName];
-    if( eventHandler && typeof eventHandler === 'function' ) {
-      eventHandler(MessageEvent, payload);
-    } else {
-      HandleCustomEvent(MessageEvent, payload);
+    ZLogger.prototype.Error = function () {
+        if (ZSDKUtil.isDevMode() || ZSDKUtil.isLogEnabled()) {
+            window.console.error.apply(null, arguments)
+        }
     }
-  }
-  function HandleSetContext(MessageEvent, payload) {
+    function getLogger () {
+        if (!GlobalLogger || !(GlobalLogger instanceof ZLogger)) {
+            GlobalLogger = new ZLogger() // Logging instance for Core Framework
+        }
 
-    var parentOrigin = MessageEvent.origin;
-    AuthParentWindow = window.parent; //MessageEvent.source;
-    AuthParentOrigin = SDKContext.QueryParams.serviceOrigin; //parentOrigin;
-
-    SDKContext.SetContext(payload.data);
-    SDKContext.ExecuteLoadHandler();
-  }
-  function HandleUpdateContext(MessageEvent, payload) {
-    //SDKContext.UpdateContext(payload.data);
-    //SDKContext.ExecuteLoadHandler();
-  }
-  function HandleCustomEvent(MessageEvent, payload) {
-    ZSDKEventManager.NotifyEventListeners(SDKContext.AppContext, payload.eventName, payload.data);
-  }
-
-  function HandleEventResponse(MessageEvent, payload) {
-    var promiseID = payload.promiseid;
-    var response = payload.data;
-    HandlePromiseCallback(promiseID, true, response);
-  }
-  function HandleEventFailure(MessageEvent, payload) {
-    var promiseID = payload.promiseid;
-    var response = payload.data;
-    HandlePromiseCallback(promiseID, false, response);
-  }
-  function HandlePromiseCallback(promiseID, isSuccess, response) {
-    if (PromiseQueue.hasOwnProperty(promiseID)) {
-
-      if(isSuccess){
-        PromiseQueue[promiseID]['resolve'](response);
-      }
-      else{
-        PromiseQueue[promiseID]['reject'](response);
-      }
-
-
-      PromiseQueue[promiseID] = undefined;
-      delete PromiseQueue[promiseID];
-    } else {
-      //TODO: Handle if there is no promiseID present
-    }
-  }
-  function SendRequest(options) {
-    if (!options || typeof options !== 'object') {
-      throw new Error('Invalid Options passed');
+        return GlobalLogger
     }
 
-    return SendEvent('HTTP_REQUEST', options, true);
-  }
-  function TriggerEvent(eventName, payload, isPromiseEvent) {
+    function GetQueryParams (URL) {
+    // TODO: Handle hash case too.
+        const qParams = {}
+        URL = URL || window.location.href
+        const splittedParams = URL.substr(URL.indexOf('?') + 1).split('&')
+        splittedParams.forEach(function (ele, idx) {
+            const miniSplit = ele.split('=')
+            qParams[miniSplit[0]] = miniSplit[1]
+        })
 
-    if(!eventName) {
-      throw new Error('Invalid Eventname : ', eventName);
+        // decoding serviceOrigin URL
+        if (qParams.hasOwnProperty('serviceOrigin')) {
+            qParams.serviceOrigin = decodeURIComponent(qParams.serviceOrigin)
+        }
+
+        return qParams
+    }
+    function isDevMode () {
+        return QueryParams && QueryParams.isDevMode
+    }
+    function isLogEnabled () {
+        return QueryParams && QueryParams.isLogEnabled
     }
 
-    var PromiseID = !!isPromiseEvent ? getNextPromiseID() : undefined;
-    var eventObject = {
-      /* Default Event Props */
-      type: 'SDK.EVENT',
-      eventName: eventName,
-      uniqueID : SDKContext.getUniqueID(),
-      time: new Date().getTime(),
-      promiseid: PromiseID,
-
-      /* User data */
-      data: payload
-    };
-
-    PostMessage(eventObject);
-
-    if( isPromiseEvent ) {
-      return AddToPromiseQueue(PromiseID);
+    // Sleep
+    function Sleep (milliSeconds) {
+        const startTime = new Date().getTime()
+        while ((startTime + milliSeconds) > new Date().getTime()) {}
     }
-  }
+    ZSDKUtil.GetQueryParams = GetQueryParams
+    ZSDKUtil.isDevMode = isDevMode
+    ZSDKUtil.isLogEnabled = isLogEnabled
+    ZSDKUtil.getLogger = getLogger
+    ZSDKUtil.Sleep = Sleep
 
-  // Sends the event to the Framework.
-  function SendEvent(eventName, payload, isPromiseEvent) {
+    return ZSDKUtil
+})(window.ZSDKUtil || {})
 
-    if(!eventName) {
-      throw new Error('Invalid Eventname : ', eventName);
+const ZSDKMessageManager = (function (ZSDKMessageManager) {
+    let SDKContext
+    const Logger = ZSDKUtil.getLogger()
+    const defaultPromiseTimeout = 10000 // Promise timeout
+    let promiseIDCtr = 100
+    const PromiseQueue = {} // Queue holding all the GetRequest promises
+
+    const AllowedOrigins = new RegExp('^https?:\/\/[a-zA-Z0-9-_]*.(sandbox.crm-oem.com|csez.zohocorpin.com|zoho.com|zoho.eu|zohoplatform.com|zohosandbox.com)(:[0-9]{0,4})?$')
+
+    let AuthParentWindow; let AuthParentOrigin
+
+    function Init (ctx, config) { // Config is for future use
+        if (!ctx || typeof ctx !== 'object') {
+            throw Error('Invalid Context object passed')
+        }
+        if (config && typeof config !== 'object') {
+            throw Error('Invalid Configuration Passed to MessageManager')
+        }
+
+        SDKContext = ctx
+
+        return MessageHandler.bind(ZSDKMessageManager)
     }
 
-    var PromiseID = !!isPromiseEvent ? getNextPromiseID() : undefined;
-    var eventObject = {
-      /* Default Event Props */
-      type: 'SDK.EVENT',
-      eventName: eventName,
-      uniqueID : SDKContext.getUniqueID(),
-      time: new Date().getTime(),
-      promiseid: PromiseID,
+    // Authorization Check in SDK side.
+    function isAuthorizedMessage (MEvent) {
+        const incomingSource = MEvent.source
+        const incomingOrigin = MEvent.origin
 
-      /* User data */
-      data: payload
-    };
+        if (SDKContext.isAppRegistered() && AuthParentWindow === incomingSource && AuthParentOrigin === incomingOrigin) {
+            return true
+        }
 
-    PostMessage(eventObject);
-
-    if( isPromiseEvent ) {
-      return AddToPromiseQueue(PromiseID);
+        return new Error('Un-Authorized Message.')
     }
-  }
-  function getNextPromiseID() {
-    return 'Promise' + promiseIDCtr++;
-  }
-  function AddToPromiseQueue(promiseID) {
+    function MessageHandler (MessageEvent) {
+    /* Added for backward compatibility support */
+        try {
+            var data = typeof MessageEvent.data === 'string' ? JSON.parse(MessageEvent.data) : MessageEvent.data
+        } catch (e) {
+            var data = MessageEvent.data
+        }
+        const messageType = data.type
+        const eventName = data.eventName
 
-    var promise = new Promise(function (resolve, reject) {
+        try {
+            if (eventName === 'SET_CONTEXT' || isAuthorizedMessage(MessageEvent)) {
+                switch (messageType) {
+                case 'FRAMEWORK.EVENT':
+                    HandleEvent(MessageEvent, data)
+                    break
 
-      // Adding the promise to queue.
-      PromiseQueue[promiseID] = {
-        resolve: resolve,
-        reject: reject,
-        time: new Date().getTime()
-      };
-    });
+                default:
+                    SDKContext.MessageInterceptor(MessageEvent, data) // Future Use.
+                    break
+                }
+            }
+        } catch (e) {
+            Logger.Error('[SDK.MessageHandler] => ', e.stack)
+        }
+    }
 
-    /*
+    function HandleEvent (MessageEvent, payload) {
+        const data = payload.data
+        const eventName = payload.eventName
+
+        const eventHandlers = {
+            SET_CONTEXT: HandleSetContext,
+            UPDATE_CONTEXT: HandleUpdateContext,
+            EVENT_RESPONSE: HandleEventResponse,
+            EVENT_RESPONSE_FAILURE: HandleEventFailure
+        }
+
+        const eventHandler = eventHandlers[eventName]
+        if (eventHandler && typeof eventHandler === 'function') {
+            eventHandler(MessageEvent, payload)
+        } else {
+            HandleCustomEvent(MessageEvent, payload)
+        }
+    }
+    function HandleSetContext (MessageEvent, payload) {
+        const parentOrigin = MessageEvent.origin
+        AuthParentWindow = window.parent // MessageEvent.source;
+        AuthParentOrigin = SDKContext.QueryParams.serviceOrigin // parentOrigin;
+
+        SDKContext.SetContext(payload.data)
+        SDKContext.ExecuteLoadHandler()
+    }
+    function HandleUpdateContext (MessageEvent, payload) {
+    // SDKContext.UpdateContext(payload.data);
+    // SDKContext.ExecuteLoadHandler();
+    }
+    function HandleCustomEvent (MessageEvent, payload) {
+        ZSDKEventManager.NotifyEventListeners(SDKContext.AppContext, payload.eventName, payload.data)
+    }
+
+    function HandleEventResponse (MessageEvent, payload) {
+        const promiseID = payload.promiseid
+        const response = payload.data
+        HandlePromiseCallback(promiseID, true, response)
+    }
+    function HandleEventFailure (MessageEvent, payload) {
+        const promiseID = payload.promiseid
+        const response = payload.data
+        HandlePromiseCallback(promiseID, false, response)
+    }
+    function HandlePromiseCallback (promiseID, isSuccess, response) {
+        if (PromiseQueue.hasOwnProperty(promiseID)) {
+            if (isSuccess) {
+                PromiseQueue[promiseID].resolve(response)
+            } else {
+                PromiseQueue[promiseID].reject(response)
+            }
+
+            PromiseQueue[promiseID] = undefined
+            delete PromiseQueue[promiseID]
+        } else {
+            // TODO: Handle if there is no promiseID present
+        }
+    }
+    function SendRequest (options) {
+        if (!options || typeof options !== 'object') {
+            throw new Error('Invalid Options passed')
+        }
+
+        return SendEvent('HTTP_REQUEST', options, true)
+    }
+    function TriggerEvent (eventName, payload, isPromiseEvent) {
+        if (!eventName) {
+            throw new Error('Invalid Eventname : ', eventName)
+        }
+
+        const PromiseID = isPromiseEvent ? getNextPromiseID() : undefined
+        const eventObject = {
+            /* Default Event Props */
+            type: 'SDK.EVENT',
+            eventName: eventName,
+            uniqueID: SDKContext.getUniqueID(),
+            time: new Date().getTime(),
+            promiseid: PromiseID,
+
+            /* User data */
+            data: payload
+        }
+
+        PostMessage(eventObject)
+
+        if (isPromiseEvent) {
+            return AddToPromiseQueue(PromiseID)
+        }
+    }
+
+    // Sends the event to the Framework.
+    function SendEvent (eventName, payload, isPromiseEvent) {
+        if (!eventName) {
+            throw new Error('Invalid Eventname : ', eventName)
+        }
+
+        const PromiseID = isPromiseEvent ? getNextPromiseID() : undefined
+        const eventObject = {
+            /* Default Event Props */
+            type: 'SDK.EVENT',
+            eventName: eventName,
+            uniqueID: SDKContext.getUniqueID(),
+            time: new Date().getTime(),
+            promiseid: PromiseID,
+
+            /* User data */
+            data: payload
+        }
+
+        PostMessage(eventObject)
+
+        if (isPromiseEvent) {
+            return AddToPromiseQueue(PromiseID)
+        }
+    }
+    function getNextPromiseID () {
+        return 'Promise' + promiseIDCtr++
+    }
+    function AddToPromiseQueue (promiseID) {
+        const promise = new Promise(function (resolve, reject) {
+            // Adding the promise to queue.
+            PromiseQueue[promiseID] = {
+                resolve: resolve,
+                reject: reject,
+                time: new Date().getTime()
+            }
+        })
+
+        /*
      * Currently the Timeout case is disabled. Need to revisit.
     setTimeout(function () {
       if (PromiseQueue.hasOwnProperty(PromiseId)) {
@@ -282,615 +267,596 @@ var ZSDKMessageManager = (function(ZSDKMessageManager) {
     }, defaultPromiseTimeout); // Have to define as common config props
     */
 
-    return promise;
-  }
-
-  function RegisterApp() {
-
-    var registerSDKClient = {
-      type: 'SDK.EVENT',
-      eventName: 'REGISTER',
-      appOrigin: encodeURIComponent(getCurrentURLPath())
-    };
-
-    // Initiating the Client Handshake
-    window.parent.postMessage(registerSDKClient, SDKContext.QueryParams.serviceOrigin);
-  }
-  function DERegisterApp() {
-    var deRegisterSDKClient = {
-      type: 'SDK.EVENT',
-      eventName: 'DEREGISTER',
-      uniqueID : SDKContext.getUniqueID()
-    };
-
-    PostMessage(deRegisterSDKClient);
-  }
-
-  // Helpers
-  function PostMessage(data) {
-
-    if( typeof data === 'object' ) {
-      data['appOrigin'] = encodeURIComponent(getCurrentURLPath());
+        return promise
     }
 
-    if( !AuthParentWindow ) {
-      throw new Error('Parentwindow reference not found.');
+    function RegisterApp () {
+        const registerSDKClient = {
+            type: 'SDK.EVENT',
+            eventName: 'REGISTER',
+            appOrigin: encodeURIComponent(getCurrentURLPath())
+        }
+
+        // Initiating the Client Handshake
+        window.parent.postMessage(registerSDKClient, SDKContext.QueryParams.serviceOrigin)
     }
-    AuthParentWindow.postMessage(data, SDKContext.QueryParams.serviceOrigin);
+    function DERegisterApp () {
+        const deRegisterSDKClient = {
+            type: 'SDK.EVENT',
+            eventName: 'DEREGISTER',
+            uniqueID: SDKContext.getUniqueID()
+        }
 
-  }
-  function getCurrentURLPath() {
-    return window.location.protocol + '//' + window.location.host + window.location.pathname;
-  }
-  ZSDKMessageManager.Init = Init;
-  ZSDKMessageManager.RegisterApp = RegisterApp;
-  ZSDKMessageManager.DERegisterApp = DERegisterApp;
-
-  ZSDKMessageManager.SendRequest = SendRequest;
-  ZSDKMessageManager.TriggerEvent = TriggerEvent;
-
-  return ZSDKMessageManager;
-})(window.ZSDKMessageManager || {});
-
-var ZSDKEventManager = (function(ZSDKEventManager) {
-
-  var Logger = ZSDKUtil.getLogger();
-  // Private var's
-  var EventListeners = {}; // Map storing all the eventnames and their Listeners
-
-  // Public API's
-  function AttachEventListener(eventName, fn) {
-    if( typeof fn !== 'function' ) {
-      //TODO: Using Logger log an error message as invalid params passed. fn is expected.
-      return;
+        PostMessage(deRegisterSDKClient)
     }
 
-    if(!Array.isArray(EventListeners[eventName])) {
-      EventListeners[eventName] = [];
+    // Helpers
+    function PostMessage (data) {
+        if (typeof data === 'object') {
+            data.appOrigin = encodeURIComponent(getCurrentURLPath())
+        }
+
+        if (!AuthParentWindow) {
+            throw new Error('Parentwindow reference not found.')
+        }
+        AuthParentWindow.postMessage(data, SDKContext.QueryParams.serviceOrigin)
     }
-    EventListeners[eventName].push(fn);
-  }
-
-  function NotifyEventListeners(AppContext, eventName, eventData) {
-    var internalEventCheck = eventName.match(/^\__[A-Za-z_]+\__$/gi);
-    var isInternalEvent = Array.isArray(internalEventCheck) && internalEventCheck.length > 0;
-
-    var bindedListeners = EventListeners[eventName];
-    if (bindedListeners && Array.isArray(bindedListeners) ) {
-      for (var i = 0; i < bindedListeners.length; i++) {
-        var fn = bindedListeners[i];
-        fn.call(AppContext, eventData);
-      }
-    } else {
-      Logger.Info('Cannot find EventListeners for Event : ', eventName);
+    function getCurrentURLPath () {
+        return window.location.protocol + '//' + window.location.host + window.location.pathname
     }
-  }
+    ZSDKMessageManager.Init = Init
+    ZSDKMessageManager.RegisterApp = RegisterApp
+    ZSDKMessageManager.DERegisterApp = DERegisterApp
 
-  function NotifyInternalEventHandler(SDKContext, payload) {
-    var eventName = payload.eventName;
+    ZSDKMessageManager.SendRequest = SendRequest
+    ZSDKMessageManager.TriggerEvent = TriggerEvent
 
-    if( eventName === '__APP_INIT__' ) {
-      SDKContext.SetContext(payload.data);
-      SDKContext.ExecuteLoadHandler();
+    return ZSDKMessageManager
+})(window.ZSDKMessageManager || {})
 
-    } else if( eventName === '__APP_CONTEXT_UPDATE__' ) {
-      SDKContext.UpdateContext(payload.data);
-      SDKContext.ExecuteContextUpdateHandler();
+var ZSDKEventManager = (function (ZSDKEventManager) {
+    const Logger = ZSDKUtil.getLogger()
+    // Private var's
+    const EventListeners = {} // Map storing all the eventnames and their Listeners
+
+    // Public API's
+    function AttachEventListener (eventName, fn) {
+        if (typeof fn !== 'function') {
+            // TODO: Using Logger log an error message as invalid params passed. fn is expected.
+            return
+        }
+
+        if (!Array.isArray(EventListeners[eventName])) {
+            EventListeners[eventName] = []
+        }
+        EventListeners[eventName].push(fn)
     }
-  }
 
+    function NotifyEventListeners (AppContext, eventName, eventData) {
+        const internalEventCheck = eventName.match(/^\__[A-Za-z_]+\__$/gi)
+        const isInternalEvent = Array.isArray(internalEventCheck) && internalEventCheck.length > 0
 
-  ZSDKEventManager.AttachEventListener = AttachEventListener;
-  ZSDKEventManager.NotifyEventListeners = NotifyEventListeners;
-  ZSDKEventManager.NotifyInternalEventHandler = NotifyInternalEventHandler;
-
-  return ZSDKEventManager;
-})(window.ZSDKEventManager || {});
-
-;function ZSDK() { // TODO: Replace console with Logger
-
-  /* Private variables */
-  var that = this;
-  var AppCode; // Fn which gets executed on OnLoad
-  var ContextUpdateHandler; // Fn which executed on OnContextUpdate
-  var connectors;
-  var QueryParams;
-  var uniqueID;
-  var paramsObj = {}; //TODO: Pass params from Framework to patchString in API Request call
-  var localeResource = {};
-
-  var version = '0.7.0'; // Version
-
-  var Logger = ZSDKUtil.getLogger();
-
-  var _isAppRegistered = false;
-  var isOnLoadTriggered = false;
-
-  /* Instance variables */
-  this.isContextReady = false;
-  this.HelperContext = {}; // Helper context for helper js files
-  this.isDevMode = false;
-  this.getContext = function() {
-    return AppContext;
-  }
-
-  var AppContext = {}; // App context having all the
-
-  AppContext.Model = {}; // Modeldata store
-
-  AppContext.Event = {}; // Event API's
-  AppContext.Event.Listen = AttachEventListener;
-  AppContext.Event.Trigger = TriggerEvent; // TODO: Need to check with API name and handler mechanism.
-
-  AppContext.GetRequest = GetRequest;
-  AppContext.QueryParams = QueryParams;
-  AppContext.Translate = Translate;
-
-  this.OnLoad = function (AppLoadHandler) {
-
-    //TODO: Have to check whether AppCode has been executed. Throw Error when trying to Again bind fn to Init.
-    if (typeof AppLoadHandler !== 'function') {
-      throw new Error('Invalid Function value is passed');
+        const bindedListeners = EventListeners[eventName]
+        if (bindedListeners && Array.isArray(bindedListeners)) {
+            for (let i = 0; i < bindedListeners.length; i++) {
+                const fn = bindedListeners[i]
+                fn.call(AppContext, eventData)
+            }
+        } else {
+            Logger.Info('Cannot find EventListeners for Event : ', eventName)
+        }
     }
-    AppCode = AppLoadHandler;
-    if( _isAppRegistered ) { ExecuteLoadHandler(); }
-  }
-  this.OnUnLoad = function(AppUnLoadHandler) {
+
+    function NotifyInternalEventHandler (SDKContext, payload) {
+        const eventName = payload.eventName
+
+        if (eventName === '__APP_INIT__') {
+            SDKContext.SetContext(payload.data)
+            SDKContext.ExecuteLoadHandler()
+        } else if (eventName === '__APP_CONTEXT_UPDATE__') {
+            SDKContext.UpdateContext(payload.data)
+            SDKContext.ExecuteContextUpdateHandler()
+        }
+    }
+
+    ZSDKEventManager.AttachEventListener = AttachEventListener
+    ZSDKEventManager.NotifyEventListeners = NotifyEventListeners
+    ZSDKEventManager.NotifyInternalEventHandler = NotifyInternalEventHandler
+
+    return ZSDKEventManager
+})(window.ZSDKEventManager || {})
+
+function ZSDK () { // TODO: Replace console with Logger
+    /* Private variables */
+    const that = this
+    let AppCode // Fn which gets executed on OnLoad
+    let ContextUpdateHandler // Fn which executed on OnContextUpdate
+    let connectors
+    let QueryParams
+    let uniqueID
+    const paramsObj = {} // TODO: Pass params from Framework to patchString in API Request call
+    let localeResource = {}
+
+    const version = '0.7.0' // Version
+
+    const Logger = ZSDKUtil.getLogger()
+
+    let _isAppRegistered = false
+    let isOnLoadTriggered = false
+
+    /* Instance variables */
+    this.isContextReady = false
+    this.HelperContext = {} // Helper context for helper js files
+    this.isDevMode = false
+    this.getContext = function () {
+        return AppContext
+    }
+
+    var AppContext = {} // App context having all the
+
+    AppContext.Model = {} // Modeldata store
+
+    AppContext.Event = {} // Event API's
+    AppContext.Event.Listen = AttachEventListener
+    AppContext.Event.Trigger = TriggerEvent // TODO: Need to check with API name and handler mechanism.
+
+    AppContext.GetRequest = GetRequest
+    AppContext.QueryParams = QueryParams
+    AppContext.Translate = Translate
+
+    this.OnLoad = function (AppLoadHandler) {
+        // TODO: Have to check whether AppCode has been executed. Throw Error when trying to Again bind fn to Init.
+        if (typeof AppLoadHandler !== 'function') {
+            throw new Error('Invalid Function value is passed')
+        }
+        AppCode = AppLoadHandler
+        if (_isAppRegistered) { ExecuteLoadHandler() }
+    }
+    this.OnUnLoad = function (AppUnLoadHandler) {
     // TODO: Yet to impl
-  }
-  this.OnContextUpdate = function(AppCtxUpdateHandler) {
+    }
+    this.OnContextUpdate = function (AppCtxUpdateHandler) {
     // TODO: Yet to impl
-    ContextUpdateHandler = AppCtxUpdateHandler;
-  }
+        ContextUpdateHandler = AppCtxUpdateHandler
+    }
 
-  function ExecuteLoadHandler() {
-    if( typeof AppCode !== 'function' ) { Logger.Error('No OnLoad Handler provided to execute.'); return; }
-    if(isOnLoadTriggered) { Logger.Error('OnLoad event already triggered.'); return; }
+    function ExecuteLoadHandler () {
+        if (typeof AppCode !== 'function') { Logger.Error('No OnLoad Handler provided to execute.'); return }
+        if (isOnLoadTriggered) { Logger.Error('OnLoad event already triggered.'); return }
 
-    AppCode.call(AppContext, AppContext);
-    isOnLoadTriggered = true;
-  }
-  function ExecuteContextUpdateHandler() {
-    ContextUpdateHandler.call(AppContext, AppContext);
-  }
-  function isAppRegistered() {
-    return _isAppRegistered;
-  }
+        AppCode.call(AppContext, AppContext)
+        isOnLoadTriggered = true
+    }
+    function ExecuteContextUpdateHandler () {
+        ContextUpdateHandler.call(AppContext, AppContext)
+    }
+    function isAppRegistered () {
+        return _isAppRegistered
+    }
 
-  //TODO: Add support for Setting custom headers and other error handling cases.
-  function GetRequest(options) {
-    return ZSDKMessageManager.SendRequest(options);
-  }
+    // TODO: Add support for Setting custom headers and other error handling cases.
+    function GetRequest (options) {
+        return ZSDKMessageManager.SendRequest(options)
+    }
 
-  // TODO: Need to revisit
-  function TriggerEvent(eventName, payload, isPromise) {
-    return ZSDKMessageManager.TriggerEvent(eventName, payload, isPromise);
-  }
-  function RegisterClient() {
-    ZSDKMessageManager.RegisterApp();
-  }
+    // TODO: Need to revisit
+    function TriggerEvent (eventName, payload, isPromise) {
+        return ZSDKMessageManager.TriggerEvent(eventName, payload, isPromise)
+    }
+    function RegisterClient () {
+        ZSDKMessageManager.RegisterApp()
+    }
 
-  // LoadContext object
-  function SetContext(contextData) {
-    Logger.Info('Setting AppContext data');
+    // LoadContext object
+    function SetContext (contextData) {
+        Logger.Info('Setting AppContext data')
 
-    var modelData = (contextData && contextData['model']) || {};
-    var local = contextData && contextData['locale'];
-    var localResource = contextData && contextData['localeResource'];
+        const modelData = (contextData && contextData.model) || {}
+        const local = contextData && contextData.locale
+        const localResource = contextData && contextData.localeResource
 
-    if(window.isDevMode) {
-      if( contextData.locale && contextData.localeResource &&
+        if (window.isDevMode) {
+            if (contextData.locale && contextData.localeResource &&
           Object.keys(contextData.localeResource).length === 0 &&
           contextData.localeResource.constructor === Object) {
-        if(contextData.locale) {
-          LoadLocaleResource(contextData.locale);
-        }
-      }
-    }
-
-    if( typeof ZSDKModelManager !== 'undefined' ) { // No I18n
-
-      for (var key in modelData) {
-        window.ZSDKModelManager.AddModel(key, modelData[key]);
-      }
-      AppContext.Model = window.ZSDKModelManager.GetModelStore();
-    }
-
-    // Setting the uniqueID
-    uniqueID = contextData.uniqueID;
-
-    //TODO: Need to check wheather needed or move to respective place.
-    connectors = contextData.connectors;
-    Logger.Info('App Connectors ', connectors);
-
-    _isAppRegistered = true;
-  }
-  function getUniqueID() {
-    return uniqueID;
-  }
-  function UpdateContext(contextData) {
-    //Logger.Info('Context Update Event Data ', contextData);
-  }
-  function AttachEventListener(eventName, eventHandlerFn) {
-    ZSDKEventManager.AttachEventListener(eventName, eventHandlerFn);
-  }
-
-  function GetConnectors() {
-    return connectors;
-  }
-
-  function LoadLocaleResource(locale) {
-    _loadJSON('/app-translations/'+ locale +'.json', function(response) {
-      // Parse JSON string into object
-      localeResource = JSON.parse(response);
-      InitI18n();
-    });
-  }
-
-  function _loadJSON(filepath, callback) {
-    var xobj = new XMLHttpRequest();
-    //xobj.overrideMimeType("application/json");
-    xobj.open('GET', filepath, false); //make 3rd param true for asynchronous mode
-    xobj.onreadystatechange = function () {
-      if (xobj.readyState == 4 && xobj.status == "200") {
-        // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
-        callback(xobj.responseText);
-      }
-    };
-
-    xobj.send(null);
-  }
-
-  function Translate(key, options) {
-    var valStr = '';
-    if(key) {
-      valStr = _getKeyByString(localeResource, key);
-    }
-
-    if( ! valStr) {
-      return false;
-    }
-
-    if(options) {
-      var key;
-      var translateOptions = JSON.parse(JSON.stringify(eval(options)));
-      var keysArr = Object.keys(translateOptions);
-      for(key in keysArr) {
-        valStr = _replaceString(valStr, '${'+ keysArr[key] +'}', translateOptions[keysArr[key]]);
-      }
-    }
-
-    return valStr;
-  }
-
-  function _replaceString(str, find, replace) {
-    var $r="";
-    while($r!=str){
-        $r = str;
-        str = str.replace(find, replace);
-    }
-    return str;
-  }
-
-  function _getKeyByString(o, s) {
-    s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
-    s = s.replace(/^\./, '');           // strip a leading dot
-    var a = s.split('.');
-    for (var i = 0, n = a.length; i < n; ++i) {
-        var k = a[i];
-        if (k in o) {
-            o = o[k];
-        } else {
-            return;
-        }
-    }
-    return o;
-  }
-
-  function InitI18n() {
-    var all = document.querySelectorAll('[data-i18n]');
-    for (var i in all) {
-      if (all.hasOwnProperty(i)) {
-        var valStr = _getKeyByString(localeResource, all[i].getAttribute('data-i18n'));
-        if( ! valStr) {
-          return false;
+                if (contextData.locale) {
+                    LoadLocaleResource(contextData.locale)
+                }
+            }
         }
 
-        if(all[i].hasAttribute('data-options')) {
-          var options = JSON.parse(JSON.stringify(eval("(" + all[i].getAttribute('data-options') + ")")));
-          var keysArr = Object.keys(options);
-          var key;
-          for(key in keysArr) {
-            valStr = _replaceString(valStr, '${'+ keysArr[key] +'}', options[keysArr[key]]);
-          }
+        if (typeof ZSDKModelManager !== 'undefined') { // No I18n
+            for (const key in modelData) {
+                window.ZSDKModelManager.AddModel(key, modelData[key])
+            }
+            AppContext.Model = window.ZSDKModelManager.GetModelStore()
         }
-        all[i].innerHTML = valStr;
-      }
+
+        // Setting the uniqueID
+        uniqueID = contextData.uniqueID
+
+        // TODO: Need to check wheather needed or move to respective place.
+        connectors = contextData.connectors
+        Logger.Info('App Connectors ', connectors)
+
+        _isAppRegistered = true
     }
-  }
-
-  function Bootstrap() {
-    QueryParams = ZSDKUtil.GetQueryParams();
-
-    // Intialize variables
-    window.isDevMode = !!QueryParams.isDevMode;
-
-    var SDKContext = {};
-    SDKContext.isDevMode = window.isDevMode;
-    SDKContext.ExecuteLoadHandler = ExecuteLoadHandler;
-    SDKContext.SetContext = SetContext;
-    SDKContext.UpdateContext = UpdateContext;
-    SDKContext.QueryParams = QueryParams;
-    SDKContext.GetConnectors = GetConnectors;
-    SDKContext.TriggerEvent = TriggerEvent;
-    SDKContext.ExecuteContextUpdateHandler = ExecuteContextUpdateHandler;
-    SDKContext.getUniqueID = getUniqueID;
-    SDKContext.isAppRegistered = isAppRegistered;
-
-    // Initiating Message Manager
-    var MessageHandler = ZSDKMessageManager.Init(SDKContext);
-    window.addEventListener('message', MessageHandler);
-    window.addEventListener('unload', function() {
-      ZSDKMessageManager.DERegisterApp();
-    });
-
-    if( typeof ZSDKModelManager !== 'undefined' ) {
-      window.ZSDKModelManager.Init(SDKContext);
+    function getUniqueID () {
+        return uniqueID
+    }
+    function UpdateContext (contextData) {
+    // Logger.Info('Context Update Event Data ', contextData);
+    }
+    function AttachEventListener (eventName, eventHandlerFn) {
+        ZSDKEventManager.AttachEventListener(eventName, eventHandlerFn)
     }
 
-    RegisterClient();
-  }
+    function GetConnectors () {
+        return connectors
+    }
 
-  Bootstrap(); // Bootstrap for SDK
-};
+    function LoadLocaleResource (locale) {
+        _loadJSON('/app-translations/' + locale + '.json', function (response) {
+            // Parse JSON string into object
+            localeResource = JSON.parse(response)
+            InitI18n()
+        })
+    }
 
-export const ZOHO = (function() {
-    var appSDK;
-    var eventListenerMap = {};
-    var isInitTriggered = false;
-    var initPromise = undefined;
+    function _loadJSON (filepath, callback) {
+        const xobj = new XMLHttpRequest()
+        // xobj.overrideMimeType("application/json");
+        xobj.open('GET', filepath, false) // make 3rd param true for asynchronous mode
+        xobj.onreadystatechange = function () {
+            if (xobj.readyState == 4 && xobj.status == '200') {
+                // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+                callback(xobj.responseText)
+            }
+        }
+
+        xobj.send(null)
+    }
+
+    function Translate (key, options) {
+        let valStr = ''
+        if (key) {
+            valStr = _getKeyByString(localeResource, key)
+        }
+
+        if (!valStr) {
+            return false
+        }
+
+        if (options) {
+            var key
+            const translateOptions = JSON.parse(JSON.stringify(eval(options)))
+            const keysArr = Object.keys(translateOptions)
+            for (key in keysArr) {
+                valStr = _replaceString(valStr, '${' + keysArr[key] + '}', translateOptions[keysArr[key]])
+            }
+        }
+
+        return valStr
+    }
+
+    function _replaceString (str, find, replace) {
+        let $r = ''
+        while ($r != str) {
+            $r = str
+            str = str.replace(find, replace)
+        }
+        return str
+    }
+
+    function _getKeyByString (o, s) {
+        s = s.replace(/\[(\w+)\]/g, '.$1') // convert indexes to properties
+        s = s.replace(/^\./, '') // strip a leading dot
+        const a = s.split('.')
+        for (let i = 0, n = a.length; i < n; ++i) {
+            const k = a[i]
+            if (k in o) {
+                o = o[k]
+            } else {
+                return
+            }
+        }
+        return o
+    }
+
+    function InitI18n () {
+        const all = document.querySelectorAll('[data-i18n]')
+        for (const i in all) {
+            if (all.hasOwnProperty(i)) {
+                let valStr = _getKeyByString(localeResource, all[i].getAttribute('data-i18n'))
+                if (!valStr) {
+                    return false
+                }
+
+                if (all[i].hasAttribute('data-options')) {
+                    const options = JSON.parse(JSON.stringify(eval('(' + all[i].getAttribute('data-options') + ')')))
+                    const keysArr = Object.keys(options)
+                    var key
+                    for (key in keysArr) {
+                        valStr = _replaceString(valStr, '${' + keysArr[key] + '}', options[keysArr[key]])
+                    }
+                }
+                all[i].innerHTML = valStr
+            }
+        }
+    }
+
+    function Bootstrap () {
+        QueryParams = ZSDKUtil.GetQueryParams()
+
+        // Intialize variables
+        window.isDevMode = !!QueryParams.isDevMode
+
+        const SDKContext = {}
+        SDKContext.isDevMode = window.isDevMode
+        SDKContext.ExecuteLoadHandler = ExecuteLoadHandler
+        SDKContext.SetContext = SetContext
+        SDKContext.UpdateContext = UpdateContext
+        SDKContext.QueryParams = QueryParams
+        SDKContext.GetConnectors = GetConnectors
+        SDKContext.TriggerEvent = TriggerEvent
+        SDKContext.ExecuteContextUpdateHandler = ExecuteContextUpdateHandler
+        SDKContext.getUniqueID = getUniqueID
+        SDKContext.isAppRegistered = isAppRegistered
+
+        // Initiating Message Manager
+        const MessageHandler = ZSDKMessageManager.Init(SDKContext)
+        window.addEventListener('message', MessageHandler)
+        window.addEventListener('unload', function () {
+            ZSDKMessageManager.DERegisterApp()
+        })
+
+        if (typeof ZSDKModelManager !== 'undefined') {
+            window.ZSDKModelManager.Init(SDKContext)
+        }
+
+        RegisterClient()
+    }
+
+    Bootstrap() // Bootstrap for SDK
+}
+
+export const ZOHO = (function () {
+    let appSDK
+    const eventListenerMap = {}
+    let isInitTriggered = false
+    let initPromise
     return {
         embeddedApp: {
-            on: function(event, fn) {
-                eventListenerMap[event] = fn;
+            on: function (event, fn) {
+                eventListenerMap[event] = fn
             },
-            init: function() {
-            	if(!isInitTriggered)
-            	{
-            		isInitTriggered = true;
-                    appSDK = new ZSDK;
-                    var promiseResolve;
-                    initPromise = new Promise(function(resolve, reject) {
-                        promiseResolve = resolve;
-                    });
-                    appSDK.OnLoad(function() {
-                        promiseResolve();
-                    });
-                    for (var key in eventListenerMap) {
-                        appSDK.getContext().Event.Listen(key, eventListenerMap[key]);
+            init: function () {
+            	if (!isInitTriggered) {
+            		isInitTriggered = true
+                    appSDK = new ZSDK()
+                    let promiseResolve
+                    initPromise = new Promise(function (resolve, reject) {
+                        promiseResolve = resolve
+                    })
+                    appSDK.OnLoad(function () {
+                        promiseResolve()
+                    })
+                    for (const key in eventListenerMap) {
+                        appSDK.getContext().Event.Listen(key, eventListenerMap[key])
                     }
             	}
-                return initPromise;
+                return initPromise
             }
         },
-        CRM: (function() {
-            function newRequestPromise(data) {
+        CRM: (function () {
+            function newRequestPromise (data) {
                 /*
                  * Sdk Version Maintainance
                  */
-                data['sdkVersion'] = '1';
-                return appSDK.getContext().Event.Trigger('CRM_EVENT', data, true);
+                data.sdkVersion = '1'
+                return appSDK.getContext().Event.Trigger('CRM_EVENT', data, true)
             }
             // file upload issue fie
-            function createNewFileObj(file)
-            {
-				var oldfile = file;
-				var newfile = new File([oldfile], oldfile.name, { type: oldfile.type });
-	         	return newfile;
+            function createNewFileObj (file) {
+                const oldfile = file
+                const newfile = new File([oldfile], oldfile.name, { type: oldfile.type })
+	         	return newfile
             }
-            function createRecord(Entity, APIdata, RecordID, RelatedEntity) {
-            	if(APIdata.FileData)
-                {
-            	  var newfileObj = createNewFileObj(APIdata.FileData);
-                  APIdata.FileData = newfileObj;
+            function createRecord (Entity, APIdata, RecordID, RelatedEntity) {
+            	if (APIdata.FileData) {
+            	  const newfileObj = createNewFileObj(APIdata.FileData)
+                    APIdata.FileData = newfileObj
                 }
-                var data = {
-                    category: "CREATE", //no i18n
+                const data = {
+                    category: 'CREATE', // no i18n
                     Entity: Entity,
                     RelatedID: RecordID,
                     APIData: APIdata
-                };
-                data.type = RelatedEntity || "RECORD"
-                return newRequestPromise(data);
+                }
+                data.type = RelatedEntity || 'RECORD'
+                return newRequestPromise(data)
+            }
 
-            };
-
-            function getRecord(Entity, recordID, relatedListSysRef) {
-                var data = {
-                    category: "READ", //no i18n
+            function getRecord (Entity, recordID, relatedListSysRef) {
+                const data = {
+                    category: 'READ', // no i18n
                     APIData: {
                         Entity: Entity,
                         RecordID: recordID,
                         RelatedList: relatedListSysRef
                     }
-                };
-                return newRequestPromise(data);
-            };
-            function getBluePrint(APIData) {
-                APIData.category = "BLUEPRINT" //no i18n
-                return newRequestPromise(APIData);
-            };
-            function uploadFile(APIData)
-            {
-            	if(APIData.FILE)
-        		{
-            		var newfileobj = createNewFileObj(APIData.FILE.file);
-            		APIData.FILE.file = newfileobj;
-        		}
-                var data = {
-                    FileData : APIData,
-                    category : "FILES", //no i18n
-                    type : "UPLOAD_FILE"
                 }
-                return newRequestPromise(data);
-            };
-            function getFile(APIData)
-            {
-                APIData.category = "FILES";
-                APIData.type = "DOWNLOAD_FILE"
-                return newRequestPromise(APIData);
+                return newRequestPromise(data)
             }
-            function getAllActions(APIData)
-            {
-                APIData.category = "APPROVALS";
-                return newRequestPromise(APIData);
+            function getBluePrint (APIData) {
+                APIData.category = 'BLUEPRINT' // no i18n
+                return newRequestPromise(APIData)
             }
-            function getAllRecords(APIData) {
-                var data = {
-                    category: "READ",
+            function uploadFile (APIData) {
+            	if (APIData.FILE) {
+            		const newfileobj = createNewFileObj(APIData.FILE.file)
+            		APIData.FILE.file = newfileobj
+        		}
+                const data = {
+                    FileData: APIData,
+                    category: 'FILES', // no i18n
+                    type: 'UPLOAD_FILE'
+                }
+                return newRequestPromise(data)
+            }
+            function getFile (APIData) {
+                APIData.category = 'FILES'
+                APIData.type = 'DOWNLOAD_FILE'
+                return newRequestPromise(APIData)
+            }
+            function getAllActions (APIData) {
+                APIData.category = 'APPROVALS'
+                return newRequestPromise(APIData)
+            }
+            function getAllRecords (APIData) {
+                const data = {
+                    category: 'READ',
                     APIData: APIData
                 }
-                return newRequestPromise(data);
-            };
+                return newRequestPromise(data)
+            }
 
-            function updateRecord(Entity, APIData) {
-                var data = {
-                    category: "UPDATE", //no i18n
-                    type: "RECORD", //no i18n
+            function updateRecord (Entity, APIData) {
+                const data = {
+                    category: 'UPDATE', // no i18n
+                    type: 'RECORD', // no i18n
                     Entity: Entity,
                     APIData: APIData
-                };
-                return newRequestPromise(data);
-            };
+                }
+                return newRequestPromise(data)
+            }
 
-            function getRelatedRecord(APIData)
-            {
-                var data = {
-                    category: "READ",//no i18n
-                    APIData: APIData //no i18n
-                };
-                return newRequestPromise(data);
-            };
+            function getRelatedRecord (APIData) {
+                const data = {
+                    category: 'READ', // no i18n
+                    APIData: APIData // no i18n
+                }
+                return newRequestPromise(data)
+            }
 
-            function updateRelatedRecord(Entity, RecordID, RelatedList, RelatedRecordID, APIData) {
-                var data = {
-                    category: "UPDATE", //no i18n
-                    type: "RELATED_RECORD", //no i18n
+            function updateRelatedRecord (Entity, RecordID, RelatedList, RelatedRecordID, APIData) {
+                const data = {
+                    category: 'UPDATE', // no i18n
+                    type: 'RELATED_RECORD', // no i18n
                     Entity: Entity,
                     RecordID: RecordID,
                     RelatedList: RelatedList,
                     RelatedRecordID: RelatedRecordID,
                     APIData: APIData
-                };
-                return newRequestPromise(data);
-            };
+                }
+                return newRequestPromise(data)
+            }
 
-            function updateNotes(Entity, RecordID, RelatedRecordID, APIData) {
-                var data = {
-                    category: "UPDATE", //no i18n
-                    type: "NOTES", //no i18n
+            function updateNotes (Entity, RecordID, RelatedRecordID, APIData) {
+                const data = {
+                    category: 'UPDATE', // no i18n
+                    type: 'NOTES', // no i18n
                     Entity: Entity,
                     RecordID: RecordID,
                     RelatedRecordID: RelatedRecordID,
                     APIData: APIData
-                };
-                return newRequestPromise(data);
-            };
+                }
+                return newRequestPromise(data)
+            }
 
-            function deleteRecord(Entity, RecordID) {
-                var data = {
-                    category: "DELETE", //no i18n
-                    type: "RECORD", //no i18n
+            function deleteRecord (Entity, RecordID) {
+                const data = {
+                    category: 'DELETE', // no i18n
+                    type: 'RECORD', // no i18n
                     Entity: Entity,
                     RecordID: RecordID
-                };
-                return newRequestPromise(data);
-            };
+                }
+                return newRequestPromise(data)
+            }
 
-            function deleteRelatedRecord(Entity, RecordID, RelatedList, RelatedRecordID) {
-                var data = {
-                    category: "DELETE", //no i18n
-                    type: "RELATED_RECORD", //no i18n
+            function deleteRelatedRecord (Entity, RecordID, RelatedList, RelatedRecordID) {
+                const data = {
+                    category: 'DELETE', // no i18n
+                    type: 'RELATED_RECORD', // no i18n
                     Entity: Entity,
                     RecordID: RecordID,
                     RelatedList: RelatedList,
-                    RelatedRecordID: RelatedRecordID,
-                };
-                return newRequestPromise(data);
+                    RelatedRecordID: RelatedRecordID
+                }
+                return newRequestPromise(data)
             }
 
-            function searchRecord(Entity, Type, Query, page, per_page,delay) {
-                var data = {
-                    category: "SEARCH", //no i18n
+            function searchRecord (Entity, Type, Query, page, per_page, delay) {
+                const data = {
+                    category: 'SEARCH', // no i18n
                     Entity: Entity,
                     Type: Type,
                     Query: Query,
                     page: page,
                     per_page: per_page,
-                    delay:delay
-                };
-                return newRequestPromise(data);
+                    delay: delay
+                }
+                return newRequestPromise(data)
             }
 
-            function getAllProfiles(Category, Type) {
-                var data = {
+            function getAllProfiles (Category, Type) {
+                const data = {
                     category: Category,
                     type: Type
-                };
-                return newRequestPromise(data);
+                }
+                return newRequestPromise(data)
             }
 
-            function getProfile(Category, Type, ID) {
-                var data = {
+            function getProfile (Category, Type, ID) {
+                const data = {
                     category: Category,
                     type: Type,
                     ID: ID
-                };
-                return newRequestPromise(data);
+                }
+                return newRequestPromise(data)
             }
 
-            function updateProfile(Category, Type, ID, APIData) {
-                var data = {
+            function updateProfile (Category, Type, ID, APIData) {
+                const data = {
                     category: Category,
                     type: Type,
                     ID: ID,
                     APIData: APIData
-                };
-                return newRequestPromise(data);
+                }
+                return newRequestPromise(data)
             }
 
-            function constructQueryString(source) {
-                var array = [];
+            function constructQueryString (source) {
+                const array = []
 
-                for (var key in source) {
-                    array.push(encodeURIComponent(key) + "=" + encodeURIComponent(source[key]));
+                for (const key in source) {
+                    array.push(encodeURIComponent(key) + '=' + encodeURIComponent(source[key]))
                 }
-                return array.join("&");
-            };
+                return array.join('&')
+            }
 
-            function remoteCall(method, requestData, type) {
-            	if(requestData.FILE)
-        		{
-            		var newfileobj = createNewFileObj(requestData.FILE.file);
-            		requestData.FILE.file = newfileobj;
+            function remoteCall (method, requestData, type) {
+            	if (requestData.FILE) {
+            		const newfileobj = createNewFileObj(requestData.FILE.file)
+            		requestData.FILE.file = newfileobj
         		}
-                var reqData = undefined;
+                let reqData
                 if (!type) {
-                    var url = requestData.url;
-                    var params = requestData.params;
-                    var headers = requestData.headers;
-                    var body = requestData.body;
-                    var Parts = requestData.PARTS;
-                    var partBoundary = requestData.PART_BOUNDARY;
-                    var ContentType = requestData.CONTENT_TYPE;
-                    var responseType = requestData.RESPONSE_TYPE;
-                    var file = requestData.FILE;
+                    let url = requestData.url
+                    const params = requestData.params
+                    const headers = requestData.headers
+                    const body = requestData.body
+                    const Parts = requestData.PARTS
+                    const partBoundary = requestData.PART_BOUNDARY
+                    const ContentType = requestData.CONTENT_TYPE
+                    const responseType = requestData.RESPONSE_TYPE
+                    const file = requestData.FILE
                     if (!url) {
-                        throw { Message: "Url missing" }
+                        throw { Message: 'Url missing' }
                     }
                     if (params) {
-                        var queryString = constructQueryString(params);
-                        url += (url.indexOf("?") > -1 ? "&" : "?") + queryString;
+                        const queryString = constructQueryString(params)
+                        url += (url.indexOf('?') > -1 ? '&' : '?') + queryString
                     }
                     reqData = {
                         url: url,
@@ -899,53 +865,53 @@ export const ZOHO = (function() {
                         CONTENT_TYPE: ContentType,
                         RESPONSE_TYPE: responseType,
                         PARTS: Parts,
-                        PARTS_BOUNDARY:partBoundary,
+                        PARTS_BOUNDARY: partBoundary,
                         FILE: file
                     }
                 } else {
-                    reqData = requestData;
+                    reqData = requestData
                 }
 
-                var data = {
-                    category: "CONNECTOR", //no i18n
+                const data = {
+                    category: 'CONNECTOR', // no i18n
                     nameSpace: method,
                     data: reqData,
-                    type:type
-                };
-                return newRequestPromise(data);
-            };
-
-            function manipulateUI(data) {
-                var config = {
-                    category: "UI"
-                };
-                $.extend(data, config);
-                return newRequestPromise(data);
+                    type: type
+                }
+                return newRequestPromise(data)
             }
 
-            function config(type, nameSpace,requestData) {
-                var data = {
-                    category: "CONFIG",
+            function manipulateUI (data) {
+                const config = {
+                    category: 'UI'
+                }
+                $.extend(data, config)
+                return newRequestPromise(data)
+            }
+
+            function config (type, nameSpace, requestData) {
+                const data = {
+                    category: 'CONFIG',
                     type: type,
                     nameSpace: nameSpace,
-                    APIData : requestData
-                };
-                return newRequestPromise(data);
+                    APIData: requestData
+                }
+                return newRequestPromise(data)
             }
 
-            function action(type, obj) {
-                var data = {
-                    category: "ACTION",
+            function action (type, obj) {
+                const data = {
+                    category: 'ACTION',
                     type: type,
                     object: obj
-                };
-                return newRequestPromise(data);
+                }
+                return newRequestPromise(data)
             }
 
-            function user(data) {
-                var promiseData = {
-                    category: "USER",
-                };
+            function user (data) {
+                const promiseData = {
+                    category: 'USER'
+                }
                 if (data.ID) {
                     promiseData.ID = data.ID
                 } else if (data.Type) {
@@ -957,33 +923,32 @@ export const ZOHO = (function() {
                         promiseData.per_page = data.per_page
                     }
                 }
-                return newRequestPromise(promiseData);
+                return newRequestPromise(promiseData)
             }
 
-            function getMeta(data) {
-                var reqJson = {
-                    category: "META",
+            function getMeta (data) {
+                const reqJson = {
+                    category: 'META',
                     type: data.type,
                     Entity: data.Entity,
                     Id: data.Id
                 }
-                return newRequestPromise(reqJson);
-
+                return newRequestPromise(reqJson)
             }
-            var HTTPRequest = {
-                POST: "wget.post",
-                GET: "wget.get",
-                PUT: "wget.put",
-                PATCH: "wget.patch",
-                DELETE: "wget.delete"
+            const HTTPRequest = {
+                POST: 'wget.post',
+                GET: 'wget.get',
+                PUT: 'wget.put',
+                PATCH: 'wget.patch',
+                DELETE: 'wget.delete'
             }
             return {
                 ACTION: {
-                    setConfig: function(obj) {
-                        return action("CUSTOM_ACTION_SAVE_CONFIG", obj);
+                    setConfig: function (obj) {
+                        return action('CUSTOM_ACTION_SAVE_CONFIG', obj)
                     },
-                    enableAccountAccess: function(obj) {
-                        return action("ENABLE_ACCOUNT_ACCESS", obj);
+                    enableAccountAccess: function (obj) {
+                        return action('ENABLE_ACCOUNT_ACCESS', obj)
                     }
                 },
                 /**
@@ -1020,16 +985,16 @@ export const ZOHO = (function() {
                      *   "message": "function executed successfully"
                      * }
                      */
-                   execute : function(func_name, req_data){
-                    var request = {};
-                    req_data.auth_type = "oauth";
-                    request.data = req_data;
-                    var data = {
-                    category : "FUNCTIONS_EXECUTE",//no i18n
-                    customFunctionName : func_name,
-                    data : request
-                    };
-                    return newRequestPromise(data);
+                    execute: function (func_name, req_data) {
+                        const request = {}
+                        req_data.auth_type = 'oauth'
+                        request.data = req_data
+                        const data = {
+                            category: 'FUNCTIONS_EXECUTE', // no i18n
+                            customFunctionName: func_name,
+                            data: request
+                        }
+                        return newRequestPromise(data)
                     }
                 },
 
@@ -1055,8 +1020,8 @@ export const ZOHO = (function() {
                      *}
                      *
                      */
-                    getOrgInfo: function(nameSpace) {
-                        return config("ORG");
+                    getOrgInfo: function (nameSpace) {
+                        return config('ORG')
                     },
                     /**
                      * @function getCurrentUser
@@ -1090,8 +1055,8 @@ export const ZOHO = (function() {
                      * }
                      *
                      */
-                    getCurrentUser: function() {
-                        return config("CURRENT_USER");
+                    getCurrentUser: function () {
+                        return config('CURRENT_USER')
                     },
                     /*
                      * @function GetCurrentEnvironment
@@ -1116,9 +1081,9 @@ export const ZOHO = (function() {
                      *}
                      *
                      */
-                    GetCurrentEnvironment: function() {
-                        return config("ORG_LEVEL_INFO");
-                    },
+                    GetCurrentEnvironment: function () {
+                        return config('ORG_LEVEL_INFO')
+                    }
                     /*
                     * @function createUser
                     * @memberof ZOHO.CRM.CONFIG
@@ -1250,7 +1215,7 @@ export const ZOHO = (function() {
                     deleteUser: function(data)
                     {
                         return config("DELETEUSER","",data);
-                    }*/
+                    } */
                 },
                 /**
                  * @namespace ZOHO.CRM.META
@@ -1529,11 +1494,9 @@ export const ZOHO = (function() {
                      *]
                      *}
                      */
-                    getFields: function(data) {
-
-                        data.type = "FIELD_LIST";
-                        return getMeta(data);
-
+                    getFields: function (data) {
+                        data.type = 'FIELD_LIST'
+                        return getMeta(data)
                     },
                     /**
                      * @function getModules
@@ -1739,12 +1702,11 @@ export const ZOHO = (function() {
 					 *}
 					 *
                      */
-                    getModules: function() {
-                        var data = {
-                            type: "MODULE_LIST"
-                        };
-                        return getMeta(data);
-
+                    getModules: function () {
+                        const data = {
+                            type: 'MODULE_LIST'
+                        }
+                        return getMeta(data)
                     },
                     /**
                      * @function getAssignmentRules
@@ -1793,9 +1755,9 @@ export const ZOHO = (function() {
                      *  ]
                      *}
                      */
-                    getAssignmentRules: function(data) {
-                        data.type = "ASSIGNMENT_RULES";
-                        return getMeta(data);
+                    getAssignmentRules: function (data) {
+                        data.type = 'ASSIGNMENT_RULES'
+                        return getMeta(data)
                     },
 
                     /**
@@ -3302,10 +3264,10 @@ export const ZOHO = (function() {
                      *  ]
                      *}
                      */
-                    getLayouts: function(data) {
+                    getLayouts: function (data) {
                         data.id = data.id ? data.id : data.LayoutId
-                        data.type = data.Id ? "LAYOUT" : "LAYOUTS"
-                        return getMeta(data);
+                        data.type = data.Id ? 'LAYOUT' : 'LAYOUTS'
+                        return getMeta(data)
                     },
 
                     /**
@@ -3507,9 +3469,9 @@ export const ZOHO = (function() {
                      *  ]
                      *}
                      */
-                    getRelatedList: function(data) {
-                        data.type = "RELATED_LIST";
-                        return getMeta(data);
+                    getRelatedList: function (data) {
+                        data.type = 'RELATED_LIST'
+                        return getMeta(data)
                     },
 
                     /**
@@ -3718,10 +3680,10 @@ export const ZOHO = (function() {
                      *}
                      *
                      */
-                    getCustomViews: function(data) {
-                        data.type = data.Id ? "CUSTOM_VIEW" : "CUSTOM_VIEWS"
-                        return getMeta(data);
-                    },
+                    getCustomViews: function (data) {
+                        data.type = data.Id ? 'CUSTOM_VIEW' : 'CUSTOM_VIEWS'
+                        return getMeta(data)
+                    }
                 },
                 /**
                  * @namespace ZOHO.CRM.API
@@ -3766,28 +3728,28 @@ export const ZOHO = (function() {
                      *  ]
                      *}
                      */
-                    addNotes: function(data) {
-                        var Entity = data.Entity;
-                        var RelatedEntity = "NOTES";
-                        var RecordID = data.RecordID;
-                        var content = {
+                    addNotes: function (data) {
+                        const Entity = data.Entity
+                        const RelatedEntity = 'NOTES'
+                        const RecordID = data.RecordID
+                        const content = {
                             data: [{
                                 Note_Title: data.Title,
                                 Note_Content: data.Content
                             }]
-                        };
-                        return createRecord(Entity, content, RecordID, RelatedEntity);
+                        }
+                        return createRecord(Entity, content, RecordID, RelatedEntity)
                     },
-                    addNotesAttachment: function(data) {
-                        var Entity = data.Entity;
-                        var RecordID = data.RecordID;
-                        var RelatedRecordID = data.RelatedRecordID;
-                        var APIData = {
+                    addNotesAttachment: function (data) {
+                        const Entity = data.Entity
+                        const RecordID = data.RecordID
+                        const RelatedRecordID = data.RelatedRecordID
+                        const APIData = {
                             Files: {
                                 FileName: File.Name,
                                 FileData: File.Content
                             }
-                        };
+                        }
                         return updateNotes(Entity, RecordID, RelatedRecordID, APIData)
                     },
                     /**
@@ -3887,13 +3849,13 @@ export const ZOHO = (function() {
                      *  ]
                      *}
                      */
-                    insertRecord: function(data) {
-                        var Entity = data.Entity;
-                        var APIData = data.APIData;
-                        APIData.trigger = data.Trigger;
-                        return createRecord(Entity, APIData);
+                    insertRecord: function (data) {
+                        const Entity = data.Entity
+                        const APIData = data.APIData
+                        APIData.trigger = data.Trigger
+                        return createRecord(Entity, APIData)
                     },
-                     /**
+                    /**
                      * @function upsertRecord
                      * @description Insert record or update matching existing record
                      * @param {Object} config - Configuration Object.
@@ -3969,16 +3931,15 @@ export const ZOHO = (function() {
                      *  }
                      *]
                      */
-                    upsertRecord: function(data) {
-                        var Entity = data.Entity;
-                        var APIData = data.APIData;
-                        APIData.trigger = data.Trigger;
-                        APIData.action = "UPSERT";
-                        if(data.duplicate_check_fields && data.duplicate_check_fields instanceof Array)
-                        {
-							APIData.duplicate_check_fields = data.duplicate_check_fields.join(",")
+                    upsertRecord: function (data) {
+                        const Entity = data.Entity
+                        const APIData = data.APIData
+                        APIData.trigger = data.Trigger
+                        APIData.action = 'UPSERT'
+                        if (data.duplicate_check_fields && data.duplicate_check_fields instanceof Array) {
+                            APIData.duplicate_check_fields = data.duplicate_check_fields.join(',')
                         }
-                        return createRecord(Entity, APIData);
+                        return createRecord(Entity, APIData)
                     },
                     /**
                      * @function getRecord
@@ -4059,10 +4020,10 @@ export const ZOHO = (function() {
                      *  ]
                      *}
                      */
-                    getRecord: function(data) {
-                        var Entity = data.Entity;
-                        var RecordID = data.RecordID;
-                        return getRecord(Entity, RecordID);
+                    getRecord: function (data) {
+                        const Entity = data.Entity
+                        const RecordID = data.RecordID
+                        return getRecord(Entity, RecordID)
                     },
                     /**
                     * @function getBluePrint
@@ -4134,13 +4095,13 @@ export const ZOHO = (function() {
                     *  }
                     *}
                     */
-                    getBluePrint: function(data) {
-                        var APIData = {
-                            Entity : data.Entity,
-                            RecordID : data.RecordID,
-                            action: "GET_BLUEPRINT_STATUS"
+                    getBluePrint: function (data) {
+                        const APIData = {
+                            Entity: data.Entity,
+                            RecordID: data.RecordID,
+                            action: 'GET_BLUEPRINT_STATUS'
                         }
-                        return getBluePrint(APIData);
+                        return getBluePrint(APIData)
                     },
                     /**
                     * @function updateBluePrint
@@ -4225,14 +4186,14 @@ export const ZOHO = (function() {
                     *    "status": "success"
                     * }
                     */
-                    updateBluePrint: function(data) {
-                        var APIData = {
-                            Entity : data.Entity,
-                            RecordID : data.RecordID,
-                            BlueprintData : data.BlueprintData,
-                            action: "UPDATE_BLUEPRINT_STATUS"
+                    updateBluePrint: function (data) {
+                        const APIData = {
+                            Entity: data.Entity,
+                            RecordID: data.RecordID,
+                            BlueprintData: data.BlueprintData,
+                            action: 'UPDATE_BLUEPRINT_STATUS'
                         }
-                        return getBluePrint(APIData);
+                        return getBluePrint(APIData)
                     },
                     /**
                     *@function uploadFile
@@ -4281,9 +4242,8 @@ export const ZOHO = (function() {
                     *  ]
                     *}
                     */
-                    uploadFile: function(data)
-                    {
-                        return uploadFile(data);
+                    uploadFile: function (data) {
+                        return uploadFile(data)
                     },
                     /**
                     *@function getFile
@@ -4299,9 +4259,8 @@ export const ZOHO = (function() {
                     *
                     *ZOHO.CRM.API.getFile(config);
                     */
-                    getFile :function(data)
-                    {
-                        return getFile(data);
+                    getFile: function (data) {
+                        return getFile(data)
                     },
                     /**
                      * @function getAllRecords
@@ -4451,8 +4410,8 @@ export const ZOHO = (function() {
                      *  }
                      *}
                      */
-                    getAllRecords: function(data) {
-                        return getAllRecords(data);
+                    getAllRecords: function (data) {
+                        return getAllRecords(data)
                     },
                     /**
                      * @function updateRecord
@@ -4502,11 +4461,11 @@ export const ZOHO = (function() {
                      *  ]
                      *}
                      */
-                    updateRecord: function(data) {
-                        var Entity = data.Entity;
-                        var APIData = data.APIData;
-                        APIData.trigger = data.Trigger;
-                        return updateRecord(Entity, APIData);
+                    updateRecord: function (data) {
+                        const Entity = data.Entity
+                        const APIData = data.APIData
+                        APIData.trigger = data.Trigger
+                        return updateRecord(Entity, APIData)
                     },
                     /**
                      * @function deleteRecord
@@ -4536,10 +4495,10 @@ export const ZOHO = (function() {
                      *  ]
                      *}
                      */
-                    deleteRecord: function(data) {
-                        var Entity = data.Entity;
-                        var recordID = data.RecordID;
-                        return deleteRecord(Entity, recordID);
+                    deleteRecord: function (data) {
+                        const Entity = data.Entity
+                        const recordID = data.RecordID
+                        return deleteRecord(Entity, recordID)
                     },
                     /**
                      * @function searchRecord
@@ -4579,14 +4538,14 @@ export const ZOHO = (function() {
                      *     console.log(data)
                      * })
                      */
-                    searchRecord: function(data) {
-                        var Entity = data.Entity;
-                        var Type = data.Type;
-                        var Query = data.Query;
-                        var page = data.page;
-                        var per_page = data.per_page;
-                        var delay = data.delay;
-                        return searchRecord(Entity, Type, Query, page, per_page,delay);
+                    searchRecord: function (data) {
+                        const Entity = data.Entity
+                        const Type = data.Type
+                        const Query = data.Query
+                        const page = data.page
+                        const per_page = data.per_page
+                        const delay = data.delay
+                        return searchRecord(Entity, Type, Query, page, per_page, delay)
                     },
                     /**
                     * @function getAllActions
@@ -4666,10 +4625,9 @@ export const ZOHO = (function() {
                     *}
                     *
                     */
-                    getAllActions: function(data)
-                    {
-                        data.action = "GET_ALL_ACTIONS"
-                        return getAllActions(data);
+                    getAllActions: function (data) {
+                        data.action = 'GET_ALL_ACTIONS'
+                        return getAllActions(data)
                     },
                     /**
                     * @function getApprovalRecords
@@ -4743,19 +4701,15 @@ export const ZOHO = (function() {
                     *}
                     *
                     */
-                    getApprovalRecords: function(data)
-                    {
-                        var newdata = {};
-                        if(data)
-                        {
-                            data.action = "GET_APPROVAL_RECORDS";
+                    getApprovalRecords: function (data) {
+                        const newdata = {}
+                        if (data) {
+                            data.action = 'GET_APPROVAL_RECORDS'
+                        } else {
+                            newdata.action = 'GET_APPROVAL_RECORDS'
+                            data = newdata
                         }
-                        else
-                        {
-                            newdata.action = "GET_APPROVAL_RECORDS";
-                            data = newdata;
-                        }
-                        return getAllActions(data);
+                        return getAllActions(data)
                     },
                     /**
                     * @function getApprovalById
@@ -4826,10 +4780,9 @@ export const ZOHO = (function() {
                     *}
                     *
                     */
-                    getApprovalById: function(data)
-                    {
-                        data.action = "GET_APPROVALBYID"
-                        return getAllActions(data);
+                    getApprovalById: function (data) {
+                        data.action = 'GET_APPROVALBYID'
+                        return getAllActions(data)
                     },
                     /**
                     * @function getApprovalsHistory
@@ -4878,11 +4831,10 @@ export const ZOHO = (function() {
                     *
                     *
                     */
-                    getApprovalsHistory: function()
-                    {
-                        var data = {};
-                        data.action="GET_APPROVALS_HISTORY";
-                        return getAllActions(data);
+                    getApprovalsHistory: function () {
+                        const data = {}
+                        data.action = 'GET_APPROVALS_HISTORY'
+                        return getAllActions(data)
                     },
                     /**
                     * @function approveRecord
@@ -4924,10 +4876,9 @@ export const ZOHO = (function() {
                     *}
                     *
                     */
-                    approveRecord: function(data)
-                    {
-                        data.action="UPDATE_APPROVAL";
-                        return getAllActions(data);
+                    approveRecord: function (data) {
+                        data.action = 'UPDATE_APPROVAL'
+                        return getAllActions(data)
                     },
                     /**
                      * @function getAllUsers
@@ -4975,11 +4926,11 @@ export const ZOHO = (function() {
                      *  }
                      *}
                      */
-                    getAllUsers: function(data) {
-                        var Type = data.Type;
-                        var page = data.page;
-                        var per_page = data.per_page;
-                        return user({ Type: Type, page: page, per_page: per_page });
+                    getAllUsers: function (data) {
+                        const Type = data.Type
+                        const page = data.page
+                        const per_page = data.per_page
+                        return user({ Type: Type, page: page, per_page: per_page })
                     },
                     /**
                      * @function getUser
@@ -5085,9 +5036,9 @@ export const ZOHO = (function() {
                      *  ]
                      *}
                      */
-                    getUser: function(data) {
-                        var ID = data.ID;
-                        return user({ ID: ID });
+                    getUser: function (data) {
+                        const ID = data.ID
+                        return user({ ID: ID })
                     },
                     /**
                      * @function getRelatedRecords
@@ -5176,8 +5127,8 @@ export const ZOHO = (function() {
                      *  }
                      *}
                      */
-                    getRelatedRecords: function(data) {
-                        return getRelatedRecord(data);
+                    getRelatedRecords: function (data) {
+                        return getRelatedRecord(data)
                     },
                     /**
                      * @function updateRelatedRecords
@@ -5212,13 +5163,13 @@ export const ZOHO = (function() {
                      * 	]
                      * }
                      */
-                    updateRelatedRecords: function(data) {
-                        var Entity = data.Entity;
-                        var RecordID = data.RecordID;
-                        var RelatedList = data.RelatedList;
-                        var RelatedRecordID = data.RelatedRecordID;
-                        var APIData = data.APIData;
-                        return updateRelatedRecord(Entity, RecordID, RelatedList, RelatedRecordID, APIData);
+                    updateRelatedRecords: function (data) {
+                        const Entity = data.Entity
+                        const RecordID = data.RecordID
+                        const RelatedList = data.RelatedList
+                        const RelatedRecordID = data.RelatedRecordID
+                        const APIData = data.APIData
+                        return updateRelatedRecord(Entity, RecordID, RelatedList, RelatedRecordID, APIData)
                     },
                     /**
                      * @function delinkRelatedRecord
@@ -5249,12 +5200,12 @@ export const ZOHO = (function() {
                      *  ]
                      *}
                      */
-                    delinkRelatedRecord: function(data) {
-                        var Entity = data.Entity;
-                        var RecordID = data.RecordID;
-                        var RelatedList = data.RelatedList;
-                        var RelatedRecordID = data.RelatedRecordID;
-                        return deleteRelatedRecord(Entity, RecordID, RelatedList, RelatedRecordID);
+                    delinkRelatedRecord: function (data) {
+                        const Entity = data.Entity
+                        const RecordID = data.RecordID
+                        const RelatedList = data.RelatedList
+                        const RelatedRecordID = data.RelatedRecordID
+                        return deleteRelatedRecord(Entity, RecordID, RelatedList, RelatedRecordID)
                     },
                     /**
                      * @function attachFile
@@ -5296,15 +5247,15 @@ export const ZOHO = (function() {
                      *  ]
                      *}
                      * */
-                    attachFile: function(data) {
-                        var Entity = data.Entity;
-                        var RecordID = data.RecordID;
-                        var File = data.File;
+                    attachFile: function (data) {
+                        const Entity = data.Entity
+                        const RecordID = data.RecordID
+                        const File = data.File
                         var data = {
                             FileName: File.Name,
                             FileData: File.Content
                         }
-                        return createRecord(Entity, data, RecordID, "ATTACHMENT");
+                        return createRecord(Entity, data, RecordID, 'ATTACHMENT')
                     },
                     /**
                      * @function getAllProfiles
@@ -5359,10 +5310,9 @@ export const ZOHO = (function() {
                      *  }
                      *
                      */
-                    getAllProfiles: function(data) {
-
-                        var category = "PROFILES";
-                        var type = "GET_ALL_PROFILES";
+                    getAllProfiles: function (data) {
+                        const category = 'PROFILES'
+                        const type = 'GET_ALL_PROFILES'
                         return getAllProfiles(category, type)
                     },
                     /**
@@ -5443,12 +5393,11 @@ export const ZOHO = (function() {
                      * }
                      *
                      */
-                    getProfile: function(data) {
-
-                        var category = "PROFILES";
-                        var type = "GET_PROFILE";
-                        var ID = data.ID;
-                        return getProfile(category, type, ID);
+                    getProfile: function (data) {
+                        const category = 'PROFILES'
+                        const type = 'GET_PROFILE'
+                        const ID = data.ID
+                        return getProfile(category, type, ID)
                     },
                     /**
                      * @function updateProfile
@@ -5492,13 +5441,12 @@ export const ZOHO = (function() {
                      * }
                      *
                      */
-                    updateProfile: function(data) {
-
-                        var category = "UPDATE";
-                        var type = "PROFILE";
-                        var ID = data.ID;
-                        var APIData = data.APIData;
-                        return updateProfile(category, type, ID, APIData);
+                    updateProfile: function (data) {
+                        const category = 'UPDATE'
+                        const type = 'PROFILE'
+                        const ID = data.ID
+                        const APIData = data.APIData
+                        return updateProfile(category, type, ID, APIData)
                     },
                     /**
                      * @function getOrgVariable
@@ -5547,9 +5495,9 @@ export const ZOHO = (function() {
                      *
                      *
                      */
-                    getOrgVariable: function(nameSpace) {
-                        return config("VARIABLE", nameSpace);
-                    },
+                    getOrgVariable: function (nameSpace) {
+                        return config('VARIABLE', nameSpace)
+                    }
                 },
                 /**
                  * @module ZOHO.CRM.UI
@@ -5575,15 +5523,15 @@ export const ZOHO = (function() {
                      * True
                      *
                      */
-                    Resize: function(data) {
+                    Resize: function (data) {
                         var data = {
-                            action: "RESIZE",
+                            action: 'RESIZE',
                             data: {
                                 width: data.width,
                                 height: data.height
                             }
-                        };
-                        return manipulateUI(data);
+                        }
+                        return manipulateUI(data)
                     },
                     /**
                      * @namespace ZOHO.CRM.UI.Dialer
@@ -5595,13 +5543,13 @@ export const ZOHO = (function() {
                          * @returns {Promise} resolved with true | false
                          * @memberof ZOHO.CRM.UI.Dialer
                          */
-                        maximize: function() {
-                            var data = {
+                        maximize: function () {
+                            const data = {
                                 action: {
-                                    telephony: "MAXIMIZE"
+                                    telephony: 'MAXIMIZE'
                                 }
-                            };
-                            return manipulateUI(data);
+                            }
+                            return manipulateUI(data)
                         },
                         /**
                          * @function minimize
@@ -5609,13 +5557,13 @@ export const ZOHO = (function() {
                          * @returns {Promise}  resolved with true | false
                          * @memberof ZOHO.CRM.UI.Dialer
                          */
-                        minimize: function() {
-                            var data = {
+                        minimize: function () {
+                            const data = {
                                 action: {
-                                    telephony: "MINIMIZE"
+                                    telephony: 'MINIMIZE'
                                 }
-                            };
-                            return manipulateUI(data);
+                            }
+                            return manipulateUI(data)
                         },
                         /**
                          * @function notify
@@ -5623,14 +5571,14 @@ export const ZOHO = (function() {
                          * @returns {Promise} resolved with true | false
                          * @memberof ZOHO.CRM.UI.Dialer
                          */
-                        notify: function() {
-                            var data = {
+                        notify: function () {
+                            const data = {
                                 action: {
-                                    telephony: "NOTIFY"
+                                    telephony: 'NOTIFY'
                                 }
-                            };
-                            return manipulateUI(data);
-                        },
+                            }
+                            return manipulateUI(data)
+                        }
                     },
                     /**
                      * @namespace ZOHO.CRM.UI.Record
@@ -5650,21 +5598,21 @@ export const ZOHO = (function() {
                          *     console.log(data)
                          * })
                          */
-                        open: function(data) {
+                        open: function (data) {
                             /*
                              * fetch TabName from sysrefName
                              */
                             var data = {
                                 action: {
-                                    record: "OPEN"
+                                    record: 'OPEN'
                                 },
                                 data: {
                                     Entity: data.Entity,
                                     RecordID: data.RecordID,
-                                    target:data.Target
+                                    target: data.Target
                                 }
-                            };
-                            return manipulateUI(data);
+                            }
+                            return manipulateUI(data)
                         },
                         /**
                          * @function edit
@@ -5680,21 +5628,21 @@ export const ZOHO = (function() {
                          *     console.log(data)
                          * })
                          */
-                        edit: function(data) {
+                        edit: function (data) {
                             /*
                              * fetch TabName from sysrefName
                              */
                             var data = {
                                 action: {
-                                    record: "EDIT"
+                                    record: 'EDIT'
                                 },
                                 data: {
                                     Entity: data.Entity,
                                     RecordID: data.RecordID,
-                                    target:data.Target
+                                    target: data.Target
                                 }
-                            };
-                            return manipulateUI(data);
+                            }
+                            return manipulateUI(data)
                         },
                         /**
                          * @function create
@@ -5709,21 +5657,21 @@ export const ZOHO = (function() {
                          *     console.log(data)
                          * })
                          */
-                        create: function(data) {
+                        create: function (data) {
                             /*
                              * fetch TabName from sysrefName
                              */
                             var data = {
                                 action: {
-                                    record: "CREATE"
+                                    record: 'CREATE'
                                 },
                                 data: {
                                     Entity: data.Entity,
                                     RecordID: data.RecordID,
-                                    target:data.Target
+                                    target: data.Target
                                 }
-                            };
-                            return manipulateUI(data);
+                            }
+                            return manipulateUI(data)
                         },
                         /**
                          * @function populate
@@ -5737,17 +5685,17 @@ export const ZOHO = (function() {
                          *     console.log(data)
                          * })
                          */
-                        populate: function(recordData) {
+                        populate: function (recordData) {
                             /*
                              * fetch TabName from sysrefName
                              */
-                            var data = {
+                            const data = {
                                 action: {
-                                    record: "POPULATE"
+                                    record: 'POPULATE'
                                 },
                                 data: recordData
-                            };
-                            return manipulateUI(data);
+                            }
+                            return manipulateUI(data)
                         }
                     },
                     /**
@@ -5765,16 +5713,16 @@ export const ZOHO = (function() {
                          *     console.log(data)
                          * })
                          */
-                        close: function() {
+                        close: function () {
                             /*
                              * fetch TabName from sysrefName
                              */
-                            var data = {
+                            const data = {
                                 action: {
-                                    popup: "CLOSE"
+                                    popup: 'CLOSE'
                                 }
-                            };
-                            return manipulateUI(data);
+                            }
+                            return manipulateUI(data)
                         },
                         /**
                          * @function closeReload
@@ -5787,17 +5735,17 @@ export const ZOHO = (function() {
                          *     console.log(data)
                          * })
                          */
-                        closeReload: function() {
+                        closeReload: function () {
                             /*
                              * fetch TabName from sysrefName
                              */
-                            var data = {
+                            const data = {
                                 action: {
-                                    popup: "CLOSE_RELOAD"
+                                    popup: 'CLOSE_RELOAD'
                                 }
-                            };
-                            return manipulateUI(data);
-                        },
+                            }
+                            return manipulateUI(data)
+                        }
                     },
                     /**
                      * @namespace ZOHO.CRM.UI.Widget
@@ -5824,18 +5772,18 @@ export const ZOHO = (function() {
                          *     console.log(data)
                          * })
                          */
-                        open: function(data) {
+                        open: function (data) {
                             /*
                              * fetch TabName from sysrefName
                              */
                             var data = {
                                 action: {
-                                	webTab: "OPEN"
+                                	webTab: 'OPEN'
                                 },
-                                data : data
-                            };
-                            return manipulateUI(data);
-                        },
+                                data: data
+                            }
+                            return manipulateUI(data)
+                        }
                     }
 
                 },
@@ -5917,8 +5865,8 @@ export const ZOHO = (function() {
                      *   }
                      * }
                      */
-                    get: function(data) {
-                        return remoteCall(HTTPRequest.GET, data);
+                    get: function (data) {
+                        return remoteCall(HTTPRequest.GET, data)
                     },
                     /**
                      * @function post
@@ -5961,8 +5909,8 @@ export const ZOHO = (function() {
 					 *  </result>
 					 *</response>
                      */
-                    post: function(data) {
-                        return remoteCall(HTTPRequest.POST, data);
+                    post: function (data) {
+                        return remoteCall(HTTPRequest.POST, data)
                     },
                     /**
                      * @function put
@@ -6018,8 +5966,8 @@ export const ZOHO = (function() {
 					 *  ]
 					 *}
                      */
-                    put: function(data) {
-                        return remoteCall(HTTPRequest.PUT, data);
+                    put: function (data) {
+                        return remoteCall(HTTPRequest.PUT, data)
                     },
                     /**
                      * @function patch
@@ -6067,8 +6015,8 @@ export const ZOHO = (function() {
 					 *}
                      *
                      */
-                    patch: function(data) {
-                        return remoteCall(HTTPRequest.PATCH, data);
+                    patch: function (data) {
+                        return remoteCall(HTTPRequest.PATCH, data)
                     },
                     /**
                      * @function delete
@@ -6107,8 +6055,8 @@ export const ZOHO = (function() {
                      *}
                      *
                      */
-                    delete: function(data) {
-                        return remoteCall(HTTPRequest.DELETE, data);
+                    delete: function (data) {
+                        return remoteCall(HTTPRequest.DELETE, data)
                     }
                 },
                 /**
@@ -6204,10 +6152,10 @@ export const ZOHO = (function() {
                      *   })
 
                      */
-                    invokeAPI: function(nameSpace, data) {
-                        return remoteCall(nameSpace, data, "CONNECTOR_API");
+                    invokeAPI: function (nameSpace, data) {
+                        return remoteCall(nameSpace, data, 'CONNECTOR_API')
                     },
-                     /**
+                    /**
                      * @function authorize
                      * @description Prompts the Connector Authorize window
                      * @returns {Promise} resolved with true on successful Authorization
@@ -6218,9 +6166,9 @@ export const ZOHO = (function() {
                      * ZOHO.CRM.CONNECTOR.authorize(connectorName);
                      *
                      */
-                    authorize: function(nameSpace) {
-                        return remoteCall(nameSpace, {}, "CONNECTOR_AUTHORIZE");
-                    },
+                    authorize: function (nameSpace) {
+                        return remoteCall(nameSpace, {}, 'CONNECTOR_AUTHORIZE')
+                    }
                     /*
                      * @function revokeConnector
                      * @description revoke Connector
@@ -6285,24 +6233,24 @@ export const ZOHO = (function() {
                      *   "status" : "success"
                      *  }
                      */
-                    invoke:function(conn_name, req_data){
-                    var request = {};
-                    var reqObj = {};
-                    reqObj.url = req_data.url;
-                    reqObj.method = req_data.method;
-                    reqObj.param_type = req_data.param_type;
-                    reqObj.parameters = JSON.stringify(req_data.parameters);
-                    reqObj.headers = JSON.stringify(req_data.headers);
-                    request.data = reqObj;
-                    var data = {
-                    category : "CRM_CONNECTION",//no i18n
-                    connectionName:conn_name,
-                    data : request
-                    };
-                    return newRequestPromise(data);
+                    invoke: function (conn_name, req_data) {
+                        const request = {}
+                        const reqObj = {}
+                        reqObj.url = req_data.url
+                        reqObj.method = req_data.method
+                        reqObj.param_type = req_data.param_type
+                        reqObj.parameters = JSON.stringify(req_data.parameters)
+                        reqObj.headers = JSON.stringify(req_data.headers)
+                        request.data = reqObj
+                        const data = {
+                            category: 'CRM_CONNECTION', // no i18n
+                            connectionName: conn_name,
+                            data: request
+                        }
+                        return newRequestPromise(data)
                     }
                 }
-            };
+            }
         })()
     }
-})();
+})()
