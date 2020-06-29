@@ -8,6 +8,7 @@ import { DownloadMailingListButton } from './components/DownloadMailingListButto
 import { DownloadContactListButton } from './components/DownloadContactListButton'
 import { UnprocessedResultsFromCRM, ResultsType, DEFAULT_SEARCH_PARAMS, SearchParametersType } from './types'
 import { UpdateLastMailedButton } from './components/UpdateLastMailedButton'
+import { MassMailButton } from './components/MassMailButton'
 
 function prepareDataForMap (results?: UnprocessedResultsFromCRM[]): ResultsType | undefined {
     if (!results || results.length === 0) {
@@ -57,6 +58,7 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[] | undefined,
                 <div className="download-button-wrapper">
                     <DownloadContactListButton results={results} />
                     <DownloadMailingListButton results={results} />
+                    <MassMailButton results={results} />
                 </div>
                 <UpdateLastMailedButton results={results} />
                 <MapWidget addressesToRender={dataForMap.addressesToRender} centrePoint={dataForMap.centrePoint} mapsApiKey={googleMapsApiKey} />
