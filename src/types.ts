@@ -6,6 +6,7 @@ export type SearchParametersType = {
     propertyGroupsMaxResults: number
     propertyTypesMaxResults: number
     id: string
+    managed: string[]
 }
 
 export const DEFAULT_SEARCH_PARAMS = {
@@ -15,6 +16,7 @@ export const DEFAULT_SEARCH_PARAMS = {
     neighboursSearchMaxRecords: 100,
     propertyTypes: ['All'],
     propertyGroups: ['All'],
+    managed: ['Yes'],
     readyForSearch: false,
     id: `search:${(Math.random() * 1000)}`
 }
@@ -35,6 +37,9 @@ export type ResultsType = {
 }
 
 type OwnerType = {
+    Email: string
+    Do_Not_Mail: boolean
+    Return_to_Sender: boolean
     Postal_Postcode: string
     Postal_State: string
     Postal_Address: string
@@ -59,4 +64,5 @@ export type UnprocessedResultsFromCRM = {
     Postcode: string
     State: string
     Property_Category_Mailing: string[]
-}
+    Managed: string
+    }

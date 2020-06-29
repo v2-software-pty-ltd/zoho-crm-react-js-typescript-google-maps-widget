@@ -59,8 +59,12 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[] | undefined,
                     <DownloadMailingListButton results={results} />
                 </div>
                 <UpdateLastMailedButton results={results} />
-                <MapWidget addressesToRender={dataForMap.addressesToRender} centrePoint={dataForMap.centrePoint} mapsApiKey={googleMapsApiKey} />
-                <ResultsTableWidget results={results} />
+                <div className="pagebreak">
+                    <MapWidget addressesToRender={dataForMap.addressesToRender} centrePoint={dataForMap.centrePoint} mapsApiKey={googleMapsApiKey} />
+                </div>
+                <div className="pagebreak">
+                    <ResultsTableWidget results={results} />
+                </div>
             </div>
         )
     }
@@ -97,7 +101,7 @@ function App () {
     }, [])
 
     return (
-        <div className="App">
+        <div className="App pagebreak">
             <SearchWidgetWrapper changeSearchParameters={changeSearchParameters} searchParameters={searchParameters} setReadyForSearch={setReadyForSearch} />
             {renderResultsWidgets(results, googleMapsApiKey, isLoading, searchParameters)}
         </div>

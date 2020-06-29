@@ -14,8 +14,8 @@ export function PropertyGroupDropdown (props: DropdownProps) {
     ]
 
     return (
-        <label className="two">Property Group (Portals)
-            <select multiple value={props.chosenPropertyGroups} name="propertyGroup" id="#propertyGroup" onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+        <label className="six dropdown">Property Group (Portals) <span className='downArrow'> ⬇ </span>
+            <select multiple value={props.chosenPropertyGroups} className="dropdown-content" id="#propertyGroup" onChange={(e: ChangeEvent<HTMLSelectElement>) => {
                 props.changePropertyGroups([...e.target.selectedOptions].map((option) => option.value))
             }} tabIndex={3} >
                 {possiblePropertyGroups.map((propertyGroup) => {
