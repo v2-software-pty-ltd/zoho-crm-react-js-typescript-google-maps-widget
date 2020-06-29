@@ -10,7 +10,7 @@ export function DownloadContactListButton (props: DownloadButtonProps) {
     let csvData = '"Property Address","Property Type (Marketing)","Owner","Owner Mobile","Owner Phone","Contact","Contact Mobile","Contact Work Phone"\r\n'
     const arrayOfObjectsFromCRM = props.results
     function getUniqueListBy (arr: UnprocessedResultsFromCRM[], key: string) {
-        return [...new Map(arr.map((propertyObject: any) => [propertyObject[key], propertyObject])).values()]
+        return [...new Map(arr.map((eachPropertyObject: any) => [eachPropertyObject[key], eachPropertyObject])).values()]
     }
     const filteredPropObject = getUniqueListBy(arrayOfObjectsFromCRM, 'id')
     filteredPropObject.forEach(result => {
@@ -34,8 +34,6 @@ export function DownloadContactListButton (props: DownloadButtonProps) {
             type: 'text/csv;charset=utf-8'
         }
     )
-
     downloadUrl = URL.createObjectURL(resultsBlob)
-
     return (<a href={downloadUrl} className="button" download="contactlist.csv" >Download Contact List</a>)
 }

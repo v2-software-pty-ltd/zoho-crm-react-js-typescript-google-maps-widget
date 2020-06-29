@@ -1,4 +1,3 @@
-/* eslint-disable */
 import * as $ from 'jquery'
 
 const ZSDKUtil = (function (ZSDKUtil) {
