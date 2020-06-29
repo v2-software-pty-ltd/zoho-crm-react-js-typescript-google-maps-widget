@@ -4,7 +4,7 @@ import { UnprocessedResultsFromCRM, OwnerType } from '../types'
 type DownloadButtonProps = {
     results: UnprocessedResultsFromCRM[]
 }
-const keyForPropObject = 'id'
+const propertyObjectKey = 'id'
 
 export function DownloadMailingListButton (props: DownloadButtonProps) {
     let downloadUrl = null
@@ -25,7 +25,7 @@ export function DownloadMailingListButton (props: DownloadButtonProps) {
         propertyString = `"${owner.Name}","${owner.Contact_Type}","${ownerAddress}","${owner.Postal_Suburb}","${owner.Postal_State}","${owner.Postal_Postcode}","${propertyAddress}","${company}"\r\n`
 
         propertyString = propertyString.replace(/null/g, '-')
-        return [propertyObject[keyForPropObject], propertyString]
+        return [propertyObject[propertyObjectKey], propertyString]
     }
 
     const uniqueIterables = arrayOfObjectsFromCRM.map(mapFunc).values()
