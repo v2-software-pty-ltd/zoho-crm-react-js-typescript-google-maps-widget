@@ -26,3 +26,6 @@ yarn-error.log*
 
 dist
 app/static
+object_results.json
+object_results2.json
+object_results3.json

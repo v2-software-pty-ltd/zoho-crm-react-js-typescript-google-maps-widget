@@ -37,7 +37,7 @@ export function SearchWidgetWrapper (props: SearchWidgetProps) {
                 }}>Add New Search Group
                 </button>
                 &nbsp;
-                <button onClick={() => props.setReadyForSearch(true)}>Search</button>
+                <button onClick={() => { props.setReadyForSearch(true) }}>Search</button>
             </div>
         </div>
     )

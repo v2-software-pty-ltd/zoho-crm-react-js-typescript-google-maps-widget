@@ -25,13 +25,13 @@ export function PropertyTypeDropdown (props: DropdownProps) {
     ]
 
     return (
-        <label className="two">Property Type (Marketing)
-            <select multiple value={props.chosenPropertyTypes} name="propertyType" id="#propertyType" onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                props.changePropertyTypes([...e.target.selectedOptions].map((option) => option.value))
-            }} tabIndex={2} >
-                {possiblePropertyTypes.map((propertyType) => {
-                    return <option key={propertyType} value={propertyType}>{propertyType}</option>
-                })}
+        <label className="five dropdown">Property Type (Marketing) <span className='downArrow'> ⬇ </span>
+            <select multiple value={props.chosenPropertyTypes}
+                name="propertyType"
+                id="#propertyType"
+                className="dropdown-content"
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => { props.changePropertyTypes([...e.target.selectedOptions].map((option) => option.value)) }}
+                tabIndex={2} > {possiblePropertyTypes.map((propertyType) => { return <option key={propertyType} value={propertyType}>{propertyType} </option> })}
             </select>
         </label>
     )
