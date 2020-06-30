@@ -8,7 +8,7 @@ const propertyObjectKey = 'id'
 
 export function DownloadMailingListButton (props: DownloadButtonProps) {
     let downloadUrl = null
-    let csvData = '"Contact Name","Contact Type","Mailing Street Address","Mailing Suburb","Mailing State","Mailing Postcode","Property Address","Property Type (Marketing)","Company"\r\n'
+    let csvData = '"Contact Name","Contact Type","Mailing Street Address","Mailing Suburb","Mailing State","Mailing Postcode","Property Address","Property Type (Marketing)","Last Mailed"\r\n'
 
     const matchingPropertiesAndOwners = props.results
     function generateCSVRow (propertyObject: UnprocessedResultsFromCRM) {
