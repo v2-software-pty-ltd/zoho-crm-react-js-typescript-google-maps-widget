@@ -133,7 +133,7 @@ select {
 }
 
 button {
-  max-width: 29%;
+  max-width: 100%;
   padding: 4px;
   background-color: #E82620;
   border: 2px solid  #E82620;
@@ -231,6 +231,9 @@ td {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+.side-padding {
+  padding: 0 4px
 }
 .dropdown-content {
   display: none;
