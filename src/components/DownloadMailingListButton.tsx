@@ -4,12 +4,8 @@ import { UnprocessedResultsFromCRM, OwnerType } from '../types'
 type DownloadButtonProps = {
     results: UnprocessedResultsFromCRM[]
 }
-const propertyObjectKey = 'id'
-
 export function DownloadMailingListButton (props: DownloadButtonProps) {
     let downloadUrl = null
-    let csvData = '"Contact Name","Contact Type","Mailing Street Address","Mailing Suburb","Mailing State","Mailing Postcode","Property Address","Property Type (Marketing)","Last Mailed"\r\n'
-
     const matchingPropertiesAndOwners = props.results
     function generateCSVRow (propertyObject: UnprocessedResultsFromCRM) {
         let csvRow = ''
@@ -42,14 +38,11 @@ export function DownloadMailingListButton (props: DownloadButtonProps) {
             csvRow = `"${owner.Name}","${owner.Contact_Type}","${postalAddress}","${owner.Postal_Suburb}","${owner.Postal_State}","${owner.Postal_Postcode}","${propertyAddress}, ${lastMailed}\r\n`
             csvRow = csvRow.replace(/null/g, '-')
         }
-        return [propertyObject[propertyObjectKey], csvRow]
+        return csvRow
     }
-    const uniqueIterables = matchingPropertiesAndOwners.map(generateCSVRow).values()
-    let currentIterable = uniqueIterables.next()
-    while (!currentIterable.done) {
-        csvData += currentIterable.value
-        currentIterable = uniqueIterables.next()
-    }
+    const HEADER_ROW = '"Contact Name","Contact Type","Mailing Street Address","Mailing Suburb","Mailing State","Mailing Postcode","Property Address","Property Type (Marketing)","Company"\r\n'
+    const csvRows = matchingPropertiesAndOwners.map(generateCSVRow).join('')
+    const csvData = `${HEADER_ROW}${csvRows}`
     const resultsBlob = new Blob(
         [csvData],
         {
