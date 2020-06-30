@@ -41,8 +41,7 @@ function prepareDataForMap (results?: UnprocessedResultsFromCRM[]): ResultsType 
 function renderResultsWidgets (results: UnprocessedResultsFromCRM[] | undefined, googleMapsApiKey: string | undefined, isLoading: boolean, searchParameters: SearchParametersType[]) {
     if (isLoading) {
         const totalRecords = searchParameters.reduce((totalMaxDisplay, searchParam) => totalMaxDisplay + (searchParam.neighboursSearchMaxRecords + searchParam.propertyTypesMaxResults + searchParam.propertyGroupsMaxResults), 0)
-        // Divided by 2 b/c the performance enchancements just under halves the loading time
-        const estimatedTotalDurationMinutes = (totalRecords / 100) / 2
+        const estimatedTotalDurationMinutes = (totalRecords / 50) / 2
         const estimatedDurationSeconds = (estimatedTotalDurationMinutes * 60 + 20) / 2
         const duration = estimatedTotalDurationMinutes < 1 ? `${estimatedDurationSeconds.toFixed(0)} seconds` : `${estimatedTotalDurationMinutes.toFixed(1)} minutes`
 

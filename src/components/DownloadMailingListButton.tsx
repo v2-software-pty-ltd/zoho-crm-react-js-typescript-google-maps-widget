@@ -10,9 +10,9 @@ export function DownloadMailingListButton (props: DownloadButtonProps) {
     let downloadUrl = null
     let csvData = '"Contact Name","Contact Type","Mailing Street Address","Mailing Suburb","Mailing State","Mailing Postcode","Property Address","Property Type (Marketing)","Company"\r\n'
 
-    const arrayOfObjectsFromCRM = props.results
-    function mapFunc (propertyObject: UnprocessedResultsFromCRM) {
-        let propertyString = ''
+    const matchingPropertiesAndOwners = props.results
+    function generateCSVRow (propertyObject: UnprocessedResultsFromCRM) {
+        let csvRow = ''
         let doNotMail
         let returnToSender
         let postalAddress
@@ -34,17 +34,17 @@ export function DownloadMailingListButton (props: DownloadButtonProps) {
             email = contact.Email
         }
 
-        if (doNotMail === true || returnToSender === true || email) {
+        if (doNotMail || returnToSender || email) {
             console.log('didnt make else statement')
         } else {
             owner = owner ? (contact.Postal_Address ? contact : owner) : contact
             const lastMailed = owner.Last_Mailed || 'Last mailed has not been found'
-            propertyString = `"${owner.Name}","${owner.Contact_Type}","${postalAddress}","${owner.Postal_Suburb}","${owner.Postal_State}","${owner.Postal_Postcode}","${propertyAddress}, ${lastMailed}\r\n`
-            propertyString = propertyString.replace(/null/g, '-')
+            csvRow = `"${owner.Name}","${owner.Contact_Type}","${postalAddress}","${owner.Postal_Suburb}","${owner.Postal_State}","${owner.Postal_Postcode}","${propertyAddress}, ${lastMailed}\r\n`
+            csvRow = csvRow.replace(/null/g, '-')
         }
-        return [propertyObject[propertyObjectKey], propertyString]
+        return [propertyObject[propertyObjectKey], csvRow]
     }
-    const uniqueIterables = arrayOfObjectsFromCRM.map(mapFunc).values()
+    const uniqueIterables = matchingPropertiesAndOwners.map(generateCSVRow).values()
     let currentIterable = uniqueIterables.next()
     while (!currentIterable.done) {
         csvData += currentIterable.value
