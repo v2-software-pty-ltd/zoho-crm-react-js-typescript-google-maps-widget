@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { UnprocessedResultsFromCRM } from '../types'
+import { UnprocessedResultsFromCRM, OwnerType } from '../types'
 type DownloadButtonProps = {
     results: UnprocessedResultsFromCRM[]
 }
@@ -19,8 +19,8 @@ export function DownloadContactListButton (props: DownloadButtonProps) {
             const workPhone = result.owner_details.Work_Phone
             const propertyAddress = result.Deal_Name
             const propertyTypeMarketing = result.Property_Category_Mailing
-            const ownerData = result.owner_details.find((owner: any) => owner.Contact_Type === 'Owner')
-            const contactData = result.owner_details.find((owner: any) => owner.Contact_Type === 'Director')
+            const ownerData = result.owner_details.find((owner: OwnerType) => owner.Contact_Type === 'Owner')
+            const contactData = result.owner_details.find((owner: OwnerType) => owner.Contact_Type === 'Director')
 
             if (mobile !== null && workPhone !== null) {
                 const newRow = `"${propertyAddress}","${ownerData?.Name || ''}","${propertyTypeMarketing}","${ownerData?.Mobile || ''}","${ownerData?.Work_Phone || ''}","${contactData?.Name || ''}","${contactData?.Mobile || ''}","${contactData?.Work_Phone || ''}"\r\n`
