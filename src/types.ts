@@ -11,12 +11,12 @@ export type SearchParametersType = {
 
 export const DEFAULT_SEARCH_PARAMS = {
     searchAddress: '528 Kent St, Sydney, NSW, 2000',
-    propertyGroupsMaxResults: 100,
+    propertyGroupsMaxResults: 200,
     propertyTypesMaxResults: 200,
     neighboursSearchMaxRecords: 100,
     propertyTypes: ['All'],
     propertyGroups: ['All'],
-    managed: ['Yes'],
+    managed: ['None'],
     readyForSearch: false,
     id: `search:${(Math.random() * 1000)}`
 }
@@ -65,4 +65,8 @@ export type UnprocessedResultsFromCRM = {
     State: string
     Property_Category_Mailing: string[]
     Managed: string
+    Reversed_Geocoded_Address: string
+    Property_Type_Portals: string
+    Property_Contact: string
+    Property_Owners: string
     }

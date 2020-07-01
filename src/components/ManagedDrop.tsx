@@ -14,6 +14,7 @@ export function ManagedDrop (props: DropdownProps) {
 
     return (
         <label className="seven dropdown"> Managed <span className='downArrow'> ⬇ </span>
+            <p className="smaller-font">Defaults to None</p>
             <select multiple value={props.managed} className="dropdown-content" onChange={(e: ChangeEvent<HTMLSelectElement>) => {
                 props.changedManaged([...e.target.selectedOptions].map((option) => option.value))
             }} tabIndex={3} >

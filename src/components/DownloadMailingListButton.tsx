@@ -1,5 +1,6 @@
 import React from 'react'
 import { UnprocessedResultsFromCRM, OwnerType } from '../types'
+import { logDOM } from '@testing-library/react'
 
 type DownloadButtonProps = {
     results: UnprocessedResultsFromCRM[]
@@ -18,7 +19,9 @@ export function DownloadMailingListButton (props: DownloadButtonProps) {
         const contact: OwnerType = ownerDetails[0]
         let owner: OwnerType = ownerDetails[1]
 
-        if (contact === undefined || null) {
+        if (typeof contact === 'undefined' || null) {
+            console.log('owner', owner)
+
             doNotMail = owner.Do_Not_Mail
             returnToSender = owner.Return_to_Sender
             postalAddress = owner.Postal_Address

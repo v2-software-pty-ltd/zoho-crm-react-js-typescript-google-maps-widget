@@ -38,16 +38,12 @@ function prepareDataForMap (results?: UnprocessedResultsFromCRM[]): ResultsType 
     }
 }
 
-function renderResultsWidgets (results: UnprocessedResultsFromCRM[] | undefined, googleMapsApiKey: string | undefined, isLoading: boolean, searchParameters: SearchParametersType[]) {
+function renderResultsWidgets (results: UnprocessedResultsFromCRM[] | undefined, googleMapsApiKey: string | undefined, isLoading: boolean) {
     if (isLoading) {
-        const totalRecords = searchParameters.reduce((totalMaxDisplay, searchParam) => totalMaxDisplay + (searchParam.neighboursSearchMaxRecords + searchParam.propertyTypesMaxResults + searchParam.propertyGroupsMaxResults), 0)
-        const estimatedTotalDurationMinutes = (totalRecords / 50) / 2
-        const estimatedDurationSeconds = (estimatedTotalDurationMinutes * 60 + 20)
-        const duration = estimatedTotalDurationMinutes < 1 ? `${estimatedDurationSeconds.toFixed(0)} seconds` : `${estimatedTotalDurationMinutes.toFixed(1)} minutes`
-
+        // The default search takes 21 seconds, as does a search with 1 neighbours search, 2 property types, and 1 property groups.
         return (
             <div style={{ padding: '20px' }}>
-                Loading ... estimated waiting time {duration}
+                Loading ... estimated waiting time 20 seconds.
             </div>
         )
     }
@@ -105,7 +101,7 @@ function App () {
     return (
         <div className="App">
             <SearchWidgetWrapper changeSearchParameters={changeSearchParameters} searchParameters={searchParameters} setReadyForSearch={setReadyForSearch} />
-            {renderResultsWidgets(results, googleMapsApiKey, isLoading, searchParameters)}
+            {renderResultsWidgets(results, googleMapsApiKey, isLoading)}
         </div>
     )
 }
