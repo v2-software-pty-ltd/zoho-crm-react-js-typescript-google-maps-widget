@@ -27,7 +27,7 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                             propertyAddress = `${result.Deal_Name} - Geocordinates N/A, cannot display on map.`
                         }
 
-                        const distance = Number(result.distance)
+                        // const distance = Number(result.distance)
 
                         const ownerData = result.owner_details.find((owner) => owner.Contact_Type === 'Owner')
                         const contactData = result.owner_details.find((owner) => owner.Contact_Type === 'Director')
@@ -35,7 +35,7 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                         return (
                             <tr key={result.id}>
                                 <td>{index + 1}</td>
-                                <td>{distance.toFixed(2)}</td>
+                                {/* <td>{distance.toFixed(2)}</td> */}
                                 <td>{propertyAddress}</td>
                                 <td>{ownerData?.Name || ''}</td>
                                 <td>{contactData?.Name || ''}</td>

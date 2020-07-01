@@ -42,7 +42,7 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[] | undefined,
     if (isLoading) {
         const totalRecords = searchParameters.reduce((totalMaxDisplay, searchParam) => totalMaxDisplay + (searchParam.neighboursSearchMaxRecords + searchParam.propertyTypesMaxResults + searchParam.propertyGroupsMaxResults), 0)
         const estimatedTotalDurationMinutes = (totalRecords / 50) / 2
-        const estimatedDurationSeconds = (estimatedTotalDurationMinutes * 60 + 20) / 2
+        const estimatedDurationSeconds = (estimatedTotalDurationMinutes * 60 + 20)
         const duration = estimatedTotalDurationMinutes < 1 ? `${estimatedDurationSeconds.toFixed(0)} seconds` : `${estimatedTotalDurationMinutes.toFixed(1)} minutes`
 
         return (

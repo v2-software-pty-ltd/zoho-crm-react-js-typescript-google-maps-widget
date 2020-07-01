@@ -30,9 +30,7 @@ export function DownloadMailingListButton (props: DownloadButtonProps) {
             email = contact.Email
         }
 
-        if (doNotMail || returnToSender || email) {
-            console.log('didnt make else statement')
-        } else {
+        if (!doNotMail || !returnToSender || !email) {
             owner = owner ? (contact.Postal_Address ? contact : owner) : contact
             const lastMailed = owner.Last_Mailed || 'Last mailed has not been found'
             csvRow = `"${owner.Name}","${owner.Contact_Type}","${postalAddress}","${owner.Postal_Suburb}","${owner.Postal_State}","${owner.Postal_Postcode}","${propertyAddress}, ${lastMailed}\r\n`
