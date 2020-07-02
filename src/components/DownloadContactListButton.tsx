@@ -1,33 +1,39 @@
+
 import React from 'react'
-import { UnprocessedResultsFromCRM } from '../types'
+import { UnprocessedResultsFromCRM, OwnerType } from '../types'
+import getUniqueListBy from '../utils/getUniqueListBy'
 
 type DownloadButtonProps = {
     results: UnprocessedResultsFromCRM[]
 }
+
 export function DownloadContactListButton (props: DownloadButtonProps) {
     let downloadUrl = null
     let csvData = '"Property Address","Property Type (Marketing)","Owner","Owner Mobile","Owner Phone","Contact","Contact Mobile","Contact Work Phone"\r\n'
+    const arrayOfPropertyObjects = props.results
 
-    props.results.forEach((result) => {
+    const filteredPropObject = getUniqueListBy(arrayOfPropertyObjects, 'id')
+    filteredPropObject.forEach(result => {
         if (typeof result.owner_details !== 'undefined' && Array.isArray(result.owner_details)) {
+            const mobile = result.owner_details[0].Mobile
+            const workPhone = result.owner_details[0].Work_Phone
             const propertyAddress = result.Deal_Name
             const propertyTypeMarketing = result.Property_Category_Mailing
-            const ownerData = result.owner_details.find((owner) => owner.Contact_Type === 'Owner')
-            const contactData = result.owner_details.find((owner) => owner.Contact_Type === 'Director')
+            const ownerData = result.owner_details.find((owner: OwnerType) => owner.Contact_Type === 'Owner')
+            const contactData = result.owner_details.find((owner: OwnerType) => owner.Contact_Type === 'Director')
 
-            const newRow = `"${propertyAddress}","${propertyTypeMarketing}","${ownerData?.Name || ''}","${ownerData?.Mobile || ''}","${ownerData?.Work_Phone || ''}","${contactData?.Name || ''}","${contactData?.Mobile || ''}","${contactData?.Work_Phone || ''}"\r\n`
-            csvData += newRow.replace(/null/g, '-')
+            if (mobile !== null && workPhone !== null) {
+                const newRow = `"${propertyAddress}","${ownerData?.Name || ''}","${propertyTypeMarketing}","${ownerData?.Mobile || ''}","${ownerData?.Work_Phone || ''}","${contactData?.Name || ''}","${contactData?.Mobile || ''}","${contactData?.Work_Phone || ''}"\r\n`
+                csvData += newRow.replace(/null/g, '-')
+            }
         }
     })
-
     const resultsBlob = new Blob(
         [csvData],
         {
             type: 'text/csv;charset=utf-8'
         }
     )
-
     downloadUrl = URL.createObjectURL(resultsBlob)
-
     return (<a href={downloadUrl} className="button" download="contactlist.csv" >Download Contact List</a>)
 }

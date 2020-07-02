@@ -103,6 +103,7 @@ module.exports = {
         "no-fallthrough": "error",
         "no-invalid-regexp": "error",
         "no-multiple-empty-lines": "error",
+        "import/no-named-as-default": 0,
         "no-redeclare": "error",
         "no-regex-spaces": "error",
         "no-return-await": "error",
