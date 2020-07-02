@@ -1,5 +1,6 @@
 import React from 'react'
 import { UnprocessedResultsFromCRM, OwnerType } from '../types'
+import getUniqueListBy from '../utils/getUniqueListBy'
 
 type DownloadButtonProps = {
     results: UnprocessedResultsFromCRM[]
@@ -7,7 +8,7 @@ type DownloadButtonProps = {
 export function DownloadMailingListButton (props: DownloadButtonProps) {
     let downloadUrl = null
     const matchingPropertiesAndOwners = props.results
-
+    const dedupedProperties = getUniqueListBy(matchingPropertiesAndOwners, 'id')
     function generateCSVRow (propertyObject: UnprocessedResultsFromCRM) {
         let csvRow = ''
         let doNotMail
@@ -20,8 +21,6 @@ export function DownloadMailingListButton (props: DownloadButtonProps) {
         let owner: OwnerType = ownerDetails[1]
 
         if (typeof contact === 'undefined' || null) {
-            console.log('owner', owner)
-
             doNotMail = owner.Do_Not_Mail
             returnToSender = owner.Return_to_Sender
             postalAddress = owner.Postal_Address
@@ -42,7 +41,7 @@ export function DownloadMailingListButton (props: DownloadButtonProps) {
         return csvRow
     }
     const HEADER_ROW = '"Contact Name","Contact Type","Mailing Street Address","Mailing Suburb","Mailing State","Mailing Postcode","Property Address","Property Type (Marketing)","Company"\r\n'
-    const csvRows = matchingPropertiesAndOwners.map(generateCSVRow).join('')
+    const csvRows = dedupedProperties.map(generateCSVRow).join('')
     const csvData = `${HEADER_ROW}${csvRows}`
     const resultsBlob = new Blob(
         [csvData],

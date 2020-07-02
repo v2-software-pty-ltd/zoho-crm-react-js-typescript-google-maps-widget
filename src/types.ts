@@ -55,6 +55,7 @@ export type OwnerType = {
 }
 
 export type UnprocessedResultsFromCRM = {
+    [index: string]: string | number | OwnerType[] | string[]
     Latitude: string
     Longitude: string
     Deal_Name: string

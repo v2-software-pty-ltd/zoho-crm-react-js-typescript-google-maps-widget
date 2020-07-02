@@ -1,6 +1,8 @@
 
 import React from 'react'
 import { UnprocessedResultsFromCRM, OwnerType } from '../types'
+import getUniqueListBy from '../utils/getUniqueListBy'
+
 type DownloadButtonProps = {
     results: UnprocessedResultsFromCRM[]
 }
@@ -9,14 +11,12 @@ export function DownloadContactListButton (props: DownloadButtonProps) {
     let downloadUrl = null
     let csvData = '"Property Address","Property Type (Marketing)","Owner","Owner Mobile","Owner Phone","Contact","Contact Mobile","Contact Work Phone"\r\n'
     const arrayOfPropertyObjects = props.results
-    function getUniqueListBy (arr: UnprocessedResultsFromCRM[], key: string) {
-        return [...new Map(arr.map((eachPropertyObject: any) => [eachPropertyObject[key], eachPropertyObject])).values()]
-    }
+
     const filteredPropObject = getUniqueListBy(arrayOfPropertyObjects, 'id')
     filteredPropObject.forEach(result => {
         if (typeof result.owner_details !== 'undefined' && Array.isArray(result.owner_details)) {
-            const mobile = result.owner_details.Mobile
-            const workPhone = result.owner_details.Work_Phone
+            const mobile = result.owner_details[0].Mobile
+            const workPhone = result.owner_details[0].Work_Phone
             const propertyAddress = result.Deal_Name
             const propertyTypeMarketing = result.Property_Category_Mailing
             const ownerData = result.owner_details.find((owner: OwnerType) => owner.Contact_Type === 'Owner')
