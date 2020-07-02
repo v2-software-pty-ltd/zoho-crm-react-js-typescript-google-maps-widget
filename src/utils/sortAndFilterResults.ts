@@ -7,28 +7,18 @@ type MatchTallies = {
   propertyGroup: number
 }
 
-function matchForPropertyTypes (property: UnprocessedResultsFromCRM, desiredPropertyTypes: string[]): {propertyTypeUpdateTally: number, propertyTypeMatch: boolean} {
-    let propertyTypeUpdateTally = 0
-    let propertyTypeMatch = false
-    desiredPropertyTypes.forEach((propertyType: string) => {
-        if (propertyTypeMatch || desiredPropertyTypes.includes('All') || property.Property_Category_Mailing.includes(propertyType)) {
-            propertyTypeUpdateTally = 1
-            propertyTypeMatch = true
-        }
+function matchForPropertyTypes (property: UnprocessedResultsFromCRM, desiredPropertyTypes: string[], maxPropertyTypes: boolean): boolean {
+    const propertyTypeMatch = false
+    return desiredPropertyTypes.some((propertyType: string) => {
+        return maxPropertyTypes && (propertyTypeMatch || desiredPropertyTypes.includes('All') || property.Property_Category_Mailing.includes(propertyType))
     })
-    return { propertyTypeUpdateTally, propertyTypeMatch }
 }
 
-function matchForPropertyGroups (property: UnprocessedResultsFromCRM, desiredPropertyGroups: string[]): { propertyGroupUpdateTally: number, propertyGroupMatch: boolean } {
-    let propertyGroupUpdateTally = 0
-    let propertyGroupMatch = false
-    desiredPropertyGroups.forEach((propertyGroup: string) => {
-        if (propertyGroupMatch || desiredPropertyGroups.includes('All') || property.Property_Type_Portals.includes(propertyGroup)) {
-            propertyGroupUpdateTally = 1
-            propertyGroupMatch = true
-        }
+function matchForPropertyGroups (property: UnprocessedResultsFromCRM, desiredPropertyGroups: string[], maxGroupTypes: boolean): boolean {
+    const propertyGroupMatch = false
+    return desiredPropertyGroups.some((propertyGroup: string) => {
+        return maxGroupTypes && (propertyGroupMatch || desiredPropertyGroups.includes('All') || property.Property_Type_Portals.includes(propertyGroup))
     })
-    return { propertyGroupUpdateTally, propertyGroupMatch }
 }
 
 function getOwnerData (property: UnprocessedResultsFromCRM) {
@@ -53,7 +43,7 @@ export default function sortAndFilterResults (rawUnsortedPropertyResults: string
     const unsortedPropertyResults = JSON.parse(rawUnsortedPropertyResults)
     const objectOfPropertiesByDistance = unsortedPropertyResults[0]
 
-    const maxNumNeigbours = searchParameters[0].neighboursSearchMaxRecords
+    const maxNumNeighbours = searchParameters[0].neighboursSearchMaxRecords
     const maxResultsForPropertyTypes = searchParameters[0].propertyTypesMaxResults
     const maxResultsForPropertyGroups = searchParameters[0].propertyGroupsMaxResults
     const desiredPropertyTypes = searchParameters[0].propertyTypes
@@ -61,9 +51,9 @@ export default function sortAndFilterResults (rawUnsortedPropertyResults: string
     const managed = searchParameters[0].managed[0]
 
     const propertyDistances: string[] = Object.keys(objectOfPropertiesByDistance)
-    // N.B. using "any" here to make it easier to sort distances into ascending order
-    const sortedPropertyDistances = propertyDistances.sort((propertyDistance1: any, propertyDistance2: any) => {
-        return propertyDistance1.split('dist')[1] - propertyDistance2.split('dist')[1]
+
+    const sortedPropertyDistances = propertyDistances.sort((propertyDistance1: string, propertyDistance2: string) => {
+        return Number(propertyDistance1.split('dist')[1]) - Number(propertyDistance2.split('dist')[1])
     })
     const matchTallies: MatchTallies = {
         neighbour: 0,
@@ -73,26 +63,30 @@ export default function sortAndFilterResults (rawUnsortedPropertyResults: string
     const matchedProperties: UnprocessedResultsFromCRM[] = []
     const uniqueSearchRecords: string[] = []
     sortedPropertyDistances.every((propertyDistance: string) => {
-        const canAddAnotherProperty =
-      matchTallies.neighbour < maxNumNeigbours ||
-      matchTallies.propertyType < maxResultsForPropertyTypes ||
-      matchTallies.propertyGroup < maxResultsForPropertyGroups
+        const maxNeighours = matchTallies.neighbour < maxNumNeighbours
+        const maxPropertyTypes = matchTallies.propertyType < maxResultsForPropertyTypes
+        const maxGroupTypes = matchTallies.propertyGroup < maxResultsForPropertyGroups
+        const canAddAnotherProperty = maxNeighours || maxPropertyTypes || maxGroupTypes
+        console.log('matchTallies', matchTallies)
 
         const property = objectOfPropertiesByDistance[propertyDistance]
 
         if (canAddAnotherProperty) {
-            const { propertyTypeUpdateTally, propertyTypeMatch } = matchForPropertyTypes(property, desiredPropertyTypes)
-            if (propertyTypeMatch) matchTallies.propertyType += propertyTypeUpdateTally
+            const propertyTypeMatch = matchForPropertyTypes(property, desiredPropertyTypes, maxPropertyTypes)
+            const propertyGroupMatch = matchForPropertyGroups(property, desiredPropertyGroups, maxGroupTypes)
 
-            const { propertyGroupUpdateTally, propertyGroupMatch } = matchForPropertyGroups(property, desiredPropertyGroups)
-            if (propertyGroupMatch) matchTallies.propertyGroup += propertyGroupUpdateTally
+            if (propertyTypeMatch) {
+                matchTallies.propertyType += 1
+            } else if (!propertyTypeMatch) {
+                matchTallies.propertyGroup += 1
+            }
 
             const ownerData = getOwnerData(property)
-            const isManaged = (property.Managed === managed) || managed === 'None'
-            const canAddAsNeighbour = matchTallies.neighbour < maxNumNeigbours
+            const canAddAsNeighbour = matchTallies.neighbour < maxNumNeighbours
             const canAddBasedOnFilters = propertyGroupMatch || propertyTypeMatch
-            const logicToAddProperty = isManaged || (!canAddBasedOnFilters && canAddAsNeighbour)
-            if (logicToAddProperty) {
+            const isManaged = (property.Managed === managed) || managed === 'None'
+            const shouldAddProperty = isManaged || (!canAddBasedOnFilters && canAddAsNeighbour)
+            if (shouldAddProperty) {
                 matchTallies.neighbour += 1
                 if (ownerData.length > 0) {
                     property.owner_details = ownerData
