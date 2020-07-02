@@ -1,6 +1,5 @@
 import React from 'react'
 import { UnprocessedResultsFromCRM, OwnerType } from '../types'
-import { logDOM } from '@testing-library/react'
 
 type DownloadButtonProps = {
     results: UnprocessedResultsFromCRM[]
@@ -8,6 +7,7 @@ type DownloadButtonProps = {
 export function DownloadMailingListButton (props: DownloadButtonProps) {
     let downloadUrl = null
     const matchingPropertiesAndOwners = props.results
+
     function generateCSVRow (propertyObject: UnprocessedResultsFromCRM) {
         let csvRow = ''
         let doNotMail

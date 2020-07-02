@@ -49,10 +49,9 @@ function getOwnerData (property: UnprocessedResultsFromCRM) {
     return ownerData
 }
 
-export default function sortAndFilterResults (rawUnsortedPropertyResults: string, searchParameters: SearchParametersType[]): UnprocessedResultsFromCRM[] {
+export default function sortAndFilterResults (rawUnsortedPropertyResults: string, searchParameters: SearchParametersType[]): { matchedProperties: UnprocessedResultsFromCRM[], uniqueSearchRecords: string[] } {
     const unsortedPropertyResults = JSON.parse(rawUnsortedPropertyResults)
     const objectOfPropertiesByDistance = unsortedPropertyResults[0]
-    console.log('searchParameters', searchParameters)
 
     const maxNumNeigbours = searchParameters[0].neighboursSearchMaxRecords
     const maxResultsForPropertyTypes = searchParameters[0].propertyTypesMaxResults
@@ -72,6 +71,7 @@ export default function sortAndFilterResults (rawUnsortedPropertyResults: string
         propertyGroup: 0
     }
     const matchedProperties: UnprocessedResultsFromCRM[] = []
+    const uniqueSearchRecords: string[] = []
     sortedPropertyDistances.every((propertyDistance: string) => {
         const canAddAnotherProperty =
       matchTallies.neighbour < maxNumNeigbours ||
@@ -90,17 +90,22 @@ export default function sortAndFilterResults (rawUnsortedPropertyResults: string
             const ownerData = getOwnerData(property)
             const isManaged = (property.Managed === managed) || managed === 'None'
             const canAddAsNeighbour = matchTallies.neighbour < maxNumNeigbours
-            const logicToAddProperty = isManaged || propertyGroupMatch || propertyTypeMatch || canAddAsNeighbour
+            const canAddBasedOnFilters = propertyGroupMatch || propertyTypeMatch
+            const logicToAddProperty = isManaged || (!canAddBasedOnFilters && canAddAsNeighbour)
             if (logicToAddProperty) {
+                matchTallies.neighbour += 1
                 if (ownerData.length > 0) {
                     property.owner_details = ownerData
                     property.distance = propertyDistance.split('dist')[1]
                     matchedProperties.push(property)
+
+                    const isDupeId = uniqueSearchRecords.includes(property.id)
+                    if (!isDupeId) uniqueSearchRecords.push(property.id)
                 }
             }
         }
         return canAddAnotherProperty
     })
 
-    return matchedProperties
+    return { matchedProperties, uniqueSearchRecords }
 }

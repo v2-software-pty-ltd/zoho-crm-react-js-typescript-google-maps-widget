@@ -8,7 +8,7 @@ type ResultsTableProps = {
 
 export function ResultsTableWidget (props: ResultsTableProps) {
     // ignore the first row because it has the info for the search address
-    const resultsAfterSearchAddress = props.results.slice(1)
+    const resultsAfterSearchAddress = props.results
     return (
         <div style={{ padding: '20px' }}>
             <table>
@@ -27,15 +27,12 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                             propertyAddress = `${result.Deal_Name} - Geocordinates N/A, cannot display on map.`
                         }
 
-                        // const distance = Number(result.distance)
-
                         const ownerData = result.owner_details.find((owner) => owner.Contact_Type === 'Owner')
                         const contactData = result.owner_details.find((owner) => owner.Contact_Type === 'Director')
 
                         return (
                             <tr key={result.id}>
                                 <td>{index + 1}</td>
-                                {/* <td>{distance.toFixed(2)}</td> */}
                                 <td>{propertyAddress}</td>
                                 <td>{ownerData?.Name || ''}</td>
                                 <td>{contactData?.Name || ''}</td>

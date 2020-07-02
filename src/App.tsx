@@ -38,9 +38,9 @@ function prepareDataForMap (results?: UnprocessedResultsFromCRM[]): ResultsType 
     }
 }
 
-function renderResultsWidgets (results: UnprocessedResultsFromCRM[] | undefined, googleMapsApiKey: string | undefined, isLoading: boolean) {
+function renderResultsWidgets (results: UnprocessedResultsFromCRM[] | undefined, googleMapsApiKey: string | undefined, isLoading: boolean, uniqueSearchRecords: number) {
     if (isLoading) {
-        // The default search takes 21 seconds, as does a search with 1 neighbours search, 2 property types, and 1 property groups.
+        // N.B. The default search takes 21 seconds, as does a search with 1 neighbours search, 2 property types, and 1 property groups.
         return (
             <div style={{ padding: '20px' }}>
                 Loading ... estimated waiting time 20 seconds.
@@ -61,6 +61,7 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[] | undefined,
                     <MapWidget addressesToRender={dataForMap.addressesToRender} centrePoint={dataForMap.centrePoint} mapsApiKey={googleMapsApiKey} />
                 </div>
                 <div className="pagebreak">
+                    <p>Unique Search Results: {uniqueSearchRecords}</p>
                     <ResultsTableWidget results={results} />
                 </div>
             </div>
@@ -74,13 +75,15 @@ function App () {
     const [results, updateResults] = useState<UnprocessedResultsFromCRM[]>([])
     const [googleMapsApiKey, updateGoogleMapsApiKey] = useState()
     const [isLoading, setLoading] = useState(false)
+    const [uniqueSearchRecords, setUniqueSearchRecords] = useState<number>(0)
 
     useEffect(() => {
         if (isReadyForSearch) {
             const getDataFromCrm = async () => {
                 setLoading(true)
-                const matchingResults = await findMatchingProperties(searchParameters)
-                updateResults(matchingResults)
+                const { matchedProperties, uniqueSearchRecords } = await findMatchingProperties(searchParameters)
+                setUniqueSearchRecords(uniqueSearchRecords.length)
+                updateResults(matchedProperties)
                 setLoading(false)
                 setReadyForSearch(false)
             }
@@ -101,7 +104,7 @@ function App () {
     return (
         <div className="App">
             <SearchWidgetWrapper changeSearchParameters={changeSearchParameters} searchParameters={searchParameters} setReadyForSearch={setReadyForSearch} />
-            {renderResultsWidgets(results, googleMapsApiKey, isLoading)}
+            {renderResultsWidgets(results, googleMapsApiKey, isLoading, uniqueSearchRecords)}
         </div>
     )
 }
