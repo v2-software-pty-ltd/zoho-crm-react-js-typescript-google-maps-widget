@@ -21,7 +21,7 @@ export function DownloadContactListButton (props: DownloadButtonProps) {
             const propertyTypeMarketing = result.Property_Category_Mailing
             const ownerData = result.owner_details.find((owner: OwnerType) => owner.Contact_Type === 'Owner')
             const contactData = result.owner_details.find((owner: OwnerType) => owner.Contact_Type === 'Director')
-            if (mobile && workPhone) {
+            if (mobile || workPhone) {
                 const newRow = `"${propertyAddress}","${ownerData?.Name || ''}","${propertyTypeMarketing}","${ownerData?.Mobile || ''}","${ownerData?.Work_Phone || ''}","${contactData?.Name || ''}","${contactData?.Mobile || ''}","${contactData?.Work_Phone || ''}"\r\n`
                 csvData += newRow.replace(/null/g, '-')
             }
