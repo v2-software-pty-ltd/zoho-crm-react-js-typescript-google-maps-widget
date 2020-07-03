@@ -29,13 +29,12 @@ export function ResultsTableWidget (props: ResultsTableProps) {
 
                         const ownerData = result.owner_details.find((owner) => owner.Contact_Type === 'Owner')
                         const contactData = result.owner_details.find((owner) => owner.Contact_Type === 'Director')
-
                         return (
                             <tr key={result.id}>
                                 <td>{index + 1}</td>
                                 <td>{propertyAddress}</td>
                                 <td>{ownerData?.Name || ''}</td>
-                                <td>{contactData?.Name || ''}</td>
+                                <td>{contactData?.Name || 'contact is not found'}</td>
                             </tr>
                         )
                     })}
