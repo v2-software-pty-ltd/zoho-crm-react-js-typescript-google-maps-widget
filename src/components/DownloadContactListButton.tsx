@@ -24,7 +24,6 @@ export function DownloadContactListButton (props: DownloadButtonProps) {
             if (mobile && workPhone) {
                 const newRow = `"${propertyAddress}","${ownerData?.Name || ''}","${propertyTypeMarketing}","${ownerData?.Mobile || ''}","${ownerData?.Work_Phone || ''}","${contactData?.Name || ''}","${contactData?.Mobile || ''}","${contactData?.Work_Phone || ''}"\r\n`
                 csvData += newRow.replace(/null/g, '-')
-                console.log(newRow, 'newrow')
             }
         }
     })
