@@ -15,8 +15,12 @@ export function DownloadContactListButton (props: DownloadButtonProps) {
     const filteredPropObject = getUniqueListBy(arrayOfPropertyObjects, 'id')
     filteredPropObject.forEach(result => {
         if (typeof result.owner_details !== 'undefined' && Array.isArray(result.owner_details)) {
-            const mobile = result.owner_details[0].Mobile || result.owner_details[1]?.Mobile
-            const workPhone = result.owner_details[0].Work_Phone || result.owner_details[1]?.Mobile
+            let mobile
+            let workPhone
+            result.owner_details.map((owner) => {
+                mobile = owner.Mobile
+                workPhone = owner.Work_Phone
+            })
             const propertyAddress = result.Deal_Name
             const propertyTypeMarketing = result.Property_Category_Mailing
             const ownerData = result.owner_details.find((owner: OwnerType) => owner.Contact_Type === 'Owner')
