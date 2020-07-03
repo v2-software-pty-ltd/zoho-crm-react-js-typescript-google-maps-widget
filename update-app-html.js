@@ -34,6 +34,9 @@ processedAppHTML = processedAppHTML.replace(
 `
 )
 
+// remove empty lines
+processedAppHTML = processedAppHTML.replace(/^[\s]+$/gm, '').replace(/[\n]+/g, '\n');
+
 fs.writeFileSync(appFilePath, processedAppHTML)
 const filename = `index-v${(Math.random() * 100).toFixed(0)}.html`
 const newAppHTMLPath = `./app/${filename}`
