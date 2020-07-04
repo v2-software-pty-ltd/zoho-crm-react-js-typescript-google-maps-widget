@@ -1,4 +1,5 @@
 import React, { ChangeEvent } from 'react'
+import Select from 'react-select'
 
 type DropdownProps = {
     managed: string[]
@@ -7,20 +8,20 @@ type DropdownProps = {
 
 export function ManagedDrop (props: DropdownProps) {
     const yesNo = [
-        'None',
-        'Yes',
-        'No'
+        { value: 'None', label: 'None' },
+        { value: 'Yes', label: 'Yes' },
+        { value: 'No', label: 'No' }
     ]
 
     return (
-        <label className="seven dropdown"> Managed <span className='downArrow smaller-font'> ⬇ Defaults to None </span>
-            <select multiple value={props.managed} className="dropdown-content" onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                props.changedManaged([...e.target.selectedOptions].map((option) => option.value))
-            }} tabIndex={3} >
-                {yesNo.map((isManaged) => {
-                    return <option key={isManaged} value={isManaged}>{isManaged}</option>
-                })}
-            </select>
+        <label className="seven"> Managed
+            <Select
+                defaultValue={yesNo[0]}
+                getValue={props.managed}
+                setValue={(e: ChangeEvent<HTMLSelectElement>) => { props.changedManaged([...e.target.selectedOptions].map((option) => option.value)) }}
+                tabIndex={3}
+                options={yesNo}
+            />
         </label>
     )
 }
