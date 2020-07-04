@@ -22,13 +22,13 @@ function matchForPropertyGroups (property: UnprocessedResultsFromCRM, desiredPro
 function getOwnerData (property: UnprocessedResultsFromCRM) {
     const ownerData: OwnerType[] = []
 
-    const parsedPropertyContacts = typeof property.Property_Contact === 'undefined' ? [] : JSON.parse(property.Property_Contact)
+    const parsedPropertyContacts = !property.Property_Contacts ? [] : JSON.parse(property.Property_Contacts)
     parsedPropertyContacts.forEach((contact: OwnerType) => {
         contact.Contact_Type = 'Director'
         ownerData.push(contact)
     })
 
-    const parsedPropertyOwners = typeof property.Property_Owners === 'undefined' || typeof property.Property_Owners === 'object' ? [] : JSON.parse(property.Property_Owners)
+    const parsedPropertyOwners = !property.Property_Owners ? [] : JSON.parse(property.Property_Owners)
 
     parsedPropertyOwners.forEach((owner: OwnerType) => {
         owner.Contact_Type = 'Owner'
@@ -37,10 +37,7 @@ function getOwnerData (property: UnprocessedResultsFromCRM) {
     return ownerData
 }
 
-export default function sortAndFilterResults (rawUnsortedPropertyResults: string, searchParameters: SearchParametersType[]): { matchedProperties: UnprocessedResultsFromCRM[], uniqueSearchRecords: string[] } {
-    const unsortedPropertyResults = JSON.parse(rawUnsortedPropertyResults)
-    const objectOfPropertiesByDistance = unsortedPropertyResults[0]
-
+export default function filterResults (unsortedPropertyResults: UnprocessedResultsFromCRM[], searchParameters: SearchParametersType[]): { matchedProperties: UnprocessedResultsFromCRM[], uniqueSearchRecords: string[] } {
     const maxNumNeighbours = searchParameters[0].neighboursSearchMaxRecords
     const maxResultsForPropertyTypes = searchParameters[0].propertyTypesMaxResults
     const maxResultsForPropertyGroups = searchParameters[0].propertyGroupsMaxResults
@@ -48,11 +45,6 @@ export default function sortAndFilterResults (rawUnsortedPropertyResults: string
     const desiredPropertyGroups = searchParameters[0].propertyGroups
     const managed = searchParameters[0].managed[0]
 
-    const propertyDistances: string[] = Object.keys(objectOfPropertiesByDistance)
-
-    const sortedPropertyDistances = propertyDistances.sort((propertyDistance1: string, propertyDistance2: string) => {
-        return Number(propertyDistance1.split('dist')[1]) - Number(propertyDistance2.split('dist')[1])
-    })
     const matchTallies: MatchTallies = {
         neighbour: 0,
         propertyType: 0,
@@ -60,13 +52,12 @@ export default function sortAndFilterResults (rawUnsortedPropertyResults: string
     }
     const matchedProperties: UnprocessedResultsFromCRM[] = []
     const uniqueSearchRecords: string[] = []
-    sortedPropertyDistances.every((propertyDistance: string) => {
+
+    unsortedPropertyResults.forEach((property: UnprocessedResultsFromCRM) => {
         const maxNeighours = matchTallies.neighbour < maxNumNeighbours
         const maxPropertyTypes = matchTallies.propertyType < maxResultsForPropertyTypes
         const maxGroupTypes = matchTallies.propertyGroup < maxResultsForPropertyGroups
         const canAddAnotherProperty = maxNeighours || maxPropertyTypes || maxGroupTypes
-
-        const property = objectOfPropertiesByDistance[propertyDistance]
 
         if (canAddAnotherProperty) {
             const propertyTypeMatch = matchForPropertyTypes(property, desiredPropertyTypes, maxPropertyTypes)
@@ -87,7 +78,6 @@ export default function sortAndFilterResults (rawUnsortedPropertyResults: string
                 if (!canAddBasedOnFilters && canAddAsNeighbour) matchTallies.neighbour += 1
                 if (ownerData.length > 0) {
                     property.owner_details = ownerData
-                    property.distance = propertyDistance.split('dist')[1]
                     matchedProperties.push(property)
 
                     const isDupeId = uniqueSearchRecords.includes(property.id)
