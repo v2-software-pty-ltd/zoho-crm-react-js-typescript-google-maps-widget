@@ -1,4 +1,4 @@
-export const results: any = module.exports = [
+export const results: any = [
     {
         Owner: {
             name: 'Nicola Hill',
@@ -179,7 +179,7 @@ export const results: any = module.exports = [
             id: '3430088000000176021',
             email: 'nicola.hill@johnhill.com.au'
         },
-        Build_Area_sqm: null,
+        Build_Area_sqm: 1800,
         $currency_symbol: 'AU$',
         Suburb: 'CONCORD',
         Latitude: '-33.8667370',
@@ -1120,7 +1120,7 @@ export const results: any = module.exports = [
         $orchestration: false,
         Sales_Cycle_Duration: null,
         Property_Owners: '[{"Owner":{"name":"Nicola Hill","id":"3430088000000176021","email":"nicola.hill@johnhill.com.au"},"Company":"Cadopat Pty Ltd","Email":null,"Last_Mailed":null,"Postal_Suburb":null,"$currency_symbol":"AU$","Suburb":null,"Postal_Street_No":null,"Unit":null,"Name":"Cadopat Pty Ltd","Last_Activity_Time":null,"Recent_Note":null,"$state":"save","$process_flow":false,"Work_Phone":null,"Currency":"AUD","Street":null,"Postal_State":null,"id":"3430088000003037170","$approved":true,"Postal_Postcode":null,"Postal_Address":null,"Street_No":null,"$approval":{"delegate":false,"approve":false,"reject":false,"resubmit":false},"Created_Time":"2020-04-27T13:03:17+10:00","Address_To":null,"Source_ID":"O0095","From_Ownership":null,"$editable":true,"Return_to_Sender":false,"Postcode":null,"Home_Phone":null,"Add_Note":null,"State":null,"Country":null,"Postal_Country":null,"$review_process":null,"Website":null,"Do_Not_Mail":false,"Last_Mailed_Date":null,"First_Name":null,"Record_Image":null,"$review":null,"Address_Longitude":null,"Postal_Level_Suite":null,"Email_Opt_Out":false,"Residential_Address":null,"Copy_to_Postal":false,"Address_Latitude":null,"Modified_Time":"2020-04-27T13:03:17+10:00","Salutation_Dear":null,"Postal_Street":null,"Title":null,"Return_to_Sender_Date":null,"Lessee":null,"Mobile":null,"$orchestration":null,"System_Contact":null,"Last_Name":null,"Reverse_Geocoded_Address":null,"ABN_ACN":null,"Postal_Unit":null,"Tag":[],"Level_Suite":null,"Fax":null}]',
-        Sale_Date: null,
+        Sale_Date: '2000-06-07',
         Total_Outgoings: null,
         Reverse_Geocoded_Address: '69 Parramatta Rd, Homebush NSW 2140, Australia',
         $in_merge: false,
@@ -3390,7 +3390,7 @@ export const results: any = module.exports = [
             id: '3430088000000176021',
             email: 'nicola.hill@johnhill.com.au'
         },
-        Build_Area_sqm: '1600',
+        Build_Area_sqm: 1600,
         $currency_symbol: 'AU$',
         Suburb: 'AUBURN',
         Latitude: '-33.8429176',
@@ -3410,7 +3410,7 @@ export const results: any = module.exports = [
         Stage: 'Prospecting',
         Strata_Plan: null,
         Street: 'Parramatta 0',
-        Sale_Price: null,
+        Sale_Price: 1250000,
         id: '3430088000003041149',
         $approved: true,
         Street_No: '135',
@@ -3456,12 +3456,12 @@ export const results: any = module.exports = [
         Sale_Type: [
             'VP'
         ],
-        Land_Area_sqm: '800',
+        Land_Area_sqm: 800,
         Car_Spaces: null,
         $orchestration: false,
         Sales_Cycle_Duration: null,
         Property_Owners: '[{"Owner":{"name":"Nicola Hill","id":"3430088000000176021","email":"nicola.hill@johnhill.com.au"},"Company":"Austotel Management Pty Ltd","Email":null,"Last_Mailed":null,"Postal_Suburb":"MANLY","$currency_symbol":"AU$","Suburb":null,"Postal_Street_No":null,"Unit":null,"Name":"Austotel Management Pty Ltd","Last_Activity_Time":null,"Recent_Note":null,"$state":"save","$process_flow":false,"Work_Phone":null,"Currency":"AUD","Street":null,"Postal_State":"NSW","id":"3430088000003037100","$approved":true,"Postal_Postcode":"2095","Postal_Address":"GPO Box 951, MANLY","Street_No":null,"$approval":{"delegate":false,"approve":false,"reject":false,"resubmit":false},"Created_Time":"2020-04-27T13:03:17+10:00","Address_To":null,"Source_ID":"O0025","From_Ownership":null,"$editable":true,"Return_to_Sender":false,"Postcode":null,"Home_Phone":null,"Add_Note":null,"State":null,"Country":null,"Postal_Country":null,"$review_process":null,"Website":null,"Do_Not_Mail":false,"Last_Mailed_Date":null,"First_Name":null,"Record_Image":null,"$review":null,"Address_Longitude":null,"Postal_Level_Suite":null,"Email_Opt_Out":false,"Residential_Address":null,"Copy_to_Postal":false,"Address_Latitude":null,"Modified_Time":"2020-04-27T13:03:17+10:00","Salutation_Dear":null,"Postal_Street":"GPO Box 951","Title":null,"Return_to_Sender_Date":null,"Lessee":null,"Mobile":null,"$orchestration":null,"System_Contact":null,"Last_Name":null,"Reverse_Geocoded_Address":null,"ABN_ACN":null,"Postal_Unit":null,"Tag":[],"Level_Suite":null,"Fax":null}]',
-        Sale_Date: null,
+        Sale_Date: '2009-06-07',
         Total_Outgoings: null,
         Reverse_Geocoded_Address: '135 Parramatta Rd, Auburn NSW 2144, Australia',
         $in_merge: false,
@@ -5482,7 +5482,7 @@ export const results: any = module.exports = [
         Stage: 'Prospecting',
         Strata_Plan: null,
         Street: 'Parramatta Road',
-        Sale_Price: null,
+        Sale_Price: 425000,
         id: '3430088000003042132',
         $approved: true,
         Street_No: '305',
@@ -5526,7 +5526,7 @@ export const results: any = module.exports = [
         Modified_Time: '2020-05-23T17:39:23+10:00',
         Prop_Zoning: null,
         Sale_Type: [
-
+            'INV'
         ],
         Land_Area_sqm: null,
         Car_Spaces: null,
@@ -5636,7 +5636,7 @@ export const results: any = module.exports = [
             id: '3430088000000176021',
             email: 'nicola.hill@johnhill.com.au'
         },
-        Build_Area_sqm: '2500',
+        Build_Area_sqm: 2500,
         $currency_symbol: 'AU$',
         Suburb: 'CLYDE',
         Latitude: '-33.8331402',
@@ -5702,12 +5702,12 @@ export const results: any = module.exports = [
         Sale_Type: [
             'DEV'
         ],
-        Land_Area_sqm: '500',
+        Land_Area_sqm: 500,
         Car_Spaces: null,
         $orchestration: false,
         Sales_Cycle_Duration: null,
         Property_Owners: '[{"Owner":{"name":"Nicola Hill","id":"3430088000000176021","email":"nicola.hill@johnhill.com.au"},"Company":"Brandon Bernard Lynch","Email":null,"Last_Mailed":null,"Postal_Suburb":"LUGARNO","$currency_symbol":"AU$","Suburb":null,"Postal_Street_No":"42","Unit":null,"Name":"Brandon Bernard Lynch","Last_Activity_Time":null,"Recent_Note":null,"$state":"save","$process_flow":false,"Work_Phone":null,"Currency":"AUD","Street":null,"Postal_State":"NSW","id":"3430088000003037147","$approved":true,"Postal_Postcode":"2210","Postal_Address":"42 Moons Avenue, LUGARNO","Street_No":null,"$approval":{"delegate":false,"approve":false,"reject":false,"resubmit":false},"Created_Time":"2020-04-27T13:03:17+10:00","Address_To":null,"Source_ID":"O0072","From_Ownership":null,"$editable":true,"Return_to_Sender":false,"Postcode":null,"Home_Phone":null,"Add_Note":null,"State":null,"Country":null,"Postal_Country":null,"$review_process":null,"Website":null,"Do_Not_Mail":false,"Last_Mailed_Date":null,"First_Name":null,"Record_Image":null,"$review":null,"Address_Longitude":null,"Postal_Level_Suite":null,"Email_Opt_Out":false,"Residential_Address":null,"Copy_to_Postal":false,"Address_Latitude":null,"Modified_Time":"2020-04-27T13:03:17+10:00","Salutation_Dear":null,"Postal_Street":"Moons Avenue","Title":null,"Return_to_Sender_Date":null,"Lessee":null,"Mobile":null,"$orchestration":null,"System_Contact":null,"Last_Name":null,"Reverse_Geocoded_Address":null,"ABN_ACN":null,"Postal_Unit":null,"Tag":[],"Level_Suite":null,"Fax":null}]',
-        Sale_Date: null,
+        Sale_Date: '2010-02-05',
         Total_Outgoings: null,
         Reverse_Geocoded_Address: '66 Parramatta Rd, Clyde NSW 2142, Australia',
         $in_merge: false,
@@ -6237,7 +6237,7 @@ export const results: any = module.exports = [
             id: '3430088000000176021',
             email: 'nicola.hill@johnhill.com.au'
         },
-        Build_Area_sqm: '2000',
+        Build_Area_sqm: 2000,
         $currency_symbol: 'AU$',
         Suburb: 'GRANVILLE',
         Latitude: '-33.8297152',
@@ -6303,7 +6303,7 @@ export const results: any = module.exports = [
         Sale_Type: [
             'DEV'
         ],
-        Land_Area_sqm: '1500',
+        Land_Area_sqm: 1500,
         Car_Spaces: null,
         $orchestration: false,
         Sales_Cycle_Duration: null,
@@ -6556,7 +6556,7 @@ export const results: any = module.exports = [
         Sale_Type: [
 
         ],
-        Land_Area_sqm: '1769',
+        Land_Area_sqm: 1769,
         Car_Spaces: null,
         $orchestration: false,
         Sales_Cycle_Duration: null,
@@ -6730,7 +6730,7 @@ export const results: any = module.exports = [
         Sale_Type: [
 
         ],
-        Land_Area_sqm: '100',
+        Land_Area_sqm: 100,
         Car_Spaces: null,
         $orchestration: false,
         Sales_Cycle_Duration: null,
@@ -6904,7 +6904,7 @@ export const results: any = module.exports = [
         Sale_Type: [
 
         ],
-        Land_Area_sqm: '2200',
+        Land_Area_sqm: 2200,
         Car_Spaces: null,
         $orchestration: false,
         Sales_Cycle_Duration: null,
@@ -7981,7 +7981,7 @@ export const results: any = module.exports = [
         Stage: 'Prospecting',
         Strata_Plan: null,
         Street: 'Parramatta Road',
-        Sale_Price: null,
+        Sale_Price: 2000000,
         id: '3430088000003041161',
         $approved: true,
         Street_No: '143',
@@ -8025,14 +8025,14 @@ export const results: any = module.exports = [
         Modified_Time: '2020-05-23T17:40:48+10:00',
         Prop_Zoning: null,
         Sale_Type: [
-
+            'DEV'
         ],
         Land_Area_sqm: null,
         Car_Spaces: null,
         $orchestration: false,
         Sales_Cycle_Duration: null,
         Property_Owners: '[{"Owner":{"name":"Nicola Hill","id":"3430088000000176021","email":"nicola.hill@johnhill.com.au"},"Company":"Camperdown Square Developments Pty Ltd","Email":null,"Last_Mailed":null,"Postal_Suburb":"SYDNEY","$currency_symbol":"AU$","Suburb":null,"Postal_Street_No":"15","Unit":null,"Name":"Camperdown Square Developments Pty Ltd","Last_Activity_Time":null,"Recent_Note":null,"$state":"save","$process_flow":false,"Work_Phone":null,"Currency":"AUD","Street":null,"Postal_State":"NSW","id":"3430088000003037177","$approved":true,"Postal_Postcode":"2000","Postal_Address":"Level 19, 15 Castlereagh Street, SYDNEY","Street_No":null,"$approval":{"delegate":false,"approve":false,"reject":false,"resubmit":false},"Created_Time":"2020-04-27T13:03:17+10:00","Address_To":null,"Source_ID":"O0102","From_Ownership":null,"$editable":true,"Return_to_Sender":false,"Postcode":null,"Home_Phone":null,"Add_Note":null,"State":null,"Country":null,"Postal_Country":null,"$review_process":null,"Website":null,"Do_Not_Mail":false,"Last_Mailed_Date":null,"First_Name":null,"Record_Image":null,"$review":null,"Address_Longitude":null,"Postal_Level_Suite":"19","Email_Opt_Out":false,"Residential_Address":null,"Copy_to_Postal":false,"Address_Latitude":null,"Modified_Time":"2020-04-27T13:03:17+10:00","Salutation_Dear":null,"Postal_Street":"Castlereagh Street","Title":null,"Return_to_Sender_Date":null,"Lessee":null,"Mobile":null,"$orchestration":null,"System_Contact":null,"Last_Name":null,"Reverse_Geocoded_Address":null,"ABN_ACN":null,"Postal_Unit":null,"Tag":[],"Level_Suite":null,"Fax":null}]',
-        Sale_Date: null,
+        Sale_Date: '2019-09-09',
         Total_Outgoings: null,
         Reverse_Geocoded_Address: '143 Parramatta Rd, Camperdown NSW 2050, Australia',
         $in_merge: false,
