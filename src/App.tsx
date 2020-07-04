@@ -1,32 +1,30 @@
 import React, { useState, useEffect } from 'react'
 import './index.css'
 import { SearchWidgetWrapper } from './components/SearchWidgets'
-import { findMatchingProperties, getGoogleMapsAPIKeyFromCRM } from './services/crmDataService'
+import { findMatchingProperties, getGoogleMapsAPIKeyFromCRM, getSearchAddressPosition } from './services/crmDataService'
 import { MapWidget } from './components/MapWidget'
 import { ResultsTableWidget } from './components/ResultsTable'
 import { DownloadMailingListButton } from './components/DownloadMailingListButton'
 import { DownloadContactListButton } from './components/DownloadContactListButton'
-import { UnprocessedResultsFromCRM, ResultsType, DEFAULT_SEARCH_PARAMS, SearchParametersType } from './types'
+import { UnprocessedResultsFromCRM, ResultsType, DEFAULT_SEARCH_PARAMS, SearchParametersType, PositionType } from './types'
 import { UpdateLastMailedButton } from './components/UpdateLastMailedButton'
 import { MassMailButton } from './components/MassMailButton'
 
-function prepareDataForMap (results?: UnprocessedResultsFromCRM[]): ResultsType | undefined {
+function prepareDataForMap (results: UnprocessedResultsFromCRM[], searchAddressPosition: PositionType): ResultsType | undefined {
     if (!results || results.length === 0) {
         return undefined
     }
-    const processedResults = results.slice(0)
-    const centrePointRecord = processedResults.shift()
 
-    if (!centrePointRecord) {
+    if (!searchAddressPosition) {
         return undefined
     }
 
     return {
         centrePoint: {
-            lat: parseFloat(centrePointRecord.Latitude),
-            lng: parseFloat(centrePointRecord.Longitude)
+            lat: searchAddressPosition.lat,
+            lng: searchAddressPosition.lng
         },
-        addressesToRender: processedResults.map((result) => {
+        addressesToRender: results.map((result) => {
             return {
                 address: result.Deal_Name,
                 position: {
@@ -38,16 +36,8 @@ function prepareDataForMap (results?: UnprocessedResultsFromCRM[]): ResultsType 
     }
 }
 
-function renderResultsWidgets (results: UnprocessedResultsFromCRM[] | undefined, googleMapsApiKey: string | undefined, isLoading: boolean, uniqueSearchRecords: number) {
-    if (isLoading) {
-        // N.B. The default search takes 21 seconds, as does a search with 1 neighbours search, 2 property types, and 1 property groups.
-        return (
-            <div style={{ padding: '20px' }}>
-                Loading ... estimated waiting time 20 seconds.
-            </div>
-        )
-    }
-    const dataForMap = prepareDataForMap(results)
+function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsApiKey: string | undefined, isLoading: boolean, uniqueSearchRecords: number, searchAddressPosition: PositionType) {
+    const dataForMap = prepareDataForMap(results, searchAddressPosition)
     if (results && dataForMap && googleMapsApiKey && !isLoading) {
         return (
             <div style={{ padding: '20px' }}>
@@ -76,12 +66,15 @@ function App () {
     const [googleMapsApiKey, updateGoogleMapsApiKey] = useState()
     const [isLoading, setLoading] = useState(false)
     const [uniqueSearchRecords, setUniqueSearchRecords] = useState<number>(0)
+    const [searchAddressPosition, setSearchAddressPosition] = useState<PositionType>()
 
     useEffect(() => {
         if (isReadyForSearch) {
             const getDataFromCrm = async () => {
                 setLoading(true)
                 const { matchedProperties, uniqueSearchRecords } = await findMatchingProperties(searchParameters)
+                const searchAddressPosition = await getSearchAddressPosition(searchParameters)
+                setSearchAddressPosition(searchAddressPosition)
                 setUniqueSearchRecords(uniqueSearchRecords.length)
                 updateResults(matchedProperties)
                 setLoading(false)
@@ -104,7 +97,12 @@ function App () {
     return (
         <div className="App">
             <SearchWidgetWrapper changeSearchParameters={changeSearchParameters} searchParameters={searchParameters} setReadyForSearch={setReadyForSearch} />
-            {renderResultsWidgets(results, googleMapsApiKey, isLoading, uniqueSearchRecords)}
+            {isLoading &&
+                <div style={{ padding: '20px' }}>
+                    Loading ... estimated waiting time 20 seconds.
+                </div>
+            }
+            {searchAddressPosition && renderResultsWidgets(results, googleMapsApiKey, isLoading, uniqueSearchRecords, searchAddressPosition)}
         </div>
     )
 }

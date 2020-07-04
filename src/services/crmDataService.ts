@@ -1,21 +1,52 @@
-import { SearchParametersType, UnprocessedResultsFromCRM } from '../types'
+import { SearchParametersType, UnprocessedResultsFromCRM, PositionType } from '../types'
 import { ZOHO } from '../vendor/ZSDK'
 import emailAndIdExtract from '../utils/emailAndIdExtract'
-import sortAndFilterResults from '../utils/sortAndFilterResults'
+import filterResults from '../utils/filterResults'
+
+async function getPageOfProperties (pageNumber: number) {
+    const response = await ZOHO.CRM.API.getAllRecords({
+        Entity: 'Deals',
+        page: pageNumber,
+        per_page: 200
+    })
+    if (!response.data) {
+        return []
+    }
+    return response.data
+}
+
+const retrieveAllProperties = async function (pageNumber: number, retrievedProperties: UnprocessedResultsFromCRM[]): Promise<UnprocessedResultsFromCRM[]> {
+    const thisPageResults = await getPageOfProperties(pageNumber)
+    if (thisPageResults.length === 0) {
+        return retrievedProperties
+    }
+    return retrieveAllProperties(
+        pageNumber + 1,
+        retrievedProperties.concat(thisPageResults)
+    )
+}
 
 export async function findMatchingProperties (searchParameters: SearchParametersType[]): Promise<{ matchedProperties: UnprocessedResultsFromCRM[], uniqueSearchRecords: string[] }> {
-    const matchingResults = await ZOHO.CRM.FUNCTIONS.execute('find_nearby_contacts', {
-        arguments: JSON.stringify({
-            search_parameters: searchParameters
-        })
-    })
+    const matchingResults = await retrieveAllProperties(0, [])
 
     if (Object.keys(matchingResults).includes('Error')) {
         alert('Error retrieving search results')
     }
-    const results = sortAndFilterResults(matchingResults.details.output, searchParameters)
+    const results = filterResults(matchingResults, searchParameters)
 
     return results
+}
+
+export async function getSearchAddressPosition (searchParameters: SearchParametersType[]): Promise<PositionType> {
+    const firstSearchAddress = searchParameters[0].searchAddress
+
+    const geocodeResult = await ZOHO.CRM.FUNCTIONS.execute('geocode_address', {
+        arguments: JSON.stringify({
+            search_address: firstSearchAddress
+        })
+    })
+
+    return JSON.parse(geocodeResult.details.output)
 }
 
 export async function updateMailComment (comment: string, results: UnprocessedResultsFromCRM[]): Promise<void> {

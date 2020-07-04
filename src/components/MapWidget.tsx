@@ -14,6 +14,9 @@ export function MapWidget (props: MapProps) {
         width: 'auto',
         height: '700px'
     }
+
+    const uniqueAddresses = [...new Map(props.addressesToRender.map((address) => [address.address, address])).values()]
+
     return (
         <div id="map">
             <LoadScript
@@ -24,7 +27,7 @@ export function MapWidget (props: MapProps) {
                     zoom={11}
                     mapContainerStyle={containerStyle}
                 >
-                    {props.addressesToRender.map(address => {
+                    {uniqueAddresses.map(address => {
                         return (
                             <Marker key={address.address} position={{
                                 lat: address.position.lat,
