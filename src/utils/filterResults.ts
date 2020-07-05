@@ -44,7 +44,6 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
     const desiredPropertyTypes = searchParameters[0].propertyTypes
     const desiredPropertyGroups = searchParameters[0].propertyGroups
     const managed = searchParameters[0].managed[0]
-    console.log('searchParameters', searchParameters)
 
     const matchTallies: MatchTallies = {
         neighbour: 0,
