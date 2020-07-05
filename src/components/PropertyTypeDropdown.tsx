@@ -1,5 +1,6 @@
-import React, { ChangeEvent } from 'react'
+import React from 'react'
 import Select from 'react-select'
+import { PropertyTypes } from '../types'
 
 type DropdownProps = {
     chosenPropertyTypes: string[]
@@ -30,7 +31,10 @@ export function PropertyTypeDropdown (props: DropdownProps) {
                 isMulti
                 name="propertyType"
                 id="#propertyType"
-                setValue={(e: ChangeEvent<HTMLSelectElement>) => { props.changePropertyTypes([...e.target.selectedOptions].map((option) => option.value)) }}
+                onChange={(e: PropertyTypes[]) => {
+                    e = e === null ? [{ value: 'All', label: 'All' }] : e
+                    props.changePropertyTypes(e.map((option: PropertyTypes) => option.value))
+                }}
                 tabIndex={2}
                 options={possiblePropertyTypes}
             />

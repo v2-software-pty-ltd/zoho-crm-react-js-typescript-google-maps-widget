@@ -71,3 +71,8 @@ export type UnprocessedResultsFromCRM = {
     Property_Contacts: string
     Property_Owners: string
 }
+
+export type PropertyTypes = {
+  value: string
+  label: string
+}

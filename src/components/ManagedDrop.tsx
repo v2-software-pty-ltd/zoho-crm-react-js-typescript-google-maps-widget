@@ -1,5 +1,6 @@
-import React, { ChangeEvent } from 'react'
+import React from 'react'
 import Select from 'react-select'
+import { PropertyTypes } from '../types'
 
 type DropdownProps = {
     managed: string[]
@@ -18,7 +19,7 @@ export function ManagedDrop (props: DropdownProps) {
             <Select
                 defaultValue={yesNo[0]}
                 getValue={props.managed}
-                setValue={(e: ChangeEvent<HTMLSelectElement>) => { props.changedManaged([...e.target.selectedOptions].map((option) => option.value)) }}
+                onChange={(e: PropertyTypes) => props.changedManaged([e.value])}
                 tabIndex={3}
                 options={yesNo}
             />
