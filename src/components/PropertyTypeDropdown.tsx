@@ -32,8 +32,8 @@ export function PropertyTypeDropdown (props: DropdownProps) {
                 name="propertyType"
                 id="propertyType"
                 onChange={(newPropertyTypes: ReactSelectOption[]) => {
-                    const propertyGroupValues = newPropertyTypes?.map((option: ReactSelectOption) => option.value) || ['All']
-                    props.changePropertyTypes(propertyGroupValues)
+                    const propertyTypeValues = newPropertyTypes?.map((option: ReactSelectOption) => option.value) || ['All']
+                    props.changePropertyTypes(propertyTypeValues)
                 }}
                 tabIndex={2}
                 options={possiblePropertyTypes}
