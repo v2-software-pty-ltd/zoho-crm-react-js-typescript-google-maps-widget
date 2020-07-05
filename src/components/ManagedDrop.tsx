@@ -1,4 +1,6 @@
-import React, { ChangeEvent } from 'react'
+import React from 'react'
+import Select from 'react-select'
+import { ReactSelectOption } from '../types'
 
 type DropdownProps = {
     managed: string[]
@@ -7,21 +9,20 @@ type DropdownProps = {
 
 export function ManagedDrop (props: DropdownProps) {
     const yesNo = [
-        'None',
-        'Yes',
-        'No'
+        { value: 'None', label: 'None' },
+        { value: 'Yes', label: 'Yes' },
+        { value: 'No', label: 'No' }
     ]
 
     return (
-        <label className="seven dropdown"> Managed <span className='downArrow'> ⬇ </span>
-            <p className="smaller-font">Defaults to None</p>
-            <select multiple value={props.managed} className="dropdown-content" onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                props.changedManaged([...e.target.selectedOptions].map((option) => option.value))
-            }} tabIndex={3} >
-                {yesNo.map((isManaged) => {
-                    return <option key={isManaged} value={isManaged}>{isManaged}</option>
-                })}
-            </select>
+        <label className="seven"> Managed
+            <Select
+                defaultValue={yesNo[0]}
+                getValue={props.managed}
+                onChange={(newManagedValue: ReactSelectOption) => props.changedManaged([newManagedValue.value])}
+                tabIndex={3}
+                options={yesNo}
+            />
         </label>
     )
 }

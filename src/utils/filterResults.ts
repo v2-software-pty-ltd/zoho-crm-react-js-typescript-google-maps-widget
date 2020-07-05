@@ -73,7 +73,7 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
             const canAddAsNeighbour = matchTallies.neighbour < maxNumNeighbours
             const canAddBasedOnFilters = propertyGroupMatch || propertyTypeMatch
             const isManaged = (property.Managed === managed) || managed === 'None'
-            const shouldAddProperty = isManaged || canAddBasedOnFilters || canAddAsNeighbour
+            const shouldAddProperty = isManaged && (canAddBasedOnFilters || canAddAsNeighbour)
             if (shouldAddProperty) {
                 if (!canAddBasedOnFilters && canAddAsNeighbour) matchTallies.neighbour += 1
                 if (ownerData.length > 0) {
