@@ -8,7 +8,6 @@ type DownloadButtonProps = {
 export function DownloadMailingListButton (props: DownloadButtonProps) {
     let downloadUrl = null
     const matchingPropertiesAndOwners = props.results
-    console.log(matchingPropertiesAndOwners)
     const dedupedProperties = getUniqueListBy(matchingPropertiesAndOwners, 'id')
     function generateCSVRow (propertyObject: UnprocessedResultsFromCRM) {
         let csvRow = ''
