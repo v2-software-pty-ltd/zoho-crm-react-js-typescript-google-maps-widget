@@ -1,14 +1,14 @@
 import React from 'react'
 
 import { UnprocessedResultsFromCRM } from '../types'
+import getUniqueListBy from '../utils/getUniqueListBy'
 
 type ResultsTableProps = {
     results: UnprocessedResultsFromCRM[]
 }
 
 export function ResultsTableWidget (props: ResultsTableProps) {
-    // ignore the first row because it has the info for the search address
-    const resultsAfterSearchAddress = props.results
+    const uniqueResults = getUniqueListBy(props.results, 'id');
     return (
         <div style={{ padding: '20px' }}>
             <table>
@@ -21,7 +21,7 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                     </tr>
                 </thead>
                 <tbody>
-                    {resultsAfterSearchAddress.map((result, index) => {
+                    {uniqueResults.map((result, index) => {
                         let propertyAddress = result.Deal_Name
                         if (!result.Latitude || !result.Longitude) {
                             propertyAddress = `${result.Deal_Name} - Geocordinates N/A, cannot display on map.`
@@ -29,13 +29,12 @@ export function ResultsTableWidget (props: ResultsTableProps) {
 
                         const ownerData = result.owner_details.find((owner) => owner.Contact_Type === 'Owner')
                         const contactData = result.owner_details.find((owner) => owner.Contact_Type === 'Director')
-
                         return (
                             <tr key={result.id}>
                                 <td>{index + 1}</td>
                                 <td>{propertyAddress}</td>
                                 <td>{ownerData?.Name || ''}</td>
-                                <td>{contactData?.Name || ''}</td>
+                                <td>{contactData?.Name || 'contact is not found'}</td>
                             </tr>
                         )
                     })}

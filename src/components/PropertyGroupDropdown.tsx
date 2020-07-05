@@ -1,4 +1,6 @@
-import React, { ChangeEvent } from 'react'
+import React from 'react'
+import Select from 'react-select'
+import { PropertyTypes } from '../types'
 
 type DropdownProps = {
     chosenPropertyGroups: string[]
@@ -7,21 +9,25 @@ type DropdownProps = {
 
 export function PropertyGroupDropdown (props: DropdownProps) {
     const possiblePropertyGroups = [
-        'All',
-        'Retail',
-        'Industrial',
-        'Commercial'
+        { value: 'All', label: 'All' },
+        { value: 'Retail', label: 'Retail' },
+        { value: 'Industrial', label: 'Industrial' },
+        { value: 'Commercial', label: 'Commercial' }
     ]
 
     return (
-        <label className="six dropdown">Property Group (Portals) <span className='downArrow'> ⬇ </span>
-            <select multiple value={props.chosenPropertyGroups} className="dropdown-content" id="#propertyGroup" onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                props.changePropertyGroups([...e.target.selectedOptions].map((option) => option.value))
-            }} tabIndex={3} >
-                {possiblePropertyGroups.map((propertyGroup) => {
-                    return <option key={propertyGroup} value={propertyGroup}>{propertyGroup}</option>
-                })}
-            </select>
+        <label className="six">Property Group (Portals)
+            <Select
+                getValue={props.chosenPropertyGroups}
+                id="#propertyGroup"
+                isMulti
+                onChange={(e: PropertyTypes[]) => {
+                    e = e === null ? [{ value: 'All', label: 'All' }] : e
+                    props.changePropertyGroups(e.map((option: PropertyTypes) => option.value))
+                }}
+                tabIndex={3}
+                options={possiblePropertyGroups}
+            />
         </label>
     )
 }

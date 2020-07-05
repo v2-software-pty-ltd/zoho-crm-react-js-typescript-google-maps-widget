@@ -68,6 +68,11 @@ export type UnprocessedResultsFromCRM = {
     Managed: string
     Reversed_Geocoded_Address: string
     Property_Type_Portals: string
-    Property_Contact: string
+    Property_Contacts: string
     Property_Owners: string
-    }
+}
+
+export type PropertyTypes = {
+  value: string
+  label: string
+}
