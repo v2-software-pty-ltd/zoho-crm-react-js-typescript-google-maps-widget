@@ -1,6 +1,6 @@
 import React from 'react'
 import Select from 'react-select'
-import { PropertyTypes } from '../types'
+import { ReactSelectOption } from '../types'
 
 type DropdownProps = {
     managed: string[]
@@ -19,7 +19,7 @@ export function ManagedDrop (props: DropdownProps) {
             <Select
                 defaultValue={yesNo[0]}
                 getValue={props.managed}
-                onChange={(e: PropertyTypes) => props.changedManaged([e.value])}
+                onChange={(newManagedValue: ReactSelectOption) => props.changedManaged([newManagedValue.value])}
                 tabIndex={3}
                 options={yesNo}
             />

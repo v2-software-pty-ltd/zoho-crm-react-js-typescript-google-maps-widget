@@ -72,7 +72,7 @@ export type UnprocessedResultsFromCRM = {
     Property_Owners: string
 }
 
-export type PropertyTypes = {
+export type ReactSelectOption = {
   value: string
   label: string
 }

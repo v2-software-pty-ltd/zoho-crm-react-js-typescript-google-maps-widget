@@ -1,6 +1,6 @@
 import React from 'react'
 import Select from 'react-select'
-import { PropertyTypes } from '../types'
+import { ReactSelectOption } from '../types'
 
 type DropdownProps = {
     chosenPropertyGroups: string[]
@@ -19,11 +19,11 @@ export function PropertyGroupDropdown (props: DropdownProps) {
         <label className="six">Property Group (Portals)
             <Select
                 getValue={props.chosenPropertyGroups}
-                id="#propertyGroup"
+                id="propertyGroup"
                 isMulti
-                onChange={(e: PropertyTypes[]) => {
-                    e = e === null ? [{ value: 'All', label: 'All' }] : e
-                    props.changePropertyGroups(e.map((option: PropertyTypes) => option.value))
+                onChange={(newPropertyGroups: ReactSelectOption[]) => {
+                    const propertyGroupValues = newPropertyGroups?.map((option: ReactSelectOption) => option.value) || ['All']
+                    props.changePropertyGroups(propertyGroupValues)
                 }}
                 tabIndex={3}
                 options={possiblePropertyGroups}
