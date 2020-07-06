@@ -32,7 +32,12 @@ export async function findMatchingProperties (searchParameters: SearchParameters
     if (Object.keys(matchingResults).includes('Error')) {
         alert('Error retrieving search results')
     }
+<<<<<<< HEAD
     const results = filterResults(matchingResults, searchParameters)
+=======
+    const results = sortAndFilterResults(matchingResults.details.output, searchParameters)
+    // if statement here to see if user is on Sales Evidence Widget
+>>>>>>> fb94fd8ccf0a2d213c2944be5992874cfad6e154
 
     return results
 }

@@ -21,6 +21,30 @@ export const DEFAULT_SEARCH_PARAMS = {
     id: `search:${(Math.random() * 1000)}`
 }
 
+export type SalesEvidenceFilterParams = {
+  landArea: MinMaxNumberType
+  buildArea: MinMaxNumberType
+  dateSold: any
+  salePrice: MinMaxNumberType
+  saleType: SaleTypeEnum[]
+}
+
+export enum SaleTypeEnum {
+  INV = 'INV',
+  VP = 'VP',
+  DEV = 'DEV'
+}
+
+export type MinMaxDateType = {
+  min: Date
+  max: Date
+}
+
+export type MinMaxNumberType = {
+  min: number
+  max: number
+}
+
 export type PositionType = {
     lat: number
     lng: number
@@ -69,7 +93,9 @@ export type UnprocessedResultsFromCRM = {
     Reversed_Geocoded_Address: string
     Property_Type_Portals: string
     Property_Contacts: string
-    Property_Owners: string
+    Property_Owners: string,
+    Land_Area_sqm: number
+    Sale_Type: SaleTypeEnum[]
 }
 
 export type ReactSelectOption = {
