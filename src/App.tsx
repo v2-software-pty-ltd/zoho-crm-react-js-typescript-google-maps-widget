@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './index.css'
 import { SearchWidgetWrapper } from './components/SearchWidgets'
-import { findMatchingProperties, getGoogleMapsAPIKeyFromCRM, getSearchAddressPosition } from './services/crmDataService'
+import { findMatchingRecords, getGoogleMapsAPIKeyFromCRM, getSearchAddressPosition } from './services/crmDataService'
 import { MapWidget } from './components/MapWidget'
 import { ResultsTableWidget } from './components/ResultsTable'
 import { DownloadMailingListButton } from './components/DownloadMailingListButton'
@@ -72,7 +72,7 @@ function App () {
         if (isReadyForSearch) {
             const getDataFromCrm = async () => {
                 setLoading(true)
-                const { matchedProperties, uniqueSearchRecords } = await findMatchingProperties(searchParameters)
+                const { matchedProperties, uniqueSearchRecords } = await findMatchingRecords(searchParameters, 'Properties')
                 const searchAddressPosition = await getSearchAddressPosition(searchParameters)
                 setSearchAddressPosition(searchAddressPosition)
                 setUniqueSearchRecords(uniqueSearchRecords.length)
