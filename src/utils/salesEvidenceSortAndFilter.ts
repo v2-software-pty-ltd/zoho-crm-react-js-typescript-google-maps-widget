@@ -37,7 +37,7 @@ function salesEvidenceSortAndFilter (sortedAndFilteredResults: UnprocessedResult
     return filteredResults
 }
 
-const filterParams = { landArea: { min: 500, max: 2000 }, buildArea: { min: 1600, max: 2500 }, dateSold: { min: '07/06/2000', max: '09/09/2019' }, salePrice: { min: 425000, max: 2000000 }, saleType: [SaleTypeEnum.INV, SaleTypeEnum.VP, SaleTypeEnum.DEV] }
+const filterParams = { landArea: { min: 500, max: 2000 }, buildArea: { min: 1600, max: 2500 }, dateSold: { min: new Date(), max: new Date() }, salePrice: { min: 425000, max: 2000000 }, saleType: [SaleTypeEnum.INV, SaleTypeEnum.VP, SaleTypeEnum.DEV] }
 
 const sorted = salesEvidenceSortAndFilter(results, filterParams)
 

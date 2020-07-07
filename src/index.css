@@ -30,11 +30,11 @@ body {
 
 .wrapper {
   display: grid;
-  grid-template-columns: repeat(auto-fit, 3);
+  grid-template-columns: repeat(auto-fit, 2);
   grid-gap: 0.5em;
-  grid-auto-rows: 5;
+  grid-auto-rows: 6;
   grid-row-gap: 1em;
-  height: 400px;
+  height: auto;
 }
 
 .one {
@@ -70,6 +70,30 @@ body {
 .seven {
   grid-column: 2;
   grid-row: 2;
+}
+.eight {
+  grid-column: 1;
+  grid-row: 5;
+}
+
+.nine {
+  grid-column: 1;
+  grid-row: 6;
+}
+
+.ten {
+  grid-column: 1;
+  grid-row: 7;
+}
+
+.eleven {
+  grid-column: 2;
+  grid-row: 5;
+}
+
+.twelve {
+  grid-column: 2;
+  grid-row: 6;
 }
 
 label {
@@ -234,38 +258,6 @@ td {
 .side-padding {
   padding: 0 4px
 }
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f9f9f9;
-  min-width: 300px;
-  height: 70px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-}
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-.dropbtn {
-  float: right;
-  background-color: #4CAF50;
-  color: white;
-  padding: 16px;
-  font-size: 16px;
-  border: none;
-  cursor: pointer;
-  width: 400px;
-  height: 15px;
-}
-
-.dropdown-content a {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
-
 /* Change color of dropdown links on hover */
 .dropdown-content a:hover {background-color: #f1f1f1}
 
@@ -290,4 +282,8 @@ td {
   border-style: solid;
   border-width: 1px;
   min-height: 38px;
+}
+.minMaxSize {
+  min-width: 10% !important;
+  margin-right: 5%;
 }

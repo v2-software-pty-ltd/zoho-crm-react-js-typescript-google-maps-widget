@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import './index.css'
-import { SearchWidgetWrapper } from './components/SearchWidgets'
+import { SearchWidgetWrapper } from './components/SearchWidgetsWrapper'
 import { findMatchingProperties, getGoogleMapsAPIKeyFromCRM, getSearchAddressPosition } from './services/crmDataService'
 import { MapWidget } from './components/MapWidget'
 import { ResultsTableWidget } from './components/ResultsTable'
 import { DownloadMailingListButton } from './components/DownloadMailingListButton'
 import { DownloadContactListButton } from './components/DownloadContactListButton'
-import { UnprocessedResultsFromCRM, ResultsType, DEFAULT_SEARCH_PARAMS, SearchParametersType, PositionType } from './types'
+import { UnprocessedResultsFromCRM, ResultsType, DEFAULT_SEARCH_PARAMS, PositionType, IntersectionFilterParams } from './types'
 import { UpdateLastMailedButton } from './components/UpdateLastMailedButton'
 import { MassMailButton } from './components/MassMailButton'
 
@@ -60,7 +60,7 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsA
 }
 
 function App () {
-    const [searchParameters, changeSearchParameters] = useState<SearchParametersType[]>([{ ...DEFAULT_SEARCH_PARAMS }])
+    const [searchParameters, changeSearchParameters] = useState<IntersectionFilterParams[]>([{ ...DEFAULT_SEARCH_PARAMS }])
     const [isReadyForSearch, setReadyForSearch] = useState<boolean>(false)
     const [results, updateResults] = useState<UnprocessedResultsFromCRM[]>([])
     const [googleMapsApiKey, updateGoogleMapsApiKey] = useState()

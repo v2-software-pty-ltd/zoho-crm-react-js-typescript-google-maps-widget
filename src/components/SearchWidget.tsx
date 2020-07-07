@@ -2,11 +2,11 @@ import React, { ChangeEvent } from 'react'
 import { PropertyTypeDropdown } from './PropertyTypeDropdown'
 import { PropertyGroupDropdown } from './PropertyGroupDropdown'
 import { ManagedDrop } from './ManagedDrop'
-import { SearchParametersType } from '../types'
+import { IntersectionFilterParams } from '../types'
 
 type SearchWidgetProps = {
-    searchParameters: SearchParametersType
-    changeSearchParameters: (newParameters: SearchParametersType) => void
+    searchParameters: IntersectionFilterParams
+    changeSearchParameters: (newParameters: IntersectionFilterParams) => void
 }
 
 export function SearchWidget (props: SearchWidgetProps) {
@@ -67,5 +67,6 @@ export function SearchWidget (props: SearchWidgetProps) {
                 })
             }} />
         </form>
+
     )
 }

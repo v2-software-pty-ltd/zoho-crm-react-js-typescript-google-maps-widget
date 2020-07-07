@@ -29,4 +29,7 @@ app/static
 object_results.json
 object_results2.json
 object_results3.json
+test.tsx
+test2.tsx
+test3.tsx
 app/index-*.html

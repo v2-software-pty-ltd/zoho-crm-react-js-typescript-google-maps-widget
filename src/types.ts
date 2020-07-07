@@ -18,18 +18,38 @@ export const DEFAULT_SEARCH_PARAMS = {
     propertyGroups: ['All'],
     managed: ['None'],
     readyForSearch: false,
+    landArea: {
+        min: 0,
+        max: 0
+    },
+    buildArea: {
+        min: 0,
+        max: 0
+    },
+    dateSold: {
+        min: new Date(),
+        max: new Date()
+    },
+    salePrice: {
+        min: 0,
+        max: 0
+    },
+    saleType: [],
     id: `search:${(Math.random() * 1000)}`
+
 }
 
 export type SalesEvidenceFilterParams = {
   landArea: MinMaxNumberType
   buildArea: MinMaxNumberType
-  dateSold: any
+  dateSold: MinMaxDateType
   salePrice: MinMaxNumberType
   saleType: SaleTypeEnum[]
 }
+export type IntersectionFilterParams = SalesEvidenceFilterParams & SearchParametersType
 
 export enum SaleTypeEnum {
+  ALL = 'ALL',
   INV = 'INV',
   VP = 'VP',
   DEV = 'DEV'
@@ -102,3 +122,7 @@ export type ReactSelectOption = {
   value: string
   label: string
 }
+export type ReactSelectOptionEnum = {
+    value: SaleTypeEnum
+    label: SaleTypeEnum
+  }

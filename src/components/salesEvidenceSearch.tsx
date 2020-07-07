@@ -1,71 +1,87 @@
 import React, { ChangeEvent } from 'react'
-import { PropertyTypeDropdown } from './PropertyTypeDropdown'
-import { PropertyGroupDropdown } from './PropertyGroupDropdown'
-import { ManagedDrop } from './ManagedDrop'
-import { SearchParametersType } from '../types'
+import { IntersectionFilterParams } from '../types'
+import { SearchWidget } from './SearchWidget'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
+import { SaleTypeDropdown } from './SaleTypeDropdown'
 
 type SearchWidgetProps = {
-    searchParameters: SearchParametersType
-    changeSearchParameters: (newParameters: SearchParametersType) => void
+    searchParameters: IntersectionFilterParams
+    changeSearchParameters: (newParameters: IntersectionFilterParams) => void
 }
 
-export function SearchWidget (props: SearchWidgetProps) {
+export function SalesEvidenceSearchWidget (props: SearchWidgetProps) {
     return (
-        <form className="wrapper">
-            <label className="one">
-                <p>Search Address*</p>
-                <p className="smaller-font">* Must contain street, suburb, state & postcode with each separated by comma</p>
-                <input className='border' value={props.searchParameters.searchAddress} onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                    props.changeSearchParameters({
-                        ...props.searchParameters,
-                        searchAddress: e.target.value
-                    })
-                }} id="propertyAddress" required tabIndex={1} />
-            </label>
+        <>
+            <SearchWidget changeSearchParameters={props.changeSearchParameters} searchParameters={props.searchParameters}/>
+            <form className="wrapper">
+                <label className="eight">Land Area m2<br />
+                    <input className="minMaxSize border" id="landAreaMin" value={props.searchParameters.landArea.min} onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                        props.changeSearchParameters({
+                            ...props.searchParameters,
+                            landArea: { min: e.target.valueAsNumber, max: props.searchParameters.landArea.max }
+                        })
+                    }} placeholder="Enter min land area." type="number" tabIndex={6} />
+                    <input className="minMaxSize border" id="landAreaMax" value={props.searchParameters.landArea.max} onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                        props.changeSearchParameters({
+                            ...props.searchParameters,
+                            landArea: { max: e.target.valueAsNumber, min: props.searchParameters.landArea.min }
+                        })
+                    }} placeholder="Enter max land area." type="number" tabIndex={6} />
+                </label>
 
-            <PropertyTypeDropdown chosenPropertyTypes={props.searchParameters.propertyTypes} changePropertyTypes={(newPropertyTypes) => {
-                props.changeSearchParameters({
-                    ...props.searchParameters,
-                    propertyTypes: newPropertyTypes
-                })
-            }} />
-            <label className="two">Neighbours Search (max records) <br />
-                <input className="below-label border" id="numberOfRecords" value={props.searchParameters.neighboursSearchMaxRecords} onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                    props.changeSearchParameters({
-                        ...props.searchParameters,
-                        neighboursSearchMaxRecords: e.target.valueAsNumber
-                    })
-                }} placeholder="Enter max number of neighbour records. Defaults to 100" type="number" tabIndex={4} />
-            </label>
-            <label className="three">Property Types Filter Max Records <br />
-                <input className="below-label border" id="propertyTypeNumberOfRecords" value={props.searchParameters.propertyTypesMaxResults} onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                    props.changeSearchParameters({
-                        ...props.searchParameters,
-                        propertyTypesMaxResults: e.target.valueAsNumber
-                    })
-                }} placeholder="Enter max number of records." type="number" tabIndex={5} />
-            </label>
-            <PropertyGroupDropdown chosenPropertyGroups={props.searchParameters.propertyGroups} changePropertyGroups={(newPropertyGroups) => {
-                props.changeSearchParameters({
-                    ...props.searchParameters,
-                    propertyGroups: newPropertyGroups
-                })
-            }} />
-            <label className="four">Property Groups Filter Max Records <br />
-                <input className="below-label border" id="propertyGroupNumberOfRecords" value={props.searchParameters.propertyGroupsMaxResults} onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                    props.changeSearchParameters({
-                        ...props.searchParameters,
-                        propertyGroupsMaxResults: e.target.valueAsNumber
-                    })
-                }} placeholder="Enter max number of records." type="number" tabIndex={6} />
-            </label>
+                <label className="nine">Build Area (sqm) <br />
+                    <input className="minMaxSize border" id="buildArea" value={props.searchParameters.buildArea.min} onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                        props.changeSearchParameters({
+                            ...props.searchParameters,
+                            buildArea: { min: e.target.valueAsNumber, max: props.searchParameters.buildArea.max }
+                        })
+                    }} placeholder="Build area min" type="number" tabIndex={4} />
+                    <input className="minMaxSize border" id="buildArea" value={props.searchParameters.buildArea.max} onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                        props.changeSearchParameters({
+                            ...props.searchParameters,
+                            buildArea: { max: e.target.valueAsNumber, min: props.searchParameters.buildArea.min }
+                        })
+                    }} placeholder="Build area max" type="number" tabIndex={4} />
+                </label>
 
-            <ManagedDrop managed={props.searchParameters.managed} changedManaged={(isManaged) => {
-                props.changeSearchParameters({
-                    ...props.searchParameters,
-                    managed: isManaged
-                })
-            }} />
-        </form>
+                <label className="ten">Date Sold<br />
+                    <DatePicker className='border' selected={props.searchParameters.dateSold.min} onChange={(changeDate: Date) => {
+                        props.changeSearchParameters({
+                            ...props.searchParameters,
+                            dateSold: { min: changeDate, max: props.searchParameters.dateSold.min }
+                        })
+                    }} />
+                    <DatePicker className='border' selected={props.searchParameters.dateSold.min} onChange={(changeDate: Date) => {
+                        console.log('this is the event from DatePicker type any', changeDate)
+                        props.changeSearchParameters({
+                            ...props.searchParameters,
+                            dateSold: { max: changeDate, min: props.searchParameters.dateSold.min }
+                        })
+                    }}/>
+                </label>
+                <label className="eleven ">Sale Price<br />
+                    <input className="minMaxSize border" id="landAreaMin" value={props.searchParameters.salePrice.min} onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                        props.changeSearchParameters({
+                            ...props.searchParameters,
+                            salePrice: { min: e.target.valueAsNumber, max: props.searchParameters.salePrice.max }
+                        })
+                    }} placeholder="Enter min sales price." type="number" tabIndex={6} />
+                    <input className="minMaxSize border" id="landAreaMin" value={props.searchParameters.salePrice.max} onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                        props.changeSearchParameters({
+                            ...props.searchParameters,
+                            salePrice: { max: e.target.valueAsNumber, min: props.searchParameters.salePrice.min }
+                        })
+                    }} placeholder="Enter max sales price." type="number" tabIndex={6} />
+                </label>
+                <SaleTypeDropdown chosenSaleType={props.searchParameters.saleType} changeSaleTypes={(newSaleTypes) => {
+                    props.changeSearchParameters({
+                        ...props.searchParameters,
+                        saleType: newSaleTypes
+                    })
+                }} />
+
+            </form>
+        </>
     )
 }
