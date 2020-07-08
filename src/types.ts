@@ -113,9 +113,12 @@ export type UnprocessedResultsFromCRM = {
     Reversed_Geocoded_Address: string
     Property_Type_Portals: string
     Property_Contacts: string
-    Property_Owners: string,
-    Land_Area_sqm: number
-    Sale_Type: SaleTypeEnum[]
+    Property_Owners: string
+    Land_Area_sqm: string
+    Build_Area_sqm: string
+    Sale_Date: string
+    Sale_Price: string
+    Sale_Type: string[]
 }
 
 export type ReactSelectOption = {
