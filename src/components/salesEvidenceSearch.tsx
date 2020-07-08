@@ -52,7 +52,7 @@ export function SalesEvidenceSearchWidget (props: SearchWidgetProps) {
                             dateSold: { min: changeDate, max: props.searchParameters.dateSold.min }
                         })
                     }} />
-                    <DatePicker className='border' selected={props.searchParameters.dateSold.min} onChange={(changeDate: Date) => {
+                    <DatePicker className='border' selected={props.searchParameters.dateSold.max} onChange={(changeDate: Date) => {
                         console.log('this is the event from DatePicker type any', changeDate)
                         props.changeSearchParameters({
                             ...props.searchParameters,
