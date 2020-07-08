@@ -9,6 +9,32 @@ export type SearchParametersType = {
     id: string
 }
 
+const DEFAULT_SALES_EVIDENCE_PARAMS = {
+    landArea: {
+        min: 0,
+        max: 0
+    },
+    buildArea: {
+        min: 0,
+        max: 0
+    },
+    rentGross: {
+        min: 0,
+        max: 0
+    },
+    rentDollarMeter: {
+        min: 0,
+        max: 0
+    },
+    leasedDate: {
+        min: new Date(),
+        max: new Date()
+    },
+    reviewDate: {
+        min: new Date(),
+        max: new Date()
+    }
+}
 export const DEFAULT_SEARCH_PARAMS = {
     searchAddress: '528 Kent St, Sydney, NSW, 2000',
     propertyGroupsMaxResults: 200,
@@ -18,7 +44,8 @@ export const DEFAULT_SEARCH_PARAMS = {
     propertyGroups: ['All'],
     managed: ['None'],
     readyForSearch: false,
-    id: `search:${(Math.random() * 1000)}`
+    id: `search:${(Math.random() * 1000)}`,
+    ...DEFAULT_SALES_EVIDENCE_PARAMS
 }
 
 export type LeaseEvidenceFilterParams = {
