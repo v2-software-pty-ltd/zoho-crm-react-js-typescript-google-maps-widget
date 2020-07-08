@@ -21,6 +21,25 @@ export const DEFAULT_SEARCH_PARAMS = {
     id: `search:${(Math.random() * 1000)}`
 }
 
+export type LeaseEvidenceFilterParams = {
+  landArea: MinMaxNumberType
+  buildArea: MinMaxNumberType
+  rentGross: MinMaxNumberType
+  rentDollarMeter: MinMaxNumberType
+  leasedDate: MinMaxDateType
+  reviewDate: MinMaxDateType
+}
+
+export type MinMaxNumberType = {
+  min: number
+  max: number
+}
+
+export type MinMaxDateType = {
+  min: Date
+  max: Date
+}
+
 export type PositionType = {
     lat: number
     lng: number
