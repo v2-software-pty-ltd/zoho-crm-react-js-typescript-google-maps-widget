@@ -16,7 +16,7 @@ export function SaleTypeDropdown (props: DropdownProps) {
     ]
 
     return (
-        <label className="twelve minMaxSize">Sale Type
+        <label className="twelve">Sale Type
             <Select
                 getValue={props.chosenSaleType}
                 isMulti

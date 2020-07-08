@@ -13,7 +13,8 @@ type SearchWidgetProps = {
 export function SalesEvidenceSearchWidget (props: SearchWidgetProps) {
     return (
         <>
-            <SearchWidget changeSearchParameters={props.changeSearchParameters} searchParameters={props.searchParameters}/>
+                            <SearchWidget changeSearchParameters={props.changeSearchParameters} searchParameters={props.searchParameters} />
+
             <form className="wrapper">
                 <label className="eight">Land Area m2<br />
                     <input className="minMaxSize border" id="landAreaMin" value={props.searchParameters.landArea.min} onChange={(e: ChangeEvent<HTMLInputElement>) => {

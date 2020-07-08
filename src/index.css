@@ -30,11 +30,11 @@ body {
 
 .wrapper {
   display: grid;
-  grid-template-columns: repeat(auto-fit, 2);
+  grid-template-columns: auto;
   grid-gap: 0.5em;
-  grid-auto-rows: 6;
   grid-row-gap: 1em;
   height: auto;
+  width: auto;
 }
 
 .one {
@@ -98,6 +98,7 @@ body {
 
 label {
   height: 75%;
+  width: 500px;
   padding: 4px;
   margin-top: 1px;
 }
@@ -258,13 +259,6 @@ td {
 .side-padding {
   padding: 0 4px
 }
-/* Change color of dropdown links on hover */
-.dropdown-content a:hover {background-color: #f1f1f1}
-
-/* Show the dropdown menu on hover */
-.dropdown:hover .dropdown-content {
-  display: block;
-}
 
 @media print {
   .pagebreak { display: block; page-break-before: auto; }
@@ -286,4 +280,16 @@ td {
 .minMaxSize {
   min-width: 10% !important;
   margin-right: 5%;
+}
+
+.react-datepicker-wrapper {
+ margin-right: 5%;
+}
+.hide-show-buttons {
+  display:flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.buttonSize {
+  margin-right: 0.3%;
 }

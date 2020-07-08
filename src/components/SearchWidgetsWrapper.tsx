@@ -42,7 +42,8 @@ export function SearchWidgetWrapper (props: SearchWidgetProps) {
                                 const updatedSearchParams = [...props.searchParameters]
                                 updatedSearchParams[idx] = newSearchParams
                                 props.changeSearchParameters(updatedSearchParams)
-                            }} />
+                            }}
+                        />
                         <button className="danger" onClick={() => {
                             const updatedSearchParams = [...props.searchParameters]
                             updatedSearchParams.splice(idx, 1)
@@ -52,7 +53,6 @@ export function SearchWidgetWrapper (props: SearchWidgetProps) {
                     </div>
                 )
             })}
-            <hr />
             {widgetStateChangeSales && props.searchParameters.map((searchParameters, idx) => {
                 return (
                     <div className="search-params-wrapper" key={searchParameters.id}>
@@ -72,21 +72,19 @@ export function SearchWidgetWrapper (props: SearchWidgetProps) {
                     </div>
                 )
             })}
-            <hr />
             {widgetStateChangeLease && <Test3 />}
-            <hr />
-            <div>
-                <button onClick={() => hideWidget('widgetStateChange')}>
+            <div className='hide-show-buttons'>
+                <button className='buttonSize' onClick={() => hideWidget('widgetStateChange')}>
                     Search Widget
                 </button>
-                <button onClick={() => hideWidget('widgetStateChangeSales')}>
+                <button className='buttonSize' onClick={() => hideWidget('widgetStateChangeSales')}>
                     Sales Evidence Widget
                 </button>
-                <button onClick={() => hideWidget('widgetStateChangeLease')}>
+                <button className='buttonSize' onClick={() => hideWidget('widgetStateChangeLease')}>
                     Test Widget
                 </button>
             </div>
-            <div className='button-wrapper'>
+            <div className='button-wrapper hide-show-buttons'>
                 <button className="secondary" onClick={() => {
                     const id = `search:${(Math.random() * 1000)}`
                     props.changeSearchParameters(props.searchParameters.concat([{ ...DEFAULT_SEARCH_PARAMS, id }]))
