@@ -1,17 +1,3 @@
-export type IntersectedSearchAndFilterParams = SalesEvidenceFilterParams & BaseSearchParamsType
-
-export type BaseSearchParamsType = {
-  searchAddress: string
-  propertyTypes: string[]
-  propertyGroups: string[]
-  neighboursSearchMaxRecords: number
-  propertyGroupsMaxResults: number
-  propertyTypesMaxResults: number
-  managed: string
-  id: string
-  allRecords: boolean
-}
-
 const DEFAULT_SALES_EVIDENCE_PARAMS = {
     landArea: {
         min: -1,
@@ -33,6 +19,32 @@ const DEFAULT_SALES_EVIDENCE_PARAMS = {
     allRecords: false
 }
 
+const DEFAULT_LEASE_EVIDENCE_PARAMS = {
+    landArea: {
+        min: 0,
+        max: 0
+    },
+    buildArea: {
+        min: 0,
+        max: 0
+    },
+    rentGross: {
+        min: 0,
+        max: 0
+    },
+    rentDollarMeter: {
+        min: 0,
+        max: 0
+    },
+    leasedDate: {
+        min: new Date(),
+        max: new Date()
+    },
+    reviewDate: {
+        min: new Date(),
+        max: new Date()
+    }
+}
 export const DEFAULT_SEARCH_PARAMS = {
     searchAddress: '528 Kent St, Sydney, NSW, 2000',
     propertyGroupsMaxResults: Infinity,
@@ -43,7 +55,22 @@ export const DEFAULT_SEARCH_PARAMS = {
     managed: 'All',
     readyForSearch: false,
     id: `search:${(Math.random() * 1000)}`,
-    ...DEFAULT_SALES_EVIDENCE_PARAMS
+    ...DEFAULT_SALES_EVIDENCE_PARAMS,
+    ...DEFAULT_LEASE_EVIDENCE_PARAMS
+}
+
+export type IntersectedSearchAndFilterParams = SalesEvidenceFilterParams & BaseSearchParamsType
+
+export type BaseSearchParamsType = {
+  searchAddress: string
+  propertyTypes: string[]
+  propertyGroups: string[]
+  neighboursSearchMaxRecords: number
+  propertyGroupsMaxResults: number
+  propertyTypesMaxResults: number
+  managed: string
+  id: string
+  allRecords: boolean
 }
 
 export enum SaleTypeEnum {
@@ -78,16 +105,6 @@ export type LeaseEvidenceFilterParams = {
   rentDollarMeter: MinMaxNumberType
   leasedDate: MinMaxDateType
   reviewDate: MinMaxDateType
-}
-
-export type MinMaxNumberType = {
-  min: number
-  max: number
-}
-
-export type MinMaxDateType = {
-  min: Date
-  max: Date
 }
 
 export type PositionType = {
