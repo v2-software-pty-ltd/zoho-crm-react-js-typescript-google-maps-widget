@@ -6,6 +6,7 @@ import { MapWidget } from './components/MapWidget'
 import { ResultsTableWidget } from './components/ResultsTable'
 import { DownloadMailingListButton } from './components/DownloadMailingListButton'
 import { DownloadContactListButton } from './components/DownloadContactListButton'
+import DownloadSalesEvidenceListButton from './components/DownloadSalesEvidenceListButton'
 import { UnprocessedResultsFromCRM, ResultsType, DEFAULT_SEARCH_PARAMS, SearchParametersType, PositionType } from './types'
 import { UpdateLastMailedButton } from './components/UpdateLastMailedButton'
 import { MassMailButton } from './components/MassMailButton'
@@ -44,6 +45,7 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsA
                 <div className="download-button-wrapper pagebreak">
                     <DownloadContactListButton results={results} />
                     <DownloadMailingListButton results={results} />
+                    <DownloadSalesEvidenceListButton results={results} />
                     <MassMailButton results={results} />
                 </div>
                 <UpdateLastMailedButton results={results} />
