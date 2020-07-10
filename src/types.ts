@@ -46,7 +46,7 @@ export type SalesEvidenceFilterParams = {
   salePrice: MinMaxNumberType
   saleType: SaleTypeEnum[]
 }
-export type IntersectionFilterParams = SalesEvidenceFilterParams & SearchParametersType
+export type IntersectedSearchAndFilterParams = SalesEvidenceFilterParams & SearchParametersType
 
 export enum SaleTypeEnum {
   ALL = 'ALL',

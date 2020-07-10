@@ -104,10 +104,13 @@ label {
 }
 
 input {
-  min-width: 70%;
   clear: both;
   border: 2px solid #000000;
   font-size: small;
+}
+
+.minWidth {
+  min-width: 70%;
 }
 
 input.below-label {
@@ -292,4 +295,12 @@ td {
 }
 .buttonSize {
   margin-right: 0.3%;
+}
+
+.radioName {
+  padding-left: .5%;
+  padding-right: .5%
+}
+.radio-box {
+  text-align: center;
 }

@@ -7,7 +7,7 @@ import { ResultsTableWidget } from './components/ResultsTable'
 import { DownloadMailingListButton } from './components/DownloadMailingListButton'
 import { DownloadContactListButton } from './components/DownloadContactListButton'
 import DownloadSalesEvidenceListButton from './components/DownloadSalesEvidenceListButton'
-import { UnprocessedResultsFromCRM, ResultsType, DEFAULT_SEARCH_PARAMS, PositionType, IntersectionFilterParams } from './types'
+import { UnprocessedResultsFromCRM, ResultsType, DEFAULT_SEARCH_PARAMS, PositionType, IntersectedSearchAndFilterParams } from './types'
 import { UpdateLastMailedButton } from './components/UpdateLastMailedButton'
 import { MassMailButton } from './components/MassMailButton'
 
@@ -62,7 +62,7 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsA
 }
 
 function App () {
-    const [searchParameters, changeSearchParameters] = useState<IntersectionFilterParams[]>([{ ...DEFAULT_SEARCH_PARAMS }])
+    const [searchParameters, changeSearchParameters] = useState<IntersectedSearchAndFilterParams[]>([{ ...DEFAULT_SEARCH_PARAMS }])
     const [isReadyForSearch, setReadyForSearch] = useState<boolean>(false)
     const [results, updateResults] = useState<UnprocessedResultsFromCRM[]>([])
     const [googleMapsApiKey, updateGoogleMapsApiKey] = useState()

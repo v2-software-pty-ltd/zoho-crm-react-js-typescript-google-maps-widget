@@ -1,13 +1,13 @@
 import React, { ChangeEvent } from 'react'
-import { IntersectionFilterParams } from '../types'
+import { IntersectedSearchAndFilterParams } from '../types'
 import { SearchWidget } from './SearchWidget'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { SaleTypeDropdown } from './SaleTypeDropdown'
 
 type SearchWidgetProps = {
-    searchParameters: IntersectionFilterParams
-    changeSearchParameters: (newParameters: IntersectionFilterParams) => void
+    searchParameters: IntersectedSearchAndFilterParams
+    changeSearchParameters: (newParameters: IntersectedSearchAndFilterParams) => void
 }
 
 export function SalesEvidenceSearchWidget (props: SearchWidgetProps) {
@@ -25,7 +25,7 @@ export function SalesEvidenceSearchWidget (props: SearchWidgetProps) {
                     <input className="minMaxSize border" id="landAreaMax" value={props.searchParameters.landArea.max} onChange={(e: ChangeEvent<HTMLInputElement>) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
-                            landArea: { max: e.target.valueAsNumber, min: props.searchParameters.landArea.min }
+                            landArea: { min: props.searchParameters.landArea.min, max: e.target.valueAsNumber}
                         })
                     }} placeholder="Enter max land area." type="number" tabIndex={6} />
                 </label>
@@ -40,7 +40,7 @@ export function SalesEvidenceSearchWidget (props: SearchWidgetProps) {
                     <input className="minMaxSize border" id="buildArea" value={props.searchParameters.buildArea.max} onChange={(e: ChangeEvent<HTMLInputElement>) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
-                            buildArea: { max: e.target.valueAsNumber, min: props.searchParameters.buildArea.min }
+                            buildArea: { min: props.searchParameters.buildArea.min, max: e.target.valueAsNumber }
                         })
                     }} placeholder="Build area max" type="number" tabIndex={4} />
                 </label>
@@ -56,7 +56,7 @@ export function SalesEvidenceSearchWidget (props: SearchWidgetProps) {
                         console.log('this is the event from DatePicker type any', changeDate)
                         props.changeSearchParameters({
                             ...props.searchParameters,
-                            dateSold: { max: changeDate, min: props.searchParameters.dateSold.min }
+                            dateSold: { min: props.searchParameters.dateSold.min, max: changeDate }
                         })
                     }}/>
                 </label>
@@ -67,10 +67,10 @@ export function SalesEvidenceSearchWidget (props: SearchWidgetProps) {
                             salePrice: { min: e.target.valueAsNumber, max: props.searchParameters.salePrice.max }
                         })
                     }} placeholder="Enter min sales price." type="number" tabIndex={6} />
-                    <input className="minMaxSize border" id="landAreaMin" value={props.searchParameters.salePrice.max} onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    <input className="minMaxSize border " id="landAreaMin" value={props.searchParameters.salePrice.max} onChange={(e: ChangeEvent<HTMLInputElement>) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
-                            salePrice: { max: e.target.valueAsNumber, min: props.searchParameters.salePrice.min }
+                            salePrice: { min: props.searchParameters.salePrice.min, max: e.target.valueAsNumber }
                         })
                     }} placeholder="Enter max sales price." type="number" tabIndex={6} />
                 </label>

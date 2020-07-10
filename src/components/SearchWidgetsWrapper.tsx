@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
 import { SearchWidget } from './SearchWidget'
 import { SalesEvidenceSearchWidget } from './salesEvidenceSearch'
-import { DEFAULT_SEARCH_PARAMS, IntersectionFilterParams } from '../types'
-import { Test3 } from './test3'
+import { DEFAULT_SEARCH_PARAMS, IntersectedSearchAndFilterParams } from '../types'
 
 type SearchWidgetProps = {
-    searchParameters: IntersectionFilterParams[]
-    changeSearchParameters: (newParameters: IntersectionFilterParams[]) => void
+    searchParameters: IntersectedSearchAndFilterParams[]
+    changeSearchParameters: (newParameters: IntersectedSearchAndFilterParams[]) => void
     setReadyForSearch: (isReady: boolean) => void
 }
 
@@ -15,8 +14,8 @@ export function SearchWidgetWrapper (props: SearchWidgetProps) {
     const [widgetStateChangeSales, setWidgetStateChangeSales] = useState<boolean>(false)
     const [widgetStateChangeLease, setWidgetStateChangeLease] = useState<boolean>(false)
 
-    function hideWidget (componentName: any) {
-        switch (componentName) {
+    function hideWidget (value: any) {
+        switch (value) {
         case 'widgetStateChange':
             setWidgetStateChange(!widgetStateChange)
             break
@@ -72,27 +71,31 @@ export function SearchWidgetWrapper (props: SearchWidgetProps) {
                     </div>
                 )
             })}
-            {widgetStateChangeLease && <Test3 />}
-            <div className='hide-show-buttons'>
-                <button className='buttonSize' onClick={() => hideWidget('widgetStateChange')}>
-                    Search Widget
-                </button>
-                <button className='buttonSize' onClick={() => hideWidget('widgetStateChangeSales')}>
-                    Sales Evidence Widget
-                </button>
-                <button className='buttonSize' onClick={() => hideWidget('widgetStateChangeLease')}>
-                    Test Widget
-                </button>
-            </div>
             <div className='button-wrapper hide-show-buttons'>
                 <button className="secondary" onClick={() => {
                     const id = `search:${(Math.random() * 1000)}`
                     props.changeSearchParameters(props.searchParameters.concat([{ ...DEFAULT_SEARCH_PARAMS, id }]))
-                }}>Add New Search Group
+                }}>
+                    Add New Search Group
                 </button>
                 &nbsp;
                 <button onClick={() => { props.setReadyForSearch(true) }}>Search</button>
             </div>
+
+            <form>
+                <div className="radio-box">
+                    <label>
+                        <div className="radio">
+                            <input name='radio' type="radio" checked={widgetStateChange} onClick={() => hideWidget('widgetStateChange')}/>
+                            <span className='radioName'>Map Widget</span>
+                            <input type="radio" checked={widgetStateChangeSales} onClick={() => hideWidget('widgetStateChangeSales')}/>
+                            <span className='radioName'>Sales Evidence Widget</span>
+                            <input type="radio" />
+                            <span className='radioName'>Leases Evidence Widget</span>
+                        </div>
+                    </label>
+                </div>
+            </form>
         </div>
     )
 }
