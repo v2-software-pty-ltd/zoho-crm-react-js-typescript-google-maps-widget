@@ -8,7 +8,7 @@ type ResultsTableProps = {
 }
 
 export function ResultsTableWidget (props: ResultsTableProps) {
-    const uniqueResults = getUniqueListBy(props.results, 'id');
+    const uniqueResults = getUniqueListBy(props.results, 'id')
     return (
         <div style={{ padding: '20px' }}>
             <table>
@@ -26,7 +26,6 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                         if (!result.Latitude || !result.Longitude) {
                             propertyAddress = `${result.Deal_Name} - Geocordinates N/A, cannot display on map.`
                         }
-
                         const ownerData = result.owner_details.find((owner) => owner.Contact_Type === 'Owner')
                         const contactData = result.owner_details.find((owner) => owner.Contact_Type === 'Director')
                         return (

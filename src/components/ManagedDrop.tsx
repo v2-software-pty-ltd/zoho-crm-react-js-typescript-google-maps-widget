@@ -20,6 +20,7 @@ export function ManagedDrop (props: DropdownProps) {
                 getValue={props.managed}
                 onChange={(newManagedValue: ReactSelectOption) => props.changedManaged([newManagedValue.value])}
                 tabIndex={3}
+                placeholder={'None'}
                 options={yesNo}
             />
         </label>
