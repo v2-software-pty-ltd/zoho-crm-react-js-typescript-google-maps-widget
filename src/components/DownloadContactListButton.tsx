@@ -14,8 +14,15 @@ export function DownloadContactListButton (props: DownloadButtonProps) {
     const uniqueProperties = getUniqueListBy(arrayOfPropertyObjects, 'id')
     const csvRows = uniqueProperties.map((result: UnprocessedResultsFromCRM) => {
         if (result.owner_details && Array.isArray(result.owner_details)) {
-            const mobile = result.owner_details[0].Mobile
-            const workPhone = result.owner_details[0].Work_Phone
+            let mobile
+            let workPhone
+            if (!result.owner_details[0]) {
+                mobile = result.owner_details[1].Mobile
+                workPhone = result.owner_details[1].Work_Phone
+            } else {
+                mobile = result.owner_details[0].Mobile
+                workPhone = result.owner_details[0].Work_Phone
+            }
             const propertyAddress = result.Deal_Name
             const propertyTypeMarketing = result.Property_Category_Mailing
             const ownerData = result.owner_details.find((owner: OwnerType) => owner.Contact_Type === 'Owner')
