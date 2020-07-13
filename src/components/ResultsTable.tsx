@@ -34,7 +34,7 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                                 <td>{index + 1}</td>
                                 <td>{propertyAddress}</td>
                                 <td>{ownerData?.Name || ''}</td>
-                                <td>{contactData?.Name || 'contact is not found'}</td>
+                                <td>{contactData?.Name || 'Contact Is Not Found'}</td>
                             </tr>
                         )
                     })}
