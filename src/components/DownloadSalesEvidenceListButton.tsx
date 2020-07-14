@@ -16,7 +16,6 @@ export default function DownloadSalesEvidenceListButton (props: DownloadButtonPr
         const buildArea = propertyObject.Build_Area_sqm
         const dateSold = propertyObject.Sale_Date
         const salePrice = propertyObject.Sale_Price
-        console.log('columns', propertyAddress, landArea, buildArea, dateSold, salePrice)
 
         let csvRow = `"${propertyAddress}","${landArea}","${buildArea}","${dateSold}","${salePrice}"\r\n`
         csvRow = csvRow.replace(/null/g, '-')

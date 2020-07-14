@@ -101,7 +101,7 @@ function App () {
             <SearchWidgetWrapper changeSearchParameters={changeSearchParameters} searchParameters={searchParameters} setReadyForSearch={setReadyForSearch} />
             {isLoading &&
                 <div style={{ padding: '20px' }}>
-                    Loading ... estimated waiting time 20 seconds.
+                    Loading... estimated waiting time 10 seconds.
                 </div>
             }
             {searchAddressPosition && renderResultsWidgets(results, googleMapsApiKey, isLoading, uniqueSearchRecords, searchAddressPosition)}

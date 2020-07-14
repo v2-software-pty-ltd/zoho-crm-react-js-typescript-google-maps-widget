@@ -75,8 +75,8 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
             const isManaged = (property.Managed === managed) || managed === 'None'
             const shouldAddProperty = isManaged && (canAddBasedOnFilters || canAddAsNeighbour)
             if (shouldAddProperty) {
-                if (!canAddBasedOnFilters && canAddAsNeighbour) matchTallies.neighbour += 1
                 if (ownerData.length > 0) {
+                    if (!canAddBasedOnFilters && canAddAsNeighbour) matchTallies.neighbour += 1
                     property.owner_details = ownerData
                     matchedProperties.push(property)
 
