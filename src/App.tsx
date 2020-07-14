@@ -37,24 +37,36 @@ function prepareDataForMap (results: UnprocessedResultsFromCRM[], searchAddressP
     }
 }
 
-function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsApiKey: string | undefined, isLoading: boolean, uniqueSearchRecords: number, searchAddressPosition: PositionType) {
+function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsApiKey: string | undefined, isLoading: boolean, uniqueSearchRecords: number, searchAddressPosition: PositionType, widgetStateChange: string) {
     const dataForMap = prepareDataForMap(results, searchAddressPosition)
     if (results && dataForMap && googleMapsApiKey && !isLoading) {
         return (
             <div style={{ padding: '20px' }}>
-                <div className="download-button-wrapper pagebreak">
-                    <DownloadContactListButton results={results} />
-                    <DownloadMailingListButton results={results} />
-                    <DownloadSalesEvidenceListButton results={results} />
-                    <MassMailButton results={results} />
+                <div>
+                    {widgetStateChange === 'baseFilter' &&
+                        (
+                            <div className="download-button-wrapper pagebreak">
+                                <DownloadContactListButton results={results} />
+                                <DownloadMailingListButton results={results} />
+                                <MassMailButton results={results} />
+                                <UpdateLastMailedButton results={results} />
+                            </div>
+                        )
+                    }
+                    {widgetStateChange === 'sales' &&
+                        (
+                            <div className="download-button-wrapper pagebreak">
+                                <DownloadSalesEvidenceListButton results={results} />
+                            </div>
+                        )
+                    }
                 </div>
-                <UpdateLastMailedButton results={results} />
                 <div className="pagebreak">
                     <MapWidget addressesToRender={dataForMap.addressesToRender} centrePoint={dataForMap.centrePoint} mapsApiKey={googleMapsApiKey} />
                 </div>
                 <div className="pagebreak">
                     <p>Unique Search Results: {uniqueSearchRecords}</p>
-                    <ResultsTableWidget results={results} />
+                    <ResultsTableWidget results={results} widgetStateChange={widgetStateChange} />
                 </div>
             </div>
         )
@@ -69,6 +81,7 @@ function App () {
     const [isLoading, setLoading] = useState(false)
     const [uniqueSearchRecords, setUniqueSearchRecords] = useState<number>(0)
     const [searchAddressPosition, setSearchAddressPosition] = useState<PositionType>()
+    const [widgetStateChange, setWidgetStateChange] = useState<string>('baseFilter')
 
     useEffect(() => {
         if (isReadyForSearch) {
@@ -98,13 +111,13 @@ function App () {
 
     return (
         <div className="App">
-            <SearchWidgetWrapper changeSearchParameters={changeSearchParameters} searchParameters={searchParameters} setReadyForSearch={setReadyForSearch} />
+            <SearchWidgetWrapper changeSearchParameters={changeSearchParameters} searchParameters={searchParameters} setReadyForSearch={setReadyForSearch} setWidgetStateChange={setWidgetStateChange} widgetStateChange={widgetStateChange}/>
             {isLoading &&
                 <div style={{ padding: '20px' }}>
                     Loading ... estimated waiting time 20 seconds.
                 </div>
             }
-            {searchAddressPosition && renderResultsWidgets(results, googleMapsApiKey, isLoading, uniqueSearchRecords, searchAddressPosition)}
+            {searchAddressPosition && renderResultsWidgets(results, googleMapsApiKey, isLoading, uniqueSearchRecords, searchAddressPosition, widgetStateChange)}
         </div>
     )
 }

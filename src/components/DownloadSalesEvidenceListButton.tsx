@@ -16,12 +16,11 @@ export default function DownloadSalesEvidenceListButton (props: DownloadButtonPr
         const buildArea = propertyObject.Build_Area_sqm
         const dateSold = propertyObject.Sale_Date
         const salePrice = propertyObject.Sale_Price
-        console.log('columns', propertyAddress, landArea, buildArea, dateSold, salePrice)
-
-        let csvRow = `"${propertyAddress}","${landArea}","${buildArea}","${dateSold}","${salePrice}"\r\n`
-        csvRow = csvRow.replace(/null/g, '-')
-
-        return csvRow
+        if (landArea || buildArea || dateSold || salePrice) {
+            let csvRow = `"${propertyAddress}","${landArea}","${buildArea}","${dateSold}","${salePrice}"\r\n`
+            csvRow = csvRow.replace(/null/g, '-')
+            return csvRow
+        }
     }
     const HEADER_ROW = '"Property Address","Land Area (sqm)","Build Area (sqm)","Date Sold","Sale Price"\r\n'
     const csvRows = dedupedProperties.map(generateCSVRow).join('')

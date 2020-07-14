@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { SearchWidget } from './SearchWidget'
 import { SalesEvidenceSearchWidget } from './salesEvidenceSearch'
 import { DEFAULT_SEARCH_PARAMS, IntersectedSearchAndFilterParams } from '../types'
@@ -7,32 +7,26 @@ type SearchWidgetProps = {
     searchParameters: IntersectedSearchAndFilterParams[]
     changeSearchParameters: (newParameters: IntersectedSearchAndFilterParams[]) => void
     setReadyForSearch: (isReady: boolean) => void
+    setWidgetStateChange: (stateChange: string) => void
+    widgetStateChange: string
 }
 
 export function SearchWidgetWrapper (props: SearchWidgetProps) {
-    const [widgetStateChange, setWidgetStateChange] = useState<boolean>(false)
-    const [widgetStateChangeSales, setWidgetStateChangeSales] = useState<boolean>(false)
-    const [widgetStateChangeLease, setWidgetStateChangeLease] = useState<boolean>(false)
-
-    function hideWidget (value: any) {
+    function hideWidget (value: string) {
         switch (value) {
-        case 'widgetStateChange':
-            setWidgetStateChange(!widgetStateChange)
+        case 'sales':
+            props.setWidgetStateChange('sales')
             break
-        case 'widgetStateChangeSales':
-            setWidgetStateChangeSales(!widgetStateChangeSales)
-            break
-        case 'widgetStateChangeLease':
-            setWidgetStateChangeLease(!widgetStateChangeLease)
+        case 'lease':
+            props.setWidgetStateChange('lease')
             break
         default:
-            setWidgetStateChange(!widgetStateChange)
+            props.setWidgetStateChange('baseFilter')
         }
     }
-
     return (
         <div>
-            {widgetStateChange && props.searchParameters.map((searchParameters, idx) => {
+            {props.widgetStateChange === 'baseFilter' && props.searchParameters.map((searchParameters, idx) => {
                 return (
                     <div className="search-params-wrapper" key={searchParameters.id}>
                         <SearchWidget
@@ -43,42 +37,38 @@ export function SearchWidgetWrapper (props: SearchWidgetProps) {
                                 props.changeSearchParameters(updatedSearchParams)
                             }}
                         />
-                        <button className="danger" onClick={() => {
-                            const updatedSearchParams = [...props.searchParameters]
-                            updatedSearchParams.splice(idx, 1)
-                            props.changeSearchParameters(updatedSearchParams)
-                        }}>Remove Search Group
-                        </button>
+                        <div className='button-wrapper hide-show-buttons'>
+                            <button className="secondary" onClick={() => {
+                                const id = `search:${(Math.random() * 1000)}`
+                                props.changeSearchParameters(props.searchParameters.concat([{ ...DEFAULT_SEARCH_PARAMS, id }]))
+                            }}>
+                                Add New Search Group
+                            </button>
+                            &nbsp;
+                            <button className="danger" onClick={() => {
+                                const updatedSearchParams = [...props.searchParameters]
+                                updatedSearchParams.splice(idx, 1)
+                                props.changeSearchParameters(updatedSearchParams)
+                            }}>Remove Search Group
+                            </button>
+                        </div>
                     </div>
                 )
             })}
-            {widgetStateChangeSales && props.searchParameters.map((searchParameters, idx) => {
-                return (
-                    <div className="search-params-wrapper" key={searchParameters.id}>
+            {props.widgetStateChange === 'sales' && props.searchParameters[0] &&
+                (
+                    <div className="search-params-wrapper" key={props.searchParameters[0].id}>
                         <SalesEvidenceSearchWidget
-                            searchParameters={searchParameters}
+                            searchParameters={props.searchParameters[0]}
                             changeSearchParameters={(newSearchParams) => {
                                 const updatedSearchParams = [...props.searchParameters]
-                                updatedSearchParams[idx] = newSearchParams
+                                updatedSearchParams[0] = newSearchParams
                                 props.changeSearchParameters(updatedSearchParams)
                             }} />
-                        <button className="danger" onClick={() => {
-                            const updatedSearchParams = [...props.searchParameters]
-                            updatedSearchParams.splice(idx, 1)
-                            props.changeSearchParameters(updatedSearchParams)
-                        }}>Remove Search Group
-                        </button>
                     </div>
                 )
-            })}
+            }
             <div className='button-wrapper hide-show-buttons'>
-                <button className="secondary" onClick={() => {
-                    const id = `search:${(Math.random() * 1000)}`
-                    props.changeSearchParameters(props.searchParameters.concat([{ ...DEFAULT_SEARCH_PARAMS, id }]))
-                }}>
-                    Add New Search Group
-                </button>
-                &nbsp;
                 <button onClick={() => { props.setReadyForSearch(true) }}>Search</button>
             </div>
 
@@ -86,9 +76,9 @@ export function SearchWidgetWrapper (props: SearchWidgetProps) {
                 <div className="radio-box">
                     <label>
                         <div className="radio">
-                            <input name='radio' type="radio" checked={widgetStateChange} onClick={() => hideWidget('widgetStateChange')}/>
+                            <input name='radio' type="radio" checked={props.widgetStateChange === 'baseFilter'} onClick={() => hideWidget('baseFilter')}/>
                             <span className='radioName'>Map Widget</span>
-                            <input type="radio" checked={widgetStateChangeSales} onClick={() => hideWidget('widgetStateChangeSales')}/>
+                            <input type="radio" checked={props.widgetStateChange === 'sales'} onClick={() => hideWidget('sales')}/>
                             <span className='radioName'>Sales Evidence Widget</span>
                             <input type="radio" />
                             <span className='radioName'>Leases Evidence Widget</span>
