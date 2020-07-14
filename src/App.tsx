@@ -42,6 +42,7 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsA
     if (results && dataForMap && googleMapsApiKey && !isLoading) {
         return (
             <div style={{ padding: '20px' }}>
+
                 <div>
                     {widgetStateChange === 'baseFilter' &&
                         (
