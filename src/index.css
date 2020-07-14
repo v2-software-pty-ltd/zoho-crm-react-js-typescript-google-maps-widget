@@ -304,3 +304,7 @@ td {
 .radio-box {
   text-align: center;
 }
+
+.inputSize {
+  min-width: 67%;
+}

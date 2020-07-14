@@ -16,33 +16,33 @@ export function SalesEvidenceSearchWidget (props: SearchWidgetProps) {
             <SearchWidget changeSearchParameters={props.changeSearchParameters} searchParameters={props.searchParameters} />
             <form className="wrapper">
                 <label className="eight">Land Area m2<br />
-                    <input className="minMaxSize border" id="landAreaMin" value={props.searchParameters.landArea.min} onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    <input className="minMaxSize border" id="landAreaMin" onChange={(e: ChangeEvent<HTMLInputElement>) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
                             landArea: { min: e.target.valueAsNumber, max: props.searchParameters.landArea.max }
                         })
-                    }} placeholder="Enter min land area." type="number" tabIndex={6} />
-                    <input className="minMaxSize border" id="landAreaMax" value={props.searchParameters.landArea.max} onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    }} placeholder="Default 0" type="number" tabIndex={6} />
+                    <input className="minMaxSize border" id="landAreaMax" onChange={(e: ChangeEvent<HTMLInputElement>) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
-                            landArea: { min: props.searchParameters.landArea.min, max: e.target.valueAsNumber}
+                            landArea: { min: props.searchParameters.landArea.min, max: e.target.valueAsNumber }
                         })
-                    }} placeholder="Enter max land area." type="number" tabIndex={6} />
+                    }} placeholder="Default 10000" type="number" tabIndex={6} />
                 </label>
 
                 <label className="nine">Build Area (sqm) <br />
-                    <input className="minMaxSize border" id="buildArea" value={props.searchParameters.buildArea.min} onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    <input className="minMaxSize border" id="buildArea" onChange={(e: ChangeEvent<HTMLInputElement>) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
                             buildArea: { min: e.target.valueAsNumber, max: props.searchParameters.buildArea.max }
                         })
-                    }} placeholder="Build area min" type="number" tabIndex={4} />
-                    <input className="minMaxSize border" id="buildArea" value={props.searchParameters.buildArea.max} onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    }} placeholder="Default 0" type="number" tabIndex={4} />
+                    <input className="minMaxSize border" id="buildArea" onChange={(e: ChangeEvent<HTMLInputElement>) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
                             buildArea: { min: props.searchParameters.buildArea.min, max: e.target.valueAsNumber }
                         })
-                    }} placeholder="Build area max" type="number" tabIndex={4} />
+                    }} placeholder="Default 10000" type="number" tabIndex={4} />
                 </label>
 
                 <label className="ten">Date Sold<br />
@@ -61,18 +61,18 @@ export function SalesEvidenceSearchWidget (props: SearchWidgetProps) {
                     }}/>
                 </label>
                 <label className="eleven ">Sale Price<br />
-                    <input className="minMaxSize border" id="landAreaMin" value={props.searchParameters.salePrice.min} onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    <input className="minMaxSize border" id="landAreaMin" onChange={(e: ChangeEvent<HTMLInputElement>) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
                             salePrice: { min: e.target.valueAsNumber, max: props.searchParameters.salePrice.max }
                         })
-                    }} placeholder="Enter min sales price." type="number" tabIndex={6} />
-                    <input className="minMaxSize border " id="landAreaMin" value={props.searchParameters.salePrice.max} onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    }} placeholder="Default 0" type="number" tabIndex={6} />
+                    <input className="minMaxSize border " id="landAreaMin" onChange={(e: ChangeEvent<HTMLInputElement>) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
                             salePrice: { min: props.searchParameters.salePrice.min, max: e.target.valueAsNumber }
                         })
-                    }} placeholder="Enter max sales price." type="number" tabIndex={6} />
+                    }} placeholder="Default 1000000" type="number" tabIndex={6} />
                 </label>
                 <SaleTypeDropdown chosenSaleType={props.searchParameters.saleType} changeSaleTypes={(newSaleTypes) => {
                     props.changeSearchParameters({

@@ -20,11 +20,11 @@ export const DEFAULT_SEARCH_PARAMS = {
     readyForSearch: false,
     landArea: {
         min: 0,
-        max: 0
+        max: 10000
     },
     buildArea: {
         min: 0,
-        max: 0
+        max: 10000
     },
     dateSold: {
         min: new Date(),
@@ -32,7 +32,7 @@ export const DEFAULT_SEARCH_PARAMS = {
     },
     salePrice: {
         min: 0,
-        max: 0
+        max: 1000000
     },
     saleType: [],
     id: `search:${(Math.random() * 1000)}`

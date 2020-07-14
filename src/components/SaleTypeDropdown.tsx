@@ -19,6 +19,7 @@ export function SaleTypeDropdown (props: DropdownProps) {
         <label className="twelve">Sale Type
             <Select
                 getValue={props.chosenSaleType}
+                placeholder={'All'}
                 isMulti
                 name="saleType"
                 id="saleType"
