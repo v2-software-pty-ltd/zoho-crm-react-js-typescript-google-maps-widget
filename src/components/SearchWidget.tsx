@@ -35,7 +35,7 @@ export function SearchWidget (props: SearchWidgetProps) {
                         ...props.searchParameters,
                         neighboursSearchMaxRecords: e.target.valueAsNumber
                     })
-                }} placeholder="Defaults to 100" type="number" tabIndex={4} />
+                }} placeholder="Defaults to 0" type="number" tabIndex={4} />
             </label>
             <label className="three">Property Types Filter Max Records <br />
                 <input className="below-label border" id="propertyTypeNumberOfRecords" onChange={(e: ChangeEvent<HTMLInputElement>) => {
@@ -43,7 +43,7 @@ export function SearchWidget (props: SearchWidgetProps) {
                         ...props.searchParameters,
                         propertyTypesMaxResults: e.target.valueAsNumber
                     })
-                }} placeholder="Defaults to 200" type="number" tabIndex={5} />
+                }} placeholder="Defaults to 0" type="number" tabIndex={5} />
             </label>
             <PropertyGroupDropdown chosenPropertyGroups={props.searchParameters.propertyGroups} changePropertyGroups={(newPropertyGroups) => {
                 props.changeSearchParameters({
@@ -57,7 +57,8 @@ export function SearchWidget (props: SearchWidgetProps) {
                         ...props.searchParameters,
                         propertyGroupsMaxResults: e.target.valueAsNumber
                     })
-                }} placeholder="Defaults to 200" type="number" tabIndex={6} />
+                }} placeholder="Defaults to 0" type="number" tabIndex={6} />
+
             </label>
 
             <ManagedDrop managed={props.searchParameters.managed} changedManaged={(isManaged) => {
