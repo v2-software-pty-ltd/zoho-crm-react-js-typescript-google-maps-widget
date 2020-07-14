@@ -58,6 +58,7 @@ export function SearchWidget (props: SearchWidgetProps) {
                         propertyGroupsMaxResults: e.target.valueAsNumber
                     })
                 }} placeholder="Defaults to 0" type="number" tabIndex={6} />
+
             </label>
 
             <ManagedDrop managed={props.searchParameters.managed} changedManaged={(isManaged) => {
