@@ -19,7 +19,7 @@ export function SearchWidget (props: SearchWidgetProps) {
                         ...props.searchParameters,
                         searchAddress: e.target.value
                     })
-                }} placeholder="Defaults to 528 Kent St, Sydney, NSW, 2000" id="propertyAddress" required tabIndex={1} />
+                }} value={props.searchParameters.searchAddress} id="propertyAddress" required tabIndex={1} />
                 <p className="smaller-font">* Must contain street, suburb, state & postcode with each separated by comma</p>
             </label>
 
