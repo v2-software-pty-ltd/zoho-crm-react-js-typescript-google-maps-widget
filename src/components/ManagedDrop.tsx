@@ -3,13 +3,13 @@ import Select from 'react-select'
 import { ReactSelectOption } from '../types'
 
 type DropdownProps = {
-    managed: string[] | undefined[]
+    managed: string[]
     changedManaged: (managed: string[]) => void
 }
 
 export function ManagedDrop (props: DropdownProps) {
     const yesNo = [
-        { value: undefined, label: '' },
+        { value: 'All', label: '' },
         { value: 'Yes', label: 'Yes' },
         { value: 'No', label: 'No' }
     ]

@@ -38,11 +38,9 @@ function getOwnerData (property: UnprocessedResultsFromCRM) {
 }
 
 export default function filterResults (unsortedPropertyResults: UnprocessedResultsFromCRM[], searchParameters: SearchParametersType[]): { matchedProperties: UnprocessedResultsFromCRM[], uniqueSearchRecords: string[] } {
-    const lengthOfUnsortedPropertyResults = unsortedPropertyResults.length
-
-    const maxNumNeighbours = searchParameters[0].neighboursSearchMaxRecords || lengthOfUnsortedPropertyResults
-    const maxResultsForPropertyTypes = searchParameters[0].propertyTypesMaxResults || lengthOfUnsortedPropertyResults
-    const maxResultsForPropertyGroups = searchParameters[0].propertyGroupsMaxResults || lengthOfUnsortedPropertyResults
+    const maxNumNeighbours = searchParameters[0].neighboursSearchMaxRecords
+    const maxResultsForPropertyTypes = searchParameters[0].propertyTypesMaxResults
+    const maxResultsForPropertyGroups = searchParameters[0].propertyGroupsMaxResults
     const desiredPropertyTypes = searchParameters[0].propertyTypes
     const desiredPropertyGroups = searchParameters[0].propertyGroups
     const managed = searchParameters[0].managed[0]
@@ -67,7 +65,7 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
 
             const ownerData = getOwnerData(property)
             const canAddBasedOnFilters = propertyGroupMatch || propertyTypeMatch
-            const isManaged = (property.Managed === managed) || typeof managed === 'undefined'
+            const isManaged = (property.Managed === managed) || managed === 'All'
             const shouldAddProperty = isManaged && (canAddBasedOnFilters || maxNeighours)
             if (shouldAddProperty) {
                 if (ownerData.length > 0) {
