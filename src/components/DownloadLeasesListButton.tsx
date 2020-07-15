@@ -37,5 +37,5 @@ export default function DownloadLeasesListButton (props: DownloadButtonProps) {
 
     downloadUrl = URL.createObjectURL(resultsBlob)
 
-    return (<a href={downloadUrl} className="button" download="salesevidence.csv" >Download Sales Evidence List</a>)
+    return (<a href={downloadUrl} className="button" download="salesevidence.csv" >Download Leases List</a>)
 }
