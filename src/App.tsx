@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import './index.css'
-import { SearchWidgetWrapper } from './components/SearchWidgets'
+import { SearchWidgetWrapper } from './components/SearchWidgetsWrapper'
 import { findMatchingProperties, getGoogleMapsAPIKeyFromCRM, getSearchAddressPosition } from './services/crmDataService'
 import { MapWidget } from './components/MapWidget'
 import { ResultsTableWidget } from './components/ResultsTable'
 import { DownloadMailingListButton } from './components/DownloadMailingListButton'
 import { DownloadContactListButton } from './components/DownloadContactListButton'
 import DownloadSalesEvidenceListButton from './components/DownloadSalesEvidenceListButton'
-import { UnprocessedResultsFromCRM, ResultsType, DEFAULT_SEARCH_PARAMS, SearchParametersType, PositionType } from './types'
+import { UnprocessedResultsFromCRM, ResultsType, DEFAULT_SEARCH_PARAMS, PositionType, IntersectedSearchAndFilterParams } from './types'
 import { UpdateLastMailedButton } from './components/UpdateLastMailedButton'
 import { MassMailButton } from './components/MassMailButton'
 
@@ -37,24 +37,37 @@ function prepareDataForMap (results: UnprocessedResultsFromCRM[], searchAddressP
     }
 }
 
-function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsApiKey: string | undefined, isLoading: boolean, uniqueSearchRecords: number, searchAddressPosition: PositionType) {
+function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsApiKey: string | undefined, isLoading: boolean, uniqueSearchRecords: number, searchAddressPosition: PositionType, widgetStateChange: string) {
     const dataForMap = prepareDataForMap(results, searchAddressPosition)
     if (results && dataForMap && googleMapsApiKey && !isLoading) {
         return (
             <div style={{ padding: '20px' }}>
-                <div className="download-button-wrapper pagebreak">
-                    <DownloadContactListButton results={results} />
-                    <DownloadMailingListButton results={results} />
-                    <DownloadSalesEvidenceListButton results={results} />
-                    <MassMailButton results={results} />
+
+                <div>
+                    {widgetStateChange === 'baseFilter' &&
+                        (
+                            <div className="download-button-wrapper pagebreak">
+                                <DownloadContactListButton results={results} />
+                                <DownloadMailingListButton results={results} />
+                                <MassMailButton results={results} />
+                                <UpdateLastMailedButton results={results} />
+                            </div>
+                        )
+                    }
+                    {widgetStateChange === 'sales' &&
+                        (
+                            <div className="download-button-wrapper pagebreak">
+                                <DownloadSalesEvidenceListButton results={results} />
+                            </div>
+                        )
+                    }
                 </div>
-                <UpdateLastMailedButton results={results} />
                 <div className="pagebreak">
                     <MapWidget addressesToRender={dataForMap.addressesToRender} centrePoint={dataForMap.centrePoint} mapsApiKey={googleMapsApiKey} />
                 </div>
                 <div className="pagebreak">
                     <p>Unique Search Results: {uniqueSearchRecords}</p>
-                    <ResultsTableWidget results={results} />
+                    <ResultsTableWidget results={results} widgetStateChange={widgetStateChange} />
                 </div>
             </div>
         )
@@ -62,13 +75,14 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsA
 }
 
 function App () {
-    const [searchParameters, changeSearchParameters] = useState<SearchParametersType[]>([{ ...DEFAULT_SEARCH_PARAMS }])
+    const [searchParameters, changeSearchParameters] = useState<IntersectedSearchAndFilterParams[]>([{ ...DEFAULT_SEARCH_PARAMS }])
     const [isReadyForSearch, setReadyForSearch] = useState<boolean>(false)
     const [results, updateResults] = useState<UnprocessedResultsFromCRM[]>([])
     const [googleMapsApiKey, updateGoogleMapsApiKey] = useState()
     const [isLoading, setLoading] = useState(false)
     const [uniqueSearchRecords, setUniqueSearchRecords] = useState<number>(0)
     const [searchAddressPosition, setSearchAddressPosition] = useState<PositionType>()
+    const [widgetStateChange, setWidgetStateChange] = useState<string>('baseFilter')
 
     useEffect(() => {
         if (isReadyForSearch) {
@@ -98,13 +112,13 @@ function App () {
 
     return (
         <div className="App">
-            <SearchWidgetWrapper changeSearchParameters={changeSearchParameters} searchParameters={searchParameters} setReadyForSearch={setReadyForSearch} />
+            <SearchWidgetWrapper changeSearchParameters={changeSearchParameters} searchParameters={searchParameters} setReadyForSearch={setReadyForSearch} setWidgetStateChange={setWidgetStateChange} widgetStateChange={widgetStateChange}/>
             {isLoading &&
                 <div style={{ padding: '20px' }}>
                     Loading... estimated waiting time 10 seconds.
                 </div>
             }
-            {searchAddressPosition && renderResultsWidgets(results, googleMapsApiKey, isLoading, uniqueSearchRecords, searchAddressPosition)}
+            {searchAddressPosition && renderResultsWidgets(results, googleMapsApiKey, isLoading, uniqueSearchRecords, searchAddressPosition, widgetStateChange)}
         </div>
     )
 }
