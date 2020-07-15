@@ -1,5 +1,5 @@
 module.exports = {
-    "ignorePatterns": ["build/", "node_modules/", "dist/", "cypress/"],
+    "ignorePatterns": ["build/", "node_modules/", "dist/", "cypress/", "app/static/"],
     "env": {
         "browser": true,
         "es6": true,
@@ -147,7 +147,7 @@ module.exports = {
             'error',
             "1tbs",
             {
-                "allowSingleLine": true
+                "allowSingleLine": false
             }
         ],
         "handle-callback-err": [

@@ -38,7 +38,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "dist": "make build"
+    "dist": "make build",
+    "lint": "eslint ."
   },
   "eslintConfig": {
     "extends": "react-app"
