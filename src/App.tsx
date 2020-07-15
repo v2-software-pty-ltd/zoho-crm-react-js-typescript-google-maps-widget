@@ -7,6 +7,7 @@ import { ResultsTableWidget } from './components/ResultsTable'
 import { DownloadMailingListButton } from './components/DownloadMailingListButton'
 import { DownloadContactListButton } from './components/DownloadContactListButton'
 import DownloadSalesEvidenceListButton from './components/DownloadSalesEvidenceListButton'
+import DownloadLeasesListButton from './components/DownloadLeasesListButton'
 import { UnprocessedResultsFromCRM, ResultsType, DEFAULT_SEARCH_PARAMS, PositionType, IntersectedSearchAndFilterParams } from './types'
 import { UpdateLastMailedButton } from './components/UpdateLastMailedButton'
 import { MassMailButton } from './components/MassMailButton'
@@ -59,6 +60,13 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsA
                         (
                             <div className="download-button-wrapper pagebreak">
                                 <DownloadSalesEvidenceListButton results={results} />
+                            </div>
+                        )
+                    }
+                    {widgetStateChange === 'lease' &&
+                        (
+                            <div className="download-button-wrapper pagebreak">
+                                <DownloadLeasesListButton results={results} />
                             </div>
                         )
                     }

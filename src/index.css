@@ -95,6 +95,10 @@ body {
   grid-column: 2;
   grid-row: 6;
 }
+.thirteen {
+  grid-column: 2;
+  grid-row: 7;
+}
 
 .thirteen {
   grid-column: 2;

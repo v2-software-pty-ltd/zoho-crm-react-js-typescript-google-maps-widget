@@ -139,9 +139,12 @@ export type OwnerType = {
     Last_Mailed: string
     Last_Mailed_Date: string
 }
+export type addressForLease = {
+    name: string
+}
 
 export type UnprocessedResultsFromCRM = {
-    [index: string]: string | number | OwnerType[] | string[]
+    [index: string]: string | number | OwnerType[] | string[] | addressForLease[] | Date
     Latitude: string
     Longitude: string
     Deal_Name: string
@@ -161,6 +164,15 @@ export type UnprocessedResultsFromCRM = {
     Sale_Type: string[]
     Sale_Date: string
     Sale_Price: string
+    Area_sqm: number
+    Base_Rental: number
+    Current_Rental: number
+    Lessee_First_Name: string
+    Lessee_Last_Name: string
+    Start_Date: Date
+    Market_Review_End_Date: Date
+    Property: addressForLease[]
+
 }
 
 export type ReactSelectOption = {

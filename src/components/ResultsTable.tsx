@@ -76,6 +76,41 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                  </div>
              )
             }
+            {props.widgetStateChange === 'lease' &&
+             (
+                <div style={{ padding: '20px' }}>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Address</th>
+                            <th>Land Area</th>
+                            <th>Build Area</th>
+                            <th>Date Sold</th>
+                            <th>Sale Price</th>
+                        </tr>
+                    </thead>
+                        <tbody>
+                        {uniqueResults.map((result) => {
+                            let propertyAddress = result.Property.find((address) => address.name)
+                            const rentPerDollarMeter = result.Area_sqm
+                            const landArea = result.Land_Area_sqm
+                            const buildArea = result.Build_Area_sqm
+                            const rentCurrent = result.Current_Rental
+                            return (
+                                <tr key={result.id}>
+                                    <td>{propertyAddress}</td>
+                                    <td>{rentPerDollarMeter}</td>
+                                    <td>{landArea}</td>
+                                    <td>{buildArea}</td>
+                                    <td>{rentCurrent}</td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </table>
+            </div>
+                )
+            }
         </div>
     )
 }
