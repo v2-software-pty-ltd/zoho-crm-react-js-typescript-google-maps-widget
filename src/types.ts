@@ -2,21 +2,21 @@ export type SearchParametersType = {
     searchAddress: string
     propertyTypes: string[]
     propertyGroups: string[]
-    neighboursSearchMaxRecords: number
-    propertyGroupsMaxResults: number
-    propertyTypesMaxResults: number
-    managed: string[]
+    neighboursSearchMaxRecords: number | undefined
+    propertyGroupsMaxResults: number | undefined
+    propertyTypesMaxResults: number | undefined
+    managed: string[] | undefined[]
     id: string
 }
 
 export const DEFAULT_SEARCH_PARAMS = {
     searchAddress: '528 Kent St, Sydney, NSW, 2000',
-    propertyGroupsMaxResults: 0,
-    propertyTypesMaxResults: 0,
-    neighboursSearchMaxRecords: 0,
+    propertyGroupsMaxResults: undefined,
+    propertyTypesMaxResults: undefined,
+    neighboursSearchMaxRecords: undefined,
     propertyTypes: ['All'],
     propertyGroups: ['All'],
-    managed: ['None'],
+    managed: [undefined],
     readyForSearch: false,
     id: `search:${(Math.random() * 1000)}`
 }
