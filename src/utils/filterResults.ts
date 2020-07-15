@@ -63,20 +63,19 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
             const propertyTypeMatch = matchForPropertyTypes(property, desiredPropertyTypes, maxPropertyTypes)
             const propertyGroupMatch = matchForPropertyGroups(property, desiredPropertyGroups, maxGroupTypes)
 
-            if (propertyTypeMatch) {
-                matchTallies.propertyType += 1
-            } else if (!propertyTypeMatch && propertyGroupMatch) {
-                matchTallies.propertyGroup += 1
-            }
-
             const ownerData = getOwnerData(property)
             const canAddAsNeighbour = matchTallies.neighbour < maxNumNeighbours
             const canAddBasedOnFilters = propertyGroupMatch || propertyTypeMatch
             const isManaged = (property.Managed === managed) || managed === 'None'
             const shouldAddProperty = isManaged && (canAddBasedOnFilters || canAddAsNeighbour)
             if (shouldAddProperty) {
-                if (!canAddBasedOnFilters && canAddAsNeighbour) matchTallies.neighbour += 1
                 if (ownerData.length > 0) {
+                    if (propertyTypeMatch) {
+                        matchTallies.propertyType += 1
+                    } else if (!propertyTypeMatch && propertyGroupMatch) {
+                        matchTallies.propertyGroup += 1
+                    }
+                    if (!canAddBasedOnFilters && canAddAsNeighbour) matchTallies.neighbour += 1
                     property.owner_details = ownerData
                     matchedProperties.push(property)
 
