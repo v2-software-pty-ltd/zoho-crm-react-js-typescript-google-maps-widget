@@ -1,5 +1,5 @@
 // TODO - tsconfig replace CommonJS with esnext
-import { LeaseEvidenceFilterParams, UnprocessedResultsFromCRM, MinMaxNumberType, MinMaxDateType } from '../types'
+import { IntersectedSearchAndFilterParams, UnprocessedResultsFromCRM, MinMaxNumberType, MinMaxDateType } from '../types'
 
 // * Filtering inputs
 // Land Area m2 - Land_Area_sqm -
@@ -29,7 +29,7 @@ function dateFilter (property: UnprocessedResultsFromCRM, filterType: string, da
     return typeof property[filterType] === 'string' && property[filterType] >= minDate && property[filterType] <= maxDate
 }
 
-export default function salesEvidenceFilter (property: UnprocessedResultsFromCRM, filterParameters: LeaseEvidenceFilterParams): boolean {
+export default function salesEvidenceFilter (property: UnprocessedResultsFromCRM, filterParameters: IntersectedSearchAndFilterParams): boolean {
     const {
         landArea,
         buildArea,

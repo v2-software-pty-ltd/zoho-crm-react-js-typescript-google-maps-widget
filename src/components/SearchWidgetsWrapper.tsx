@@ -1,6 +1,7 @@
 import React from 'react'
 import { SearchWidget } from './SearchWidget'
 import { SalesEvidenceSearchWidget } from './salesEvidenceSearch'
+import { LeasesSearch } from './LeasesSearch'
 import { DEFAULT_SEARCH_PARAMS, IntersectedSearchAndFilterParams } from '../types'
 
 type SearchWidgetProps = {
@@ -68,6 +69,19 @@ export function SearchWidgetWrapper (props: SearchWidgetProps) {
                     </div>
                 )
             }
+            {props.widgetStateChange === 'lease' && props.searchParameters[0] &&
+                (
+                    <div className="search-params-wrapper" key={props.searchParameters[0].id}>
+                        <LeasesSearch
+                            searchParameters={props.searchParameters[0]}
+                            changeSearchParameters={(newSearchParams) => {
+                                const updatedSearchParams = [...props.searchParameters]
+                                updatedSearchParams[0] = newSearchParams
+                                props.changeSearchParameters(updatedSearchParams)
+                            }} />
+                    </div>
+                )
+            }
             <div className='button-wrapper hide-show-buttons'>
                 <button onClick={() => { props.setReadyForSearch(true) }}>Search</button>
             </div>
@@ -80,7 +94,7 @@ export function SearchWidgetWrapper (props: SearchWidgetProps) {
                             <span className='radioName'>Map Widget</span>
                             <input type="radio" checked={props.widgetStateChange === 'sales'} onClick={() => hideWidget('sales')}/>
                             <span className='radioName'>Sales Evidence Widget</span>
-                            <input type="radio" />
+                            <input type="radio" checked={props.widgetStateChange === 'lease'} onClick={() => hideWidget('lease')}/>
                             <span className='radioName'>Leases Evidence Widget</span>
                         </div>
                     </label>
