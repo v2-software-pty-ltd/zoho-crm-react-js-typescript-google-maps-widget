@@ -3,9 +3,9 @@ import { ZOHO } from '../vendor/ZSDK'
 import emailAndIdExtract from '../utils/emailAndIdExtract'
 import filterResults from '../utils/filterResults'
 
-async function getPageOfProperties (pageNumber: number) {
+async function getPageOfRecords (pageNumber: number, entity: string) {
     const response = await ZOHO.CRM.API.getAllRecords({
-        Entity: 'Deals',
+        Entity: entity,
         page: pageNumber,
         per_page: 200
     })
@@ -15,24 +15,27 @@ async function getPageOfProperties (pageNumber: number) {
     return response.data
 }
 
-const retrieveAllProperties = async function (pageNumber: number, retrievedProperties: UnprocessedResultsFromCRM[]): Promise<UnprocessedResultsFromCRM[]> {
-    const thisPageResults = await getPageOfProperties(pageNumber)
+const retrieveAllRecords = async function (pageNumber: number, retrievedProperties: UnprocessedResultsFromCRM[], entity: string): Promise<UnprocessedResultsFromCRM[]> {
+    const thisPageResults = await getPageOfRecords(pageNumber, entity)
     if (thisPageResults.length === 0) {
         return retrievedProperties
     }
-    return retrieveAllProperties(
+    return retrieveAllRecords(
         pageNumber + 1,
-        retrievedProperties.concat(thisPageResults)
+        retrievedProperties.concat(thisPageResults),
+        entity
     )
 }
 
-export async function findMatchingProperties (searchParameters: SearchParametersType[]): Promise<{ matchedProperties: UnprocessedResultsFromCRM[], uniqueSearchRecords: string[] }> {
-    const matchingResults = await retrieveAllProperties(0, [])
+export async function findMatchingRecords (searchParameters: SearchParametersType[], entity: string): Promise<{ matchedProperties: UnprocessedResultsFromCRM[], uniqueSearchRecords: string[] }> {
+    const matchingResults = await retrieveAllRecords(0, [], entity)
+    console.log('matchingResults', matchingResults)
 
     if (Object.keys(matchingResults).includes('Error')) {
         alert('Error retrieving search results')
     }
     const results = filterResults(matchingResults, searchParameters)
+    console.log('results', results)
 
     return results
 }

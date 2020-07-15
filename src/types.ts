@@ -9,6 +9,33 @@ export type SearchParametersType = {
     id: string
 }
 
+const DEFAULT_SALES_EVIDENCE_PARAMS = {
+    landArea: {
+        min: 0,
+        max: 0
+    },
+    buildArea: {
+        min: 0,
+        max: 0
+    },
+    rentGross: {
+        min: 0,
+        max: 0
+    },
+    rentPerDollarMeter: {
+        min: 0,
+        max: 0
+    },
+    leasedDate: {
+        min: new Date(),
+        max: new Date()
+    },
+    reviewDate: {
+        min: new Date(),
+        max: new Date()
+    }
+}
+
 export const DEFAULT_SEARCH_PARAMS = {
     searchAddress: '528 Kent St, Sydney, NSW, 2000',
     propertyGroupsMaxResults: 0,
@@ -46,23 +73,33 @@ export type SalesEvidenceFilterParams = {
   salePrice: MinMaxNumberType
   saleType: SaleTypeEnum[]
 }
+
 export type IntersectedSearchAndFilterParams = SalesEvidenceFilterParams & SearchParametersType
 
 export enum SaleTypeEnum {
-  ALL = 'ALL',
-  INV = 'INV',
-  VP = 'VP',
-  DEV = 'DEV'
+    ALL = 'ALL',
+    INV = 'INV',
+    VP = 'VP',
+    DEV = 'DEV'
 }
 
-export type MinMaxDateType = {
-  min: Date
-  max: Date
+export type LeaseEvidenceFilterParams = {
+  landArea: MinMaxNumberType
+  buildArea: MinMaxNumberType
+  rentGross: MinMaxNumberType
+  rentPerDollarMeter: MinMaxNumberType
+  leasedDate: MinMaxDateType
+  reviewDate: MinMaxDateType
 }
 
 export type MinMaxNumberType = {
   min: number
   max: number
+}
+
+export type MinMaxDateType = {
+  min: Date
+  max: Date
 }
 
 export type PositionType = {
@@ -125,6 +162,7 @@ export type ReactSelectOption = {
   value: string
   label: string
 }
+
 export type ReactSelectOptionEnum = {
     value: SaleTypeEnum
     label: SaleTypeEnum
