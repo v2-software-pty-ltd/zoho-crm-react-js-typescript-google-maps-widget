@@ -7,13 +7,13 @@ type MatchTallies = {
   propertyGroup: number
 }
 
-function matchForPropertyTypes (property: UnprocessedResultsFromCRM, desiredPropertyTypes: string[], maxPropertyTypes: boolean): boolean {
+function matchForPropertyTypes (property: UnprocessedResultsFromCRM, desiredPropertyTypes: string[], maxPropertyTypes: boolean | undefined): boolean {
     return desiredPropertyTypes.some((propertyType: string) => {
         return maxPropertyTypes && (desiredPropertyTypes.includes('All') || property.Property_Category_Mailing.includes(propertyType))
     })
 }
 
-function matchForPropertyGroups (property: UnprocessedResultsFromCRM, desiredPropertyGroups: string[], maxGroupTypes: boolean): boolean {
+function matchForPropertyGroups (property: UnprocessedResultsFromCRM, desiredPropertyGroups: string[], maxGroupTypes: boolean | undefined): boolean {
     return desiredPropertyGroups.some((propertyGroup: string) => {
         return maxGroupTypes && (desiredPropertyGroups.includes('All') || property.Property_Type_Portals.includes(propertyGroup))
     })
@@ -64,24 +64,24 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
             const propertyGroupMatch = matchForPropertyGroups(property, desiredPropertyGroups, maxGroupTypes)
 
             const ownerData = getOwnerData(property)
-            const canAddAsNeighbour = matchTallies.neighbour < maxNumNeighbours
             const canAddBasedOnFilters = propertyGroupMatch || propertyTypeMatch
-            const isManaged = (property.Managed === managed) || managed === 'None'
-            const shouldAddProperty = isManaged && (canAddBasedOnFilters || canAddAsNeighbour)
+            const isManaged = (property.Managed === managed) || managed === 'All'
+            const shouldAddProperty = isManaged && (canAddBasedOnFilters || maxNeighours)
             if (shouldAddProperty) {
                 if (ownerData.length > 0) {
-                    if (propertyTypeMatch) {
-                        matchTallies.propertyType += 1
-                    } else if (!propertyTypeMatch && propertyGroupMatch) {
-                        matchTallies.propertyGroup += 1
-                    }
-                    if (!canAddBasedOnFilters && canAddAsNeighbour) matchTallies.neighbour += 1
                     property.owner_details = ownerData
-                    matchedProperties.push(property)
-
-                    const isDupeId = uniqueSearchRecords.includes(property.id)
-                    if (!isDupeId) uniqueSearchRecords.push(property.id)
                 }
+                if (propertyTypeMatch) {
+                    matchTallies.propertyType += 1
+                } else if (!propertyTypeMatch && propertyGroupMatch) {
+                    matchTallies.propertyGroup += 1
+                }
+                if (!canAddBasedOnFilters && maxNeighours) matchTallies.neighbour += 1
+                property.owner_details = ownerData
+                matchedProperties.push(property)
+
+                const isDupeId = uniqueSearchRecords.includes(property.id)
+                if (!isDupeId) uniqueSearchRecords.push(property.id)
             }
         }
         return canAddAnotherProperty

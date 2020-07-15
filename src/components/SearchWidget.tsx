@@ -19,7 +19,7 @@ export function SearchWidget (props: SearchWidgetProps) {
                         ...props.searchParameters,
                         searchAddress: e.target.value
                     })
-                }} placeholder=" Defaults to 528 Kent St, Sydney, NSW, 2000" id="propertyAddress" required tabIndex={1} />
+                }} placeholder="Defaults to 528 Kent St, Sydney, NSW, 2000" id="propertyAddress" required tabIndex={1} />
                 <p className="smaller-font">* Must contain street, suburb, state & postcode with each separated by comma</p>
             </label>
 
@@ -35,7 +35,7 @@ export function SearchWidget (props: SearchWidgetProps) {
                         ...props.searchParameters,
                         neighboursSearchMaxRecords: e.target.valueAsNumber
                     })
-                }} placeholder="Defaults to 0" type="number" tabIndex={4} />
+                }} placeholder="Max" type="number" tabIndex={4} />
             </label>
             <label className="three">Property Types Filter Max Records <br />
                 <input className="below-label border" id="propertyTypeNumberOfRecords" onChange={(e: ChangeEvent<HTMLInputElement>) => {
@@ -43,7 +43,7 @@ export function SearchWidget (props: SearchWidgetProps) {
                         ...props.searchParameters,
                         propertyTypesMaxResults: e.target.valueAsNumber
                     })
-                }} placeholder="Defaults to 0" type="number" tabIndex={5} />
+                }} placeholder="Max" type="number" tabIndex={5} />
             </label>
             <PropertyGroupDropdown chosenPropertyGroups={props.searchParameters.propertyGroups} changePropertyGroups={(newPropertyGroups) => {
                 props.changeSearchParameters({
@@ -57,7 +57,7 @@ export function SearchWidget (props: SearchWidgetProps) {
                         ...props.searchParameters,
                         propertyGroupsMaxResults: e.target.valueAsNumber
                     })
-                }} placeholder="Defaults to 0" type="number" tabIndex={6} />
+                }} placeholder="Max" type="number" tabIndex={6} />
 
             </label>
 
