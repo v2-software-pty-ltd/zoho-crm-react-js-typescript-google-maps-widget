@@ -45,10 +45,12 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsA
                 <div>
                     {widgetStateChange === 'baseFilter' &&
                         (
-                            <div className="download-button-wrapper pagebreak">
-                                <DownloadContactListButton results={results} />
-                                <DownloadMailingListButton results={results} />
-                                <MassMailButton results={results} />
+                            <div style={{ padding: '20px' }}>
+                                <div className="download-button-wrapper pagebreak">
+                                    <DownloadContactListButton results={results} />
+                                    <DownloadMailingListButton results={results} />
+                                    <MassMailButton results={results} />
+                                </div>
                                 <UpdateLastMailedButton results={results} />
                             </div>
                         )
@@ -114,7 +116,7 @@ function App () {
             <SearchWidgetWrapper changeSearchParameters={changeSearchParameters} searchParameters={searchParameters} setReadyForSearch={setReadyForSearch} setWidgetStateChange={setWidgetStateChange} widgetStateChange={widgetStateChange}/>
             {isLoading &&
                 <div style={{ padding: '20px' }}>
-                    Loading... estimated waiting time 10 seconds.
+                    Loading ... estimated waiting time 20 seconds.
                 </div>
             }
             {searchAddressPosition && renderResultsWidgets(results, googleMapsApiKey, isLoading, uniqueSearchRecords, searchAddressPosition, widgetStateChange)}
