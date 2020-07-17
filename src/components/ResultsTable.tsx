@@ -3,7 +3,6 @@
 import React from 'react'
 
 import { UnprocessedResultsFromCRM } from '../types'
-import getUniqueListBy from '../utils/getUniqueListBy'
 
 type ResultsTableProps = {
     results: UnprocessedResultsFromCRM[]
@@ -11,7 +10,6 @@ type ResultsTableProps = {
 }
 
 export function ResultsTableWidget (props: ResultsTableProps) {
-    const uniqueResults = getUniqueListBy(props.results, 'id')
     return (
         <div>
             {props.filterInUse === 'BaseFilter' &&
