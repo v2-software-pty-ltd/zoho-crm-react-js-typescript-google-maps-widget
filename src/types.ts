@@ -1,12 +1,41 @@
-export type SearchParametersType = {
-    searchAddress: string
-    propertyTypes: string[]
-    propertyGroups: string[]
-    neighboursSearchMaxRecords: number
-    propertyGroupsMaxResults: number
-    propertyTypesMaxResults: number
-    managed: string[]
-    id: string
+export type SearchParametersType = BaseSearchParamsType & LeaseEvidenceFilterParams
+
+type BaseSearchParamsType = {
+  searchAddress: string
+  propertyTypes: string[]
+  propertyGroups: string[]
+  neighboursSearchMaxRecords: number
+  propertyGroupsMaxResults: number
+  propertyTypesMaxResults: number
+  managed: string[]
+  id: string
+}
+
+const DEFAULT_LEASES_EVIDENCE_PARAMS = {
+    landArea: {
+        min: -1,
+        max: -1
+    },
+    buildArea: {
+        min: -1,
+        max: -1
+    },
+    rentGross: {
+        min: -1,
+        max: -1
+    },
+    rentDollarMeter: {
+        min: -1,
+        max: -1
+    },
+    leasedDate: {
+        min: new Date(),
+        max: new Date()
+    },
+    reviewDate: {
+        min: new Date(),
+        max: new Date()
+    }
 }
 
 const DEFAULT_SALES_EVIDENCE_PARAMS = {
@@ -22,7 +51,7 @@ const DEFAULT_SALES_EVIDENCE_PARAMS = {
         min: 0,
         max: 0
     },
-    rentDollarMeter: {
+    rentPerDollarMeter: {
         min: 0,
         max: 0
     },
@@ -45,14 +74,15 @@ export const DEFAULT_SEARCH_PARAMS = {
     managed: ['None'],
     readyForSearch: false,
     id: `search:${(Math.random() * 1000)}`,
-    ...DEFAULT_SALES_EVIDENCE_PARAMS
+    ...DEFAULT_SALES_EVIDENCE_PARAMS,
+    ...DEFAULT_LEASES_EVIDENCE_PARAMS
 }
 
 export type LeaseEvidenceFilterParams = {
   landArea: MinMaxNumberType
   buildArea: MinMaxNumberType
   rentGross: MinMaxNumberType
-  rentDollarMeter: MinMaxNumberType
+  rentPerDollarMeter: MinMaxNumberType
   leasedDate: MinMaxDateType
   reviewDate: MinMaxDateType
 }

@@ -29,13 +29,12 @@ const retrieveAllRecords = async function (pageNumber: number, retrievedProperti
 
 export async function findMatchingRecords (searchParameters: SearchParametersType[], entity: string): Promise<{ matchedProperties: UnprocessedResultsFromCRM[], uniqueSearchRecords: string[] }> {
     const matchingResults = await retrieveAllRecords(0, [], entity)
-    console.log('matchingResults', matchingResults)
 
     if (Object.keys(matchingResults).includes('Error')) {
         alert('Error retrieving search results')
     }
-    const results = filterResults(matchingResults, searchParameters)
-    console.log('results', results)
+
+    const results = filterResults(matchingResults, searchParameters, entity)
 
     return results
 }

@@ -1,4 +1,5 @@
 import { SearchParametersType, UnprocessedResultsFromCRM, OwnerType } from '../types'
+import leasesEvidenceFilter from './leasesEvidenceFilter'
 
 type MatchTallies = {
   [index: string]: number
@@ -37,7 +38,7 @@ function getOwnerData (property: UnprocessedResultsFromCRM) {
     return ownerData
 }
 
-export default function filterResults (unsortedPropertyResults: UnprocessedResultsFromCRM[], searchParameters: SearchParametersType[]): { matchedProperties: UnprocessedResultsFromCRM[], uniqueSearchRecords: string[] } {
+export default function filterResults (unsortedPropertyResults: UnprocessedResultsFromCRM[], searchParameters: SearchParametersType[], filterType: string): { matchedProperties: UnprocessedResultsFromCRM[], uniqueSearchRecords: string[] } {
     const maxNumNeighbours = searchParameters[0].neighboursSearchMaxRecords
     const maxResultsForPropertyTypes = searchParameters[0].propertyTypesMaxResults
     const maxResultsForPropertyGroups = searchParameters[0].propertyGroupsMaxResults
@@ -57,7 +58,12 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
         const maxNeighours = matchTallies.neighbour < maxNumNeighbours
         const maxPropertyTypes = matchTallies.propertyType < maxResultsForPropertyTypes
         const maxGroupTypes = matchTallies.propertyGroup < maxResultsForPropertyGroups
-        const canAddAnotherProperty = maxNeighours || maxPropertyTypes || maxGroupTypes
+        let canAddAnotherProperty = maxNeighours || maxPropertyTypes || maxGroupTypes
+
+        if (filterType === 'LeasesEvidenceFilter') {
+            canAddAnotherProperty = canAddAnotherProperty && leasesEvidenceFilter(property, searchParameters)
+            // TODO - get property  so as to test for baseFilter
+        }
 
         if (canAddAnotherProperty) {
             const propertyTypeMatch = matchForPropertyTypes(property, desiredPropertyTypes, maxPropertyTypes)
