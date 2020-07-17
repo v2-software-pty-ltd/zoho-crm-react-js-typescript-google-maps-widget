@@ -56,7 +56,7 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsA
                             </div>
                         )
                     }
-                    {filterInUse === 'sales' &&
+                    {filterInUse === 'SalesEvidenceFilter' &&
                         (
                             <div className="download-button-wrapper pagebreak">
                                 <DownloadSalesEvidenceListButton results={results} />
