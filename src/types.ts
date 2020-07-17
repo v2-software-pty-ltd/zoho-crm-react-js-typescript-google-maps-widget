@@ -32,7 +32,7 @@ const DEFAULT_LEASE_EVIDENCE_PARAMS = {
         min: 0,
         max: 0
     },
-    rentDollarMeter: {
+    rentPerDollarMeter: {
         min: 0,
         max: 0
     },
