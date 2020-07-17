@@ -9,7 +9,6 @@ type DropdownProps = {
 
 export function SaleTypeDropdown (props: DropdownProps) {
     const possibleSaleType = [
-        { value: SaleTypeEnum.ALL, label: SaleTypeEnum.ALL },
         { value: SaleTypeEnum.INV, label: SaleTypeEnum.INV },
         { value: SaleTypeEnum.VP, label: SaleTypeEnum.VP },
         { value: SaleTypeEnum.DEV, label: SaleTypeEnum.DEV }
@@ -19,7 +18,7 @@ export function SaleTypeDropdown (props: DropdownProps) {
         <label className="twelve">Sale Type
             <Select
                 getValue={props.chosenSaleType}
-                placeholder={'All'}
+                placeholder={''}
                 isMulti
                 name="saleType"
                 id="saleType"

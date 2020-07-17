@@ -37,14 +37,14 @@ function prepareDataForMap (results: UnprocessedResultsFromCRM[], searchAddressP
     }
 }
 
-function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsApiKey: string | undefined, isLoading: boolean, uniqueSearchRecords: number, searchAddressPosition: PositionType, widgetStateChange: string) {
+function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsApiKey: string | undefined, isLoading: boolean, uniqueSearchRecords: number, searchAddressPosition: PositionType, filterInUse: string) {
     const dataForMap = prepareDataForMap(results, searchAddressPosition)
     if (results && dataForMap && googleMapsApiKey && !isLoading) {
         return (
             <div style={{ padding: '20px' }}>
 
                 <div>
-                    {widgetStateChange === 'baseFilter' &&
+                    {filterInUse === 'BaseFilter' &&
                         (
                             <div style={{ padding: '20px' }}>
                                 <div className="download-button-wrapper pagebreak">
@@ -56,7 +56,7 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsA
                             </div>
                         )
                     }
-                    {widgetStateChange === 'sales' &&
+                    {filterInUse === 'sales' &&
                         (
                             <div className="download-button-wrapper pagebreak">
                                 <DownloadSalesEvidenceListButton results={results} />
@@ -69,7 +69,7 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsA
                 </div>
                 <div className="pagebreak">
                     <p>Unique Search Results: {uniqueSearchRecords}</p>
-                    <ResultsTableWidget results={results} widgetStateChange={widgetStateChange} />
+                    <ResultsTableWidget results={results} filterInUse={filterInUse} />
                 </div>
             </div>
         )
@@ -84,7 +84,7 @@ function App () {
     const [isLoading, setLoading] = useState(false)
     const [uniqueSearchRecords, setUniqueSearchRecords] = useState<number>(0)
     const [searchAddressPosition, setSearchAddressPosition] = useState<PositionType>()
-    const [widgetStateChange, setWidgetStateChange] = useState<string>('baseFilter')
+    const [filterInUse, setFilterInUse] = useState<string>('BaseFilter')
 
     useEffect(() => {
         if (isReadyForSearch) {
@@ -114,13 +114,13 @@ function App () {
 
     return (
         <div className="App">
-            <SearchWidgetWrapper changeSearchParameters={changeSearchParameters} searchParameters={searchParameters} setReadyForSearch={setReadyForSearch} setWidgetStateChange={setWidgetStateChange} widgetStateChange={widgetStateChange}/>
+            <SearchWidgetWrapper changeSearchParameters={changeSearchParameters} searchParameters={searchParameters} setReadyForSearch={setReadyForSearch} setFilterInUse={setFilterInUse} filterInUse={filterInUse}/>
             {isLoading &&
                 <div style={{ padding: '20px' }}>
                     Loading ... estimated waiting time 20 seconds.
                 </div>
             }
-            {searchAddressPosition && renderResultsWidgets(results, googleMapsApiKey, isLoading, uniqueSearchRecords, searchAddressPosition, widgetStateChange)}
+            {searchAddressPosition && renderResultsWidgets(results, googleMapsApiKey, isLoading, uniqueSearchRecords, searchAddressPosition, filterInUse)}
         </div>
     )
 }
