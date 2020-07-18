@@ -81,7 +81,7 @@ export function ResultsTableWidget (props: ResultsTableProps) {
             </div>
                 )
             }
-            {props.widgetStateChange === 'lease' &&
+            {props.filterInUse === 'LeaseFilter' &&
              (
                 <div style={{ padding: '20px' }}>
                 <table>
