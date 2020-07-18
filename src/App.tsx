@@ -42,7 +42,6 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsA
     if (results && dataForMap && googleMapsApiKey && !isLoading) {
         return (
             <div style={{ padding: '20px' }}>
-
                 <div>
                     {filterInUse === 'BaseFilter' &&
                         (
@@ -117,7 +116,7 @@ function App () {
             <SearchWidgetsWrapper changeSearchParameters={changeSearchParameters} searchParameters={searchParameters} setReadyForSearch={setReadyForSearch} setFilterInUse={setFilterInUse} filterInUse={filterInUse}/>
             {isLoading &&
                 <div style={{ padding: '20px' }}>
-                    Loading ... estimated waiting time 20 seconds.
+                    Loading... estimated waiting time 10 seconds.
                 </div>
             }
             {searchAddressPosition && renderResultsWidgets(results, googleMapsApiKey, isLoading, uniqueSearchRecords, searchAddressPosition, filterInUse)}
