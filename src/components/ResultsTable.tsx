@@ -11,7 +11,6 @@ type ResultsTableProps = {
 }
 
 export function ResultsTableWidget (props: ResultsTableProps) {
-    const uniqueResults = getUniqueListBy(props.results, 'id')
     return (
         <div>
             {props.widgetStateChange === 'baseFilter' &&
@@ -27,7 +26,7 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                         </tr>
                     </thead>
                     <tbody>
-                        {uniqueResults.map((result, index) => {
+                        {props.results.map((result, index) => {
                             let propertyAddress = result.Deal_Name
                             if (!result.Latitude || !result.Longitude) {
                                 propertyAddress = `${result.Deal_Name} - Geocordinates N/A, cannot display on map.`
@@ -62,7 +61,7 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                         </tr>
                     </thead>
                     <tbody>
-                        {uniqueResults.map((result) => {
+                        {props.results.map((result) => {
                             let propertyAddress = result.Deal_Name
                             const landArea = result.Land_Area_sqm
                             const buildArea = result.Build_Area_sqm
@@ -97,7 +96,7 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                         </tr>
                     </thead>
                         <tbody>
-                        {uniqueResults.map((result) => {
+                        {props.results.map((result) => {
                             let propertyAddress = result.Property.find((address) => address.name)
                             const rentPerDollarMeter = result.Area_sqm
                             const landArea = result.Land_Area_sqm
