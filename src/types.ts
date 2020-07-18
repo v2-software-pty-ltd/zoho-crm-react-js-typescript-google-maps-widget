@@ -1,4 +1,4 @@
-export type SearchParametersType = BaseSearchParamsType & LeaseEvidenceFilterParams
+export type SearchParametersType = BaseSearchParamsType & LeasesEvidenceFilterParams
 
 type BaseSearchParamsType = {
   searchAddress: string
@@ -78,7 +78,7 @@ export const DEFAULT_SEARCH_PARAMS = {
     ...DEFAULT_LEASES_EVIDENCE_PARAMS
 }
 
-export type LeaseEvidenceFilterParams = {
+export type LeasesEvidenceFilterParams = {
   landArea: MinMaxNumberType
   buildArea: MinMaxNumberType
   rentGross: MinMaxNumberType
