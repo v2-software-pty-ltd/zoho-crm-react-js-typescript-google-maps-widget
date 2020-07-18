@@ -1,11 +1,7 @@
 import React from 'react'
 import { SearchWidget } from './SearchWidget'
-<<<<<<< HEAD
-import { SalesEvidenceSearchWidget } from './SalesEvidenceSearchWidget'
-=======
 import { SalesEvidenceSearchWidget } from './salesEvidenceSearch'
 import { LeasesSearch } from './LeasesSearch'
->>>>>>> Leases widget with fields, CSV download, updated types
 import { DEFAULT_SEARCH_PARAMS, IntersectedSearchAndFilterParams } from '../types'
 
 type SearchWidgetProps = {
@@ -61,7 +57,7 @@ export function SearchWidgetsWrapper (props: SearchWidgetProps) {
                     </div>
                 )
             }
-            {props.widgetStateChange === 'lease' && props.searchParameters[0] &&
+            {props.filterInUse === 'LeaseFilter' &&
                 (
                     <div className="search-params-wrapper" key={props.searchParameters[0].id}>
                         <LeasesSearch
@@ -95,11 +91,8 @@ export function SearchWidgetsWrapper (props: SearchWidgetProps) {
                                 props.setFilterInUse('SalesEvidenceFilter')
                             }}/>
                             <span className='radioName'>Sales Evidence Widget</span>
-<<<<<<< HEAD
-=======
-                            <input type="radio" checked={props.widgetStateChange === 'lease'} onClick={() => hideWidget('lease')}/>
+                            <input type="radio" checked={props.filterInUse === 'LeaseFilter'} onClick={() => props.setFilterInUse('LeaseFilter')}/>
                             <span className='radioName'>Leases Evidence Widget</span>
->>>>>>> Leases widget with fields, CSV download, updated types
                         </div>
                     </label>
                 </div>
