@@ -1,6 +1,6 @@
 import React from 'react'
 import { SearchWidget } from './SearchWidget'
-import { SalesEvidenceSearchWidget } from './salesEvidenceSearch'
+import { SalesEvidenceSearchWidget } from './SalesEvidenceSearch'
 import { DEFAULT_SEARCH_PARAMS, IntersectedSearchAndFilterParams } from '../types'
 
 type SearchWidgetProps = {
@@ -11,7 +11,7 @@ type SearchWidgetProps = {
     filterInUse: string
 }
 
-export function SearchWidgetWrapper (props: SearchWidgetProps) {
+export function SearchWidgetsWrapper (props: SearchWidgetProps) {
     return (
         <div>
             {props.filterInUse === 'BaseFilter' && props.searchParameters.map((searchParameters, idx) => {

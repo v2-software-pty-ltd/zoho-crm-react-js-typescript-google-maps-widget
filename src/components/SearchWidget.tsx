@@ -22,7 +22,6 @@ export function SearchWidget (props: SearchWidgetProps) {
                 }} placeholder="Defaults to 528 Kent St, Sydney, NSW, 2000" id="propertyAddress" required tabIndex={1} />
                 <p className="smaller-font">* Must contain street, suburb, state & postcode with each separated by comma</p>
             </label>
-
             <PropertyTypeDropdown chosenPropertyTypes={props.searchParameters.propertyTypes} changePropertyTypes={(newPropertyTypes) => {
                 props.changeSearchParameters({
                     ...props.searchParameters,

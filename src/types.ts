@@ -1,12 +1,34 @@
-export type SearchParametersType = {
-    searchAddress: string
-    propertyTypes: string[]
-    propertyGroups: string[]
-    neighboursSearchMaxRecords: number
-    propertyGroupsMaxResults: number
-    propertyTypesMaxResults: number
-    managed: string[]
-    id: string
+export type IntersectedSearchAndFilterParams = SalesEvidenceFilterParams & BaseSearchParamsType
+
+export type BaseSearchParamsType = {
+  searchAddress: string
+  propertyTypes: string[]
+  propertyGroups: string[]
+  neighboursSearchMaxRecords: number
+  propertyGroupsMaxResults: number
+  propertyTypesMaxResults: number
+  managed: string[]
+  id: string
+}
+
+const DEFAULT_SALES_EVIDENCE_PARAMS = {
+    landArea: {
+        min: -1,
+        max: -1
+    },
+    buildArea: {
+        min: -1,
+        max: -1
+    },
+    dateSold: {
+        min: undefined,
+        max: undefined
+    },
+    salePrice: {
+        min: -1,
+        max: -1
+    },
+    saleType: []
 }
 
 export const DEFAULT_SEARCH_PARAMS = {
@@ -18,35 +40,9 @@ export const DEFAULT_SEARCH_PARAMS = {
     propertyGroups: ['All'],
     managed: ['All'],
     readyForSearch: false,
-    landArea: {
-        min: 0,
-        max: 10000
-    },
-    buildArea: {
-        min: 0,
-        max: 10000
-    },
-    dateSold: {
-        min: new Date(),
-        max: new Date()
-    },
-    salePrice: {
-        min: 0,
-        max: 1000000
-    },
-    saleType: [],
-    id: `search:${(Math.random() * 1000)}`
-
+    id: `search:${(Math.random() * 1000)}`,
+    ...DEFAULT_SALES_EVIDENCE_PARAMS
 }
-
-export type SalesEvidenceFilterParams = {
-  landArea: MinMaxNumberType
-  buildArea: MinMaxNumberType
-  dateSold: MinMaxDateType
-  salePrice: MinMaxNumberType
-  saleType: SaleTypeEnum[]
-}
-export type IntersectedSearchAndFilterParams = SalesEvidenceFilterParams & SearchParametersType
 
 export enum SaleTypeEnum {
   ALL = 'ALL',
@@ -56,13 +52,21 @@ export enum SaleTypeEnum {
 }
 
 export type MinMaxDateType = {
-  min: Date
-  max: Date
+  min: Date | undefined
+  max: Date | undefined
 }
 
 export type MinMaxNumberType = {
   min: number
   max: number
+}
+
+export type SalesEvidenceFilterParams = {
+  landArea: MinMaxNumberType
+  buildArea: MinMaxNumberType
+  dateSold: MinMaxDateType
+  salePrice: MinMaxNumberType
+  saleType: SaleTypeEnum[]
 }
 
 export type PositionType = {
@@ -116,15 +120,16 @@ export type UnprocessedResultsFromCRM = {
     Property_Owners: string
     Land_Area_sqm: string
     Build_Area_sqm: string
+    Sale_Type: string[]
     Sale_Date: string
     Sale_Price: string
-    Sale_Type: string[]
 }
 
 export type ReactSelectOption = {
   value: string
   label: string
 }
+
 export type ReactSelectOptionEnum = {
     value: SaleTypeEnum
     label: SaleTypeEnum

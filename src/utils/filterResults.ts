@@ -1,4 +1,5 @@
-import { SearchParametersType, UnprocessedResultsFromCRM, OwnerType } from '../types'
+import { IntersectedSearchAndFilterParams, UnprocessedResultsFromCRM, OwnerType } from '../types'
+import salesEvidenceFilter from './salesEvidenceFilter'
 
 type MatchTallies = {
   [index: string]: number
@@ -37,7 +38,7 @@ function getOwnerData (property: UnprocessedResultsFromCRM) {
     return ownerData
 }
 
-export default function filterResults (unsortedPropertyResults: UnprocessedResultsFromCRM[], searchParameters: SearchParametersType[]): { matchedProperties: UnprocessedResultsFromCRM[], uniqueSearchRecords: string[] } {
+export default function filterResults (unsortedPropertyResults: UnprocessedResultsFromCRM[], searchParameters: IntersectedSearchAndFilterParams[], filterInUse: string): { matchedProperties: UnprocessedResultsFromCRM[], uniqueSearchRecords: string[] } {
     const maxNumNeighbours = searchParameters[0].neighboursSearchMaxRecords
     const maxResultsForPropertyTypes = searchParameters[0].propertyTypesMaxResults
     const maxResultsForPropertyGroups = searchParameters[0].propertyGroupsMaxResults
@@ -57,7 +58,11 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
         const maxNeighours = matchTallies.neighbour < maxNumNeighbours
         const maxPropertyTypes = matchTallies.propertyType < maxResultsForPropertyTypes
         const maxGroupTypes = matchTallies.propertyGroup < maxResultsForPropertyGroups
-        const canAddAnotherProperty = maxNeighours || maxPropertyTypes || maxGroupTypes
+        let canAddAnotherProperty = maxNeighours || maxPropertyTypes || maxGroupTypes
+
+        if (filterInUse === 'SalesEvidenceFilter') {
+            canAddAnotherProperty = canAddAnotherProperty && salesEvidenceFilter(property, searchParameters)
+        }
 
         if (canAddAnotherProperty) {
             const propertyTypeMatch = matchForPropertyTypes(property, desiredPropertyTypes, maxPropertyTypes)
@@ -84,7 +89,6 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                 if (!isDupeId) uniqueSearchRecords.push(property.id)
             }
         }
-        return canAddAnotherProperty
     })
 
     return { matchedProperties, uniqueSearchRecords }
