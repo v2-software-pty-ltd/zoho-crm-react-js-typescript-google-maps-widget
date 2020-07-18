@@ -3,17 +3,16 @@
 import React from 'react'
 
 import { UnprocessedResultsFromCRM } from '../types'
-import getUniqueListBy from '../utils/getUniqueListBy'
 
 type ResultsTableProps = {
     results: UnprocessedResultsFromCRM[]
-    widgetStateChange: string
+    filterInUse: string
 }
 
 export function ResultsTableWidget (props: ResultsTableProps) {
     return (
         <div>
-            {props.widgetStateChange === 'baseFilter' &&
+            {props.filterInUse === 'BaseFilter' &&
              (
                 <div style={{ padding: '20px' }}>
                 <table>
@@ -47,7 +46,7 @@ export function ResultsTableWidget (props: ResultsTableProps) {
             </div>
                 )
             }
-            {props.widgetStateChange === 'sales' &&
+            {props.filterInUse === 'SalesEvidenceFilter' &&
              (
                 <div style={{ padding: '20px' }}>
                 <table>

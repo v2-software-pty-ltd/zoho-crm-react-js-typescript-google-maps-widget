@@ -8,26 +8,14 @@ type SearchWidgetProps = {
     searchParameters: IntersectedSearchAndFilterParams[]
     changeSearchParameters: (newParameters: IntersectedSearchAndFilterParams[]) => void
     setReadyForSearch: (isReady: boolean) => void
-    setWidgetStateChange: (stateChange: string) => void
-    widgetStateChange: string
+    setFilterInUse: (stateChange: string) => void
+    filterInUse: string
 }
 
 export function SearchWidgetWrapper (props: SearchWidgetProps) {
-    function hideWidget (value: string) {
-        switch (value) {
-        case 'sales':
-            props.setWidgetStateChange('sales')
-            break
-        case 'lease':
-            props.setWidgetStateChange('lease')
-            break
-        default:
-            props.setWidgetStateChange('baseFilter')
-        }
-    }
     return (
         <div>
-            {props.widgetStateChange === 'baseFilter' && props.searchParameters.map((searchParameters, idx) => {
+            {props.filterInUse === 'BaseFilter' && props.searchParameters.map((searchParameters, idx) => {
                 return (
                     <div className="search-params-wrapper" key={searchParameters.id}>
                         <SearchWidget
@@ -56,7 +44,7 @@ export function SearchWidgetWrapper (props: SearchWidgetProps) {
                     </div>
                 )
             })}
-            {props.widgetStateChange === 'sales' && props.searchParameters[0] &&
+            {props.filterInUse === 'SalesEvidenceFilter' &&
                 (
                     <div className="search-params-wrapper" key={props.searchParameters[0].id}>
                         <SalesEvidenceSearchWidget
@@ -90,9 +78,9 @@ export function SearchWidgetWrapper (props: SearchWidgetProps) {
                 <div className="radio-box">
                     <label>
                         <div className="radio">
-                            <input name='radio' type="radio" checked={props.widgetStateChange === 'baseFilter'} onClick={() => hideWidget('baseFilter')}/>
+                            <input name='radio' type="radio" checked={props.filterInUse === 'BaseFilter'} onClick={() => props.setFilterInUse('BaseFilter')}/>
                             <span className='radioName'>Map Widget</span>
-                            <input type="radio" checked={props.widgetStateChange === 'sales'} onClick={() => hideWidget('sales')}/>
+                            <input type="radio" checked={props.filterInUse === 'SalesEvidenceFilter'} onClick={() => props.setFilterInUse('SalesEvidenceFilter')}/>
                             <span className='radioName'>Sales Evidence Widget</span>
                             <input type="radio" checked={props.widgetStateChange === 'lease'} onClick={() => hideWidget('lease')}/>
                             <span className='radioName'>Leases Evidence Widget</span>
