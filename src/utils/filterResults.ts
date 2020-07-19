@@ -8,13 +8,11 @@ type MatchTallies = {
   propertyGroup: number
 }
 
-
 function matchForPropertyTypes (property: UnprocessedResultsFromCRM, desiredPropertyTypes: string[]): boolean {
     return desiredPropertyTypes.some((propertyType: string) => {
         return (desiredPropertyTypes.includes('All') || property.Property_Category_Mailing.includes(propertyType))
     })
 }
-
 
 function matchForPropertyGroups (property: UnprocessedResultsFromCRM, desiredPropertyGroups: string[]): boolean {
     return desiredPropertyGroups.some((propertyGroup: string) => {
@@ -60,8 +58,8 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
         const isUnderNeighbourLimit = matchTallies.neighbour < maxNumNeighbours
         const isUnderPropertyTypeLimit = matchTallies.propertyType < maxResultsForPropertyTypes
         const isUnderPropertyGroupLimit = matchTallies.propertyGroup < maxResultsForPropertyGroups
-        const canAddAnotherProperty = isUnderNeighbourLimit || isUnderPropertyTypeLimit || isUnderPropertyGroupLimit
-        
+        let canAddAnotherProperty = isUnderNeighbourLimit || isUnderPropertyTypeLimit || isUnderPropertyGroupLimit
+
         if (filterInUse === 'SalesEvidenceFilter') {
             canAddAnotherProperty = canAddAnotherProperty && salesEvidenceFilter(property, searchParameters)
         }
@@ -93,17 +91,6 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                 if (!isDupeId) {
                     uniqueSearchRecords.push(property.id)
                 }
-                if (propertyTypeMatch) {
-                    matchTallies.propertyType += 1
-                } else if (!propertyTypeMatch && propertyGroupMatch) {
-                    matchTallies.propertyGroup += 1
-                }
-                if (!canAddBasedOnFilters && maxNeighours) matchTallies.neighbour += 1
-                property.owner_details = ownerData
-                matchedProperties.push(property)
-
-                const isDupeId = uniqueSearchRecords.includes(property.id)
-                if (!isDupeId) uniqueSearchRecords.push(property.id)
             }
         }
     })
