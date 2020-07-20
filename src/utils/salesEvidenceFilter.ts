@@ -19,14 +19,14 @@ function saleTypeFilter (property: UnprocessedResultsFromCRM, saleTypes: SaleTyp
     })
 }
 
-export default function salesEvidenceFilter (property: UnprocessedResultsFromCRM, filterParameters: SalesEvidenceFilterParams[]): boolean {
+export default function salesEvidenceFilter (property: UnprocessedResultsFromCRM, filterParameters: SalesEvidenceFilterParams): boolean {
     const {
         landArea,
         buildArea,
         salePrice,
         saleType,
         dateSold
-    } = filterParameters[0]
+    } = filterParameters
     const BLANK_FILTER_VALUE = -1
     const isLandAreaFilterInUse = landArea.min === BLANK_FILTER_VALUE && landArea.max === BLANK_FILTER_VALUE
     const isInLandAreaRange = !isLandAreaFilterInUse && numberFilter(property, 'Land_Area_sqm', landArea)

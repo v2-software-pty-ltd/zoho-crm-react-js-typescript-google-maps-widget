@@ -61,7 +61,7 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
         let canAddAnotherProperty = isUnderNeighbourLimit || isUnderPropertyTypeLimit || isUnderPropertyGroupLimit
 
         if (filterInUse === 'SalesEvidenceFilter') {
-            canAddAnotherProperty = canAddAnotherProperty && salesEvidenceFilter(property, searchParameters)
+            canAddAnotherProperty = canAddAnotherProperty && salesEvidenceFilter(property, searchParameters[0])
         }
 
         if (canAddAnotherProperty) {

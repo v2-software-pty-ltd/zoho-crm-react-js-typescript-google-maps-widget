@@ -15,12 +15,12 @@ async function getPageOfRecords (pageNumber: number, zohoModuleToUse: string) {
     return response.data
 }
 
-const retrieveAllRecords = async function (pageNumber: number, retrievedProperties: UnprocessedResultsFromCRM[], zohoModuleToUse: string): Promise<UnprocessedResultsFromCRM[]> {
+const retrieveRecords = async function (pageNumber: number, retrievedProperties: UnprocessedResultsFromCRM[], zohoModuleToUse: string): Promise<UnprocessedResultsFromCRM[]> {
     const thisPageResults = await getPageOfRecords(pageNumber, zohoModuleToUse)
     if (thisPageResults.length === 0) {
         return retrievedProperties
     }
-    return retrieveAllRecords(
+    return retrieveRecords(
         pageNumber + 1,
         retrievedProperties.concat(thisPageResults),
         zohoModuleToUse
@@ -29,7 +29,7 @@ const retrieveAllRecords = async function (pageNumber: number, retrievedProperti
 
 export async function findMatchingRecords (searchParameters: IntersectedSearchAndFilterParams[], filterInUse: string): Promise<{ matchedProperties: UnprocessedResultsFromCRM[], uniqueSearchRecords: string[] }> {
     const zohoModuleToUse = filterInUse === 'LeasesEvidenceFilter' ? 'Properties' : 'Deals'
-    const matchingResults = await retrieveAllRecords(0, [], zohoModuleToUse)
+    const matchingResults = await retrieveRecords(0, [], zohoModuleToUse)
 
     if (Object.keys(matchingResults).includes('Error')) {
         alert('Error retrieving search results')
