@@ -10,6 +10,7 @@ type DropdownProps = {
 export function PropertyTypeDropdown (props: DropdownProps) {
     const possiblePropertyTypes = [
         { value: 'All', label: 'All' },
+        { value: 'Automotive', label: 'Automotive' },
         { value: 'Bulky Goods/Showroom', label: 'Bulky Goods/Showroom' },
         { value: 'Child Care', label: 'Child Care' },
         { value: 'Commercial Fast Food', label: 'Commercial Fast Food' },
@@ -18,6 +19,7 @@ export function PropertyTypeDropdown (props: DropdownProps) {
         { value: 'Gym/Fitness', label: 'Gym/Fitness' },
         { value: 'Hotel', label: 'Hotel' },
         { value: 'Medical/Dental', label: 'Medical/Dental' },
+        { value: 'Mixed Use', label: 'Mixed Use' },
         { value: 'Office', label: 'Office' },
         { value: 'Petrol', label: 'Petrol' },
         { value: 'Retail', label: 'Retail' },
@@ -32,11 +34,11 @@ export function PropertyTypeDropdown (props: DropdownProps) {
                 name="propertyType"
                 id="propertyType"
                 onChange={(newPropertyTypes: ReactSelectOption[]) => {
-                    const propertyTypeValues = newPropertyTypes?.map((option: ReactSelectOption) => option.value) || ['All']
+                    const propertyTypeValues = newPropertyTypes?.map((option: ReactSelectOption) => option.value) || []
                     props.changePropertyTypes(propertyTypeValues)
                 }}
                 tabIndex={2}
-                placeholder={'All'}
+                placeholder={''}
                 options={possiblePropertyTypes}
             />
         </label>

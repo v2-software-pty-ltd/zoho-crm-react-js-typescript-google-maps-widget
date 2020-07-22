@@ -1,6 +1,5 @@
 import React from 'react'
 import { UnprocessedResultsFromCRM, OwnerType } from '../types'
-import getUniqueListBy from '../utils/getUniqueListBy'
 
 type DownloadButtonProps = {
     results: UnprocessedResultsFromCRM[]
@@ -8,7 +7,7 @@ type DownloadButtonProps = {
 export function DownloadMailingListButton (props: DownloadButtonProps) {
     let downloadUrl = null
     const matchingPropertiesAndOwners = props.results
-    const dedupedProperties = getUniqueListBy(matchingPropertiesAndOwners, 'id')
+    const ownerContactDupeRemoval: string[] = []
     function generateCSVRow (propertyObject: UnprocessedResultsFromCRM) {
         let csvRow = ''
         let doNotMail
@@ -17,31 +16,40 @@ export function DownloadMailingListButton (props: DownloadButtonProps) {
         let email
         const propertyAddress = propertyObject.Deal_Name
         const ownerDetails = propertyObject.owner_details
-        const contact: OwnerType = ownerDetails[0]
-        let owner: OwnerType = ownerDetails[1]
+        const relatedContact: OwnerType = ownerDetails[0]
+        const owner: OwnerType = ownerDetails[1]
 
-        if (!contact && owner) {
+        let ownerOrRelatedContact: OwnerType = owner
+        if (!relatedContact && owner) {
             doNotMail = owner.Do_Not_Mail
             returnToSender = owner.Return_to_Sender
             postalAddress = owner.Postal_Address
             email = owner.Email
-        } else if (contact) {
-            doNotMail = contact.Do_Not_Mail
-            returnToSender = contact.Return_to_Sender
-            postalAddress = contact.Postal_Address
-            email = contact.Email
+            ownerOrRelatedContact = owner
+        } else if (relatedContact) {
+            doNotMail = relatedContact.Do_Not_Mail
+            returnToSender = relatedContact.Return_to_Sender
+            postalAddress = relatedContact.Postal_Address
+            email = relatedContact.Email
+            ownerOrRelatedContact = relatedContact
         }
 
+        const isDupe = ownerContactDupeRemoval.includes(`${ownerOrRelatedContact.Postal_Address}-${ownerOrRelatedContact.Name}`)
         if (!doNotMail || !returnToSender || !email) {
-            owner = owner ? (contact.Postal_Address ? contact : owner) : contact
-            const lastMailed = owner?.Last_Mailed || 'Last mailed has not been found'
-            csvRow = `"${owner?.Name}","${owner?.Contact_Type}","${postalAddress}","${owner?.Postal_Suburb}","${owner?.Postal_State}","${owner?.Postal_Postcode}","${propertyAddress}, ${lastMailed}\r\n`
-            csvRow = csvRow.replace(/null/g, '-')
+            const checker = null || undefined
+            if (propertyAddress !== checker && postalAddress !== checker) {
+                if (!isDupe) {
+                    ownerContactDupeRemoval.push(`${ownerOrRelatedContact.Postal_Address}-${ownerOrRelatedContact.Name}`)
+                    const lastMailed = owner?.Last_Mailed || relatedContact?.Last_Mailed || 'Last mailed has not been found'
+                    csvRow = `"${ownerOrRelatedContact?.Name}","${ownerOrRelatedContact?.Contact_Type}","${postalAddress}","${ownerOrRelatedContact?.Postal_Suburb}","${ownerOrRelatedContact?.Postal_State}","${ownerOrRelatedContact?.Postal_Postcode}","${propertyAddress}", "${lastMailed}"\r\n`
+                    csvRow = csvRow.replace(/null/g, '-')
+                }
+            }
         }
         return csvRow
     }
-    const HEADER_ROW = '"Contact Name","Contact Type","Mailing Street Address","Mailing Suburb","Mailing State","Mailing Postcode","Property Address","Property Type (Marketing)","Company"\r\n'
-    const csvRows = dedupedProperties.map(generateCSVRow).join('')
+    const HEADER_ROW = '"Contact Name","Contact Type","Mailing Street Address","Mailing Suburb","Mailing State","Mailing Postcode","Property Address","Property Type (Marketing)","Company", "Last Mailed"\r\n'
+    const csvRows = matchingPropertiesAndOwners.map(generateCSVRow).join('')
     const csvData = `${HEADER_ROW}${csvRows}`
     const resultsBlob = new Blob(
         [csvData],

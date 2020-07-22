@@ -31,7 +31,7 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                                  const ownerData = result.owner_details.find((owner) => owner.Contact_Type === 'Owner')
                                  const contactData = result.owner_details.find((owner) => owner.Contact_Type === 'Director')
                                  return (
-                                     <tr key={result.id}>
+                                     <tr key={`${result.id}-${index}`}>
                                          <td>{index + 1}</td>
                                          <td>{propertyAddress}</td>
                                          <td>{ownerData?.Name || ''}</td>
@@ -50,6 +50,7 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                      <table>
                          <thead>
                              <tr>
+                                 <th>No.</th>
                                  <th>Address</th>
                                  <th>Land Area</th>
                                  <th>Build Area</th>
@@ -58,14 +59,20 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                              </tr>
                          </thead>
                          <tbody>
-                             {props.results.map((result) => {
+                             {props.results.map((result, index) => {
+                                 const propertyAddress = result.Deal_Name
+                                 const landArea = result.Land_Area_sqm
+                                 const buildArea = result.Build_Area_sqm
+                                 const dateSold = result.Sale_Date
+                                 const salePrice = result.Sale_Price
                                  return (
-                                     <tr key={result.id}>
-                                         <td>{result.Deal_Name}</td>
-                                         <td>{result.Land_Area_sqm}</td>
-                                         <td>{result.Build_Area_sqm}</td>
-                                         <td>{result.Sale_Date}</td>
-                                         <td>{result.Sale_Price}</td>
+                                     <tr key={`${result.id}-${index}`}>
+                                         <td>{index + 1}</td>
+                                         <td>{propertyAddress}</td>
+                                         <td>{landArea}</td>
+                                         <td>{buildArea}</td>
+                                         <td>{dateSold}</td>
+                                         <td>{salePrice}</td>
                                      </tr>
                                  )
                              })}
