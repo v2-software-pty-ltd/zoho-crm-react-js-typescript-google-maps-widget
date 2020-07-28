@@ -1,12 +1,36 @@
-export type SearchParametersType = {
-    searchAddress: string
-    propertyTypes: string[]
-    propertyGroups: string[]
-    neighboursSearchMaxRecords: number
-    propertyGroupsMaxResults: number
-    propertyTypesMaxResults: number
-    managed: string[]
-    id: string
+export type IntersectedSearchAndFilterParams = SalesEvidenceFilterParams & BaseSearchParamsType
+
+export type BaseSearchParamsType = {
+  searchAddress: string
+  propertyTypes: string[]
+  propertyGroups: string[]
+  neighboursSearchMaxRecords: number
+  propertyGroupsMaxResults: number
+  propertyTypesMaxResults: number
+  managed: string
+  id: string
+  allRecords: boolean
+}
+
+const DEFAULT_SALES_EVIDENCE_PARAMS = {
+    landArea: {
+        min: -1,
+        max: -1
+    },
+    buildArea: {
+        min: -1,
+        max: -1
+    },
+    dateSold: {
+        min: undefined,
+        max: undefined
+    },
+    salePrice: {
+        min: -1,
+        max: -1
+    },
+    saleType: [],
+    allRecords: false
 }
 
 export const DEFAULT_SEARCH_PARAMS = {
@@ -16,9 +40,35 @@ export const DEFAULT_SEARCH_PARAMS = {
     neighboursSearchMaxRecords: Infinity,
     propertyTypes: ['All'],
     propertyGroups: ['All'],
-    managed: ['All'],
+    managed: 'All',
     readyForSearch: false,
-    id: `search:${(Math.random() * 1000)}`
+    id: `search:${(Math.random() * 1000)}`,
+    ...DEFAULT_SALES_EVIDENCE_PARAMS
+}
+
+export enum SaleTypeEnum {
+  ALL = 'ALL',
+  INV = 'INV',
+  VP = 'VP',
+  DEV = 'DEV'
+}
+
+export type MinMaxDateType = {
+  min: Date | undefined
+  max: Date | undefined
+}
+
+export type MinMaxNumberType = {
+  min: number
+  max: number
+}
+
+export type SalesEvidenceFilterParams = {
+  landArea: MinMaxNumberType
+  buildArea: MinMaxNumberType
+  dateSold: MinMaxDateType
+  salePrice: MinMaxNumberType
+  saleType: SaleTypeEnum[]
 }
 
 export type PositionType = {
@@ -72,12 +122,17 @@ export type UnprocessedResultsFromCRM = {
     Property_Owners: string
     Land_Area_sqm: string
     Build_Area_sqm: string
+    Sale_Type: string[]
     Sale_Date: string
     Sale_Price: string
-    Sale_Type: string[]
 }
 
 export type ReactSelectOption = {
   value: string
   label: string
 }
+
+export type ReactSelectOptionEnum = {
+    value: SaleTypeEnum
+    label: SaleTypeEnum
+  }

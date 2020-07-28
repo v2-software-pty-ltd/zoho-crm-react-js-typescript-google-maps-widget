@@ -17,9 +17,11 @@ export default function DownloadSalesEvidenceListButton (props: DownloadButtonPr
         const dateSold = propertyObject.Sale_Date
         const salePrice = propertyObject.Sale_Price
 
-        let csvRow = `"${propertyAddress}","${landArea}","${buildArea}","${dateSold}","${salePrice}"\r\n`
+        let csvRow: string = ''
+        if (landArea || buildArea || dateSold || salePrice) {
+            csvRow = `"${propertyAddress}","${landArea}","${buildArea}","${dateSold}","${salePrice}"\r\n`
+        }
         csvRow = csvRow.replace(/null/g, '-')
-
         return csvRow
     }
     const HEADER_ROW = '"Property Address","Land Area (sqm)","Build Area (sqm)","Date Sold","Sale Price"\r\n'

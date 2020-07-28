@@ -8,10 +8,11 @@ type DownloadButtonProps = {
 }
 
 export function DownloadContactListButton (props: DownloadButtonProps) {
-    const csvHeader = '"Property Address","Property Type (Marketing)","Owner","Owner Mobile","Owner Phone","Contact","Contact Mobile","Contact Work Phone"\r\n'
+    const csvHeader = '"Property Address","Name","Owner/Contact","Mobile","Work Phone"\r\n'
     const arrayOfPropertyObjects = props.results
 
-    const uniqueProperties = getUniqueListBy(arrayOfPropertyObjects, 'Deal_Name')
+    const uniqueProperties = getUniqueListBy(arrayOfPropertyObjects, 'id')
+    let type = 'unknown'
     const csvRows = uniqueProperties.map((result: UnprocessedResultsFromCRM) => {
         if (result.owner_details && Array.isArray(result.owner_details)) {
             const mobileNumbers = result.owner_details.map((owner: OwnerType) => owner.Mobile).filter((Mobile: string) => Mobile)
@@ -19,11 +20,16 @@ export function DownloadContactListButton (props: DownloadButtonProps) {
             const workPhones = result.owner_details.map((owner: OwnerType) => owner.Work_Phone).filter((Work_Phone: string) => Work_Phone)
             const workPhone = workPhones.length > 0 ? workPhones[0] : null
             const propertyAddress = result.Deal_Name
-            const propertyTypeMarketing = result.Property_Category_Mailing
-            const ownerData = result.owner_details.find((owner: OwnerType) => owner.Contact_Type === 'Owner')
-            const contactData = result.owner_details.find((owner: OwnerType) => owner.Contact_Type === 'Director')
+            const contact = result.owner_details.find((owner: OwnerType) => owner.Contact_Type === 'Director')
+            const owner = result.owner_details.find((owner: OwnerType) => owner.Contact_Type === 'Owner')
+
+            if (owner) {
+                type = 'Owner'
+            } else if (contact) {
+                type = 'Contact'
+            }
             if (mobile || workPhone) {
-                const newRow = `"${propertyAddress}","${ownerData?.Name || ''}","${propertyTypeMarketing}","${ownerData?.Mobile || ''}","${ownerData?.Work_Phone || ''}","${contactData?.Name || ''}","${contactData?.Mobile || ''}","${contactData?.Work_Phone || ''}"\r\n`
+                const newRow = `"${propertyAddress}","${owner?.Name || contact?.Name || ''}","${type || ''}","${owner?.Mobile || contact?.Mobile || ''}","${owner?.Work_Phone || contact?.Work_Phone || ''}"\r\n`
                 return newRow.replace(/null/g, '-')
             }
         }

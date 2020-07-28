@@ -30,11 +30,11 @@ body {
 
 .wrapper {
   display: grid;
-  grid-template-columns: repeat(auto-fit, 3);
+  grid-template-columns: auto;
   grid-gap: 0.5em;
-  grid-auto-rows: 5;
   grid-row-gap: 1em;
-  height: 400px;
+  height: auto;
+  width: auto;
 }
 
 .one {
@@ -71,18 +71,51 @@ body {
   grid-column: 2;
   grid-row: 2;
 }
+.eight {
+  grid-column: 1;
+  grid-row: 5;
+}
+
+.nine {
+  grid-column: 1;
+  grid-row: 6;
+}
+
+.ten {
+  grid-column: 1;
+  grid-row: 7;
+}
+
+.eleven {
+  grid-column: 2;
+  grid-row: 5;
+}
+
+.twelve {
+  grid-column: 2;
+  grid-row: 6;
+}
+
+.thirteen {
+  grid-column: 2;
+  grid-row: 7;
+}
 
 label {
   height: 75%;
+  width: 500px;
   padding: 4px;
   margin-top: 1px;
 }
 
 input {
-  min-width: 70%;
   clear: both;
   border: 2px solid #000000;
   font-size: small;
+}
+
+.minWidth {
+  min-width: 70%;
 }
 
 input.below-label {
@@ -234,45 +267,6 @@ td {
 .side-padding {
   padding: 0 4px
 }
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f9f9f9;
-  min-width: 300px;
-  height: 70px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-}
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-.dropbtn {
-  float: right;
-  background-color: #4CAF50;
-  color: white;
-  padding: 16px;
-  font-size: 16px;
-  border: none;
-  cursor: pointer;
-  width: 400px;
-  height: 15px;
-}
-
-.dropdown-content a {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
-
-/* Change color of dropdown links on hover */
-.dropdown-content a:hover {background-color: #f1f1f1}
-
-/* Show the dropdown menu on hover */
-.dropdown:hover .dropdown-content {
-  display: block;
-}
 
 @media print {
   .pagebreak { display: block; page-break-before: auto; }
@@ -282,7 +276,7 @@ td {
   table {
       page-break-inside: avoid;
   }
-}   
+}
 .border {
   background-color: hsl(0,0%,100%);
   border-color: hsl(0,0%,80%);
@@ -290,4 +284,32 @@ td {
   border-style: solid;
   border-width: 1px;
   min-height: 38px;
+}
+.minMaxSize {
+  min-width: 10% !important;
+  margin-right: 5%;
+}
+
+.react-datepicker-wrapper {
+ margin-right: 5%;
+}
+.hide-show-buttons {
+  display:flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.buttonSize {
+  margin-right: 0.3%;
+}
+
+.radioName {
+  padding-left: .5%;
+  padding-right: .5%
+}
+.radio-box {
+  text-align: center;
+}
+
+.inputSize {
+  min-width: 67%;
 }
