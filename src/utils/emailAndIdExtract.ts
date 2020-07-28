@@ -6,13 +6,11 @@ type MassMailObject = {
 }
 
 export default function emailAndIdExtract (results: UnprocessedResultsFromCRM[]) {
-    const propertyObjects = results.slice(1)
-
-    const emailsAndIds = propertyObjects.reduce((resultsArray: MassMailObject[], property: UnprocessedResultsFromCRM) => {
-        const contact = property.owner_details.find((owner: OwnerType) => owner.Contact_Type === 'Director')
-        const owner = property.owner_details.find((owner: OwnerType) => owner.Contact_Type === 'Owner')
+    const emailsAndIds = results.reduce((resultsArray: MassMailObject[], property: UnprocessedResultsFromCRM) => {
+        const contact = property.owner_details?.find((owner: OwnerType) => owner.Contact_Type === 'Director')
+        const owner = property.owner_details?.find((owner: OwnerType) => owner.Contact_Type === 'Owner')
         const contactOrOwner = contact || owner
-        if (typeof contactOrOwner?.Email === 'string' && typeof contactOrOwner !== 'undefined') {
+        if (typeof contactOrOwner !== 'undefined' && typeof contactOrOwner?.Email === 'string') {
             resultsArray.push({
                 email: contactOrOwner.Email,
                 id: contactOrOwner.id
