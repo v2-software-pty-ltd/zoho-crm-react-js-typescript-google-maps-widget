@@ -9,6 +9,7 @@ export type BaseSearchParamsType = {
   propertyTypesMaxResults: number
   managed: string
   id: string
+  allRecords: boolean
 }
 
 const DEFAULT_SALES_EVIDENCE_PARAMS = {
@@ -28,7 +29,8 @@ const DEFAULT_SALES_EVIDENCE_PARAMS = {
         min: -1,
         max: -1
     },
-    saleType: []
+    saleType: [],
+    allRecords: false
 }
 
 export const DEFAULT_SEARCH_PARAMS = {
@@ -36,8 +38,8 @@ export const DEFAULT_SEARCH_PARAMS = {
     propertyGroupsMaxResults: Infinity,
     propertyTypesMaxResults: Infinity,
     neighboursSearchMaxRecords: Infinity,
-    propertyTypes: [],
-    propertyGroups: [],
+    propertyTypes: ['All'],
+    propertyGroups: ['All'],
     managed: 'All',
     readyForSearch: false,
     id: `search:${(Math.random() * 1000)}`,

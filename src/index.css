@@ -96,6 +96,11 @@ body {
   grid-row: 6;
 }
 
+.thirteen {
+  grid-column: 2;
+  grid-row: 7;
+}
+
 label {
   height: 75%;
   width: 500px;
@@ -271,7 +276,7 @@ td {
   table {
       page-break-inside: avoid;
   }
-}   
+}
 .border {
   background-color: hsl(0,0%,100%);
   border-color: hsl(0,0%,80%);

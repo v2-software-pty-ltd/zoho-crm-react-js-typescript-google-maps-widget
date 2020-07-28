@@ -9,7 +9,7 @@ type DropdownProps = {
 
 export function ManagedDrop (props: DropdownProps) {
     const yesNo = [
-        { value: 'All', label: '' },
+        { value: 'All', label: 'All' },
         { value: 'Yes', label: 'Yes' },
         { value: 'No', label: 'No' }
     ]
@@ -20,7 +20,7 @@ export function ManagedDrop (props: DropdownProps) {
                 getValue={props.managed}
                 onChange={(newManagedValue: ReactSelectOption) => props.changedManaged(newManagedValue.value)}
                 tabIndex={3}
-                placeholder={''}
+                placeholder={'All'}
                 options={yesNo}
             />
         </label>

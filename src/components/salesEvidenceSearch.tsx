@@ -15,7 +15,7 @@ export function SalesEvidenceSearchWidget (props: SearchWidgetProps) {
         <>
             <SearchWidget changeSearchParameters={props.changeSearchParameters} searchParameters={props.searchParameters} />
             <form className="wrapper">
-                <label className="eight">Land Area m2<br />
+                <label className="eight">Land Area m<sup>2</sup><br />
                     <input className="minMaxSize border" id="landAreaMin" onChange={(e: ChangeEvent<HTMLInputElement>) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
@@ -30,7 +30,7 @@ export function SalesEvidenceSearchWidget (props: SearchWidgetProps) {
                     }} placeholder="Max" type="number" tabIndex={6} />
                 </label>
 
-                <label className="nine">Build Area (sqm) <br />
+                <label className="nine">Build Area m<sup>2</sup> <br />
                     <input className="minMaxSize border" id="buildAreaMin" onChange={(e: ChangeEvent<HTMLInputElement>) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
@@ -79,6 +79,15 @@ export function SalesEvidenceSearchWidget (props: SearchWidgetProps) {
                         saleType: newSaleTypes
                     })
                 }} />
+                <label className="thirteen">Select All Records for Sales Evidence Sub Filter
+                    <input type="checkbox" onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                        const allRecords = e.target.value === 'on'
+                        props.changeSearchParameters({
+                            ...props.searchParameters,
+                            allRecords
+                        })
+                    }}/>
+                </label>
 
             </form>
         </>

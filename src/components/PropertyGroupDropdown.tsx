@@ -10,6 +10,7 @@ type DropdownProps = {
 export function PropertyGroupDropdown (props: DropdownProps) {
     const possiblePropertyGroups = [
         { value: 'All', label: 'All' },
+        { value: 'Filter Disabled', label: 'Filter Disabled' },
         { value: 'Retail', label: 'Retail' },
         { value: 'Industrial', label: 'Industrial' },
         { value: 'Commercial', label: 'Commercial' }
@@ -22,10 +23,10 @@ export function PropertyGroupDropdown (props: DropdownProps) {
                 id="propertyGroup"
                 isMulti
                 onChange={(newPropertyGroups: ReactSelectOption[]) => {
-                    const propertyGroupValues = newPropertyGroups?.map((option: ReactSelectOption) => option.value) || []
+                    const propertyGroupValues = newPropertyGroups?.map((option: ReactSelectOption) => option.value) || ['All']
                     props.changePropertyGroups(propertyGroupValues)
                 }}
-                placeholder={''}
+                placeholder={'All'}
                 tabIndex={3}
                 options={possiblePropertyGroups}
             />

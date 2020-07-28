@@ -20,9 +20,8 @@ export function DownloadContactListButton (props: DownloadButtonProps) {
             const workPhones = result.owner_details.map((owner: OwnerType) => owner.Work_Phone).filter((Work_Phone: string) => Work_Phone)
             const workPhone = workPhones.length > 0 ? workPhones[0] : null
             const propertyAddress = result.Deal_Name
-            const ownerDetails = result.owner_details
-            const contact: OwnerType = ownerDetails[0]
-            const owner: OwnerType = ownerDetails[1]
+            const contact = result.owner_details.find((owner: OwnerType) => owner.Contact_Type === 'Director')
+            const owner = result.owner_details.find((owner: OwnerType) => owner.Contact_Type === 'Owner')
 
             if (owner) {
                 type = 'Owner'
