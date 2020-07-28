@@ -1,6 +1,6 @@
 import React from 'react'
 import { SearchWidget } from './SearchWidget'
-import { SalesEvidenceSearchWidget } from './SalesEvidenceSearch'
+import { SalesEvidenceSearchWidget } from './SalesEvidenceSearchWidget'
 import { DEFAULT_SEARCH_PARAMS, IntersectedSearchAndFilterParams } from '../types'
 
 type SearchWidgetProps = {

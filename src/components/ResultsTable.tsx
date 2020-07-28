@@ -26,7 +26,7 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                              {props.results.map((result, index) => {
                                  let propertyAddress = result.Deal_Name
                                  if (!result.Latitude || !result.Longitude) {
-                                     propertyAddress = `${result.Deal_Name} - Geocordinates N/A, cannot display on map.`
+                                     propertyAddress = `${result.Deal_Name} - Geocoordinates N/A, cannot display on map.`
                                  }
                                  const ownerData = result.owner_details?.find((owner) => owner.Contact_Type === 'Owner')
                                  const contactData = result.owner_details?.find((owner) => owner.Contact_Type === 'Director')

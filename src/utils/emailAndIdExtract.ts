@@ -1,4 +1,4 @@
-import { UnprocessedResultsFromCRM } from '../types'
+import { UnprocessedResultsFromCRM, OwnerType } from '../types'
 
 type MassMailObject = {
   email: string
@@ -9,10 +9,13 @@ export default function emailAndIdExtract (results: UnprocessedResultsFromCRM[])
     const propertyObjects = results.slice(1)
 
     const emailsAndIds = propertyObjects.reduce((resultsArray: MassMailObject[], property: UnprocessedResultsFromCRM) => {
-        if (typeof property.owner_details[0]?.Email === 'string') {
+        const contact = property.owner_details.find((owner: OwnerType) => owner.Contact_Type === 'Director')
+        const owner = property.owner_details.find((owner: OwnerType) => owner.Contact_Type === 'Owner')
+        const contactOrOwner = contact || owner
+        if (typeof contactOrOwner?.Email === 'string' && typeof contactOrOwner !== 'undefined') {
             resultsArray.push({
-                email: property.owner_details[0].Email,
-                id: property.owner_details[0].id
+                email: contactOrOwner.Email,
+                id: contactOrOwner.id
             })
         }
         return resultsArray

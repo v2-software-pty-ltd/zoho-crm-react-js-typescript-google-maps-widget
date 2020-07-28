@@ -8,7 +8,7 @@ function dateFilter (dateSold: MinMaxDateType, property: UnprocessedResultsFromC
     if (typeof dateSold.min !== 'undefined' && typeof dateSold.max !== 'undefined') {
         const minDate = dateSold.min.toISOString().split('T')[0]
         const maxDate = dateSold.max.toISOString().split('T')[0]
-        return !property.Sale_Date && property.Sale_Date >= minDate && property.Sale_Date <= maxDate
+        return !!property.Sale_Date && property.Sale_Date >= minDate && property.Sale_Date <= maxDate
     }
     return false
 }
@@ -28,20 +28,20 @@ export default function salesEvidenceFilter (filterParameters: SalesEvidenceFilt
         dateSold
     } = filterParameters
     const BLANK_FILTER_VALUE = -1
-    const isLandAreaFilterInUse = landArea.min === BLANK_FILTER_VALUE && landArea.max === BLANK_FILTER_VALUE
-    const isInLandAreaRange = !isLandAreaFilterInUse && numberFilter('Land_Area_sqm', landArea, property)
+    const isLandAreaFilterNotInUse = landArea.min === BLANK_FILTER_VALUE && landArea.max === BLANK_FILTER_VALUE
+    const isInLandAreaRange = !isLandAreaFilterNotInUse && numberFilter('Land_Area_sqm', landArea, property)
 
-    const isBuildAreaFilterInUse = buildArea.min === BLANK_FILTER_VALUE && buildArea.max === BLANK_FILTER_VALUE
-    const isInBuildAreaRange = !isBuildAreaFilterInUse && numberFilter('Build_Area_sqm', buildArea, property)
+    const isBuildAreaFilterNotInUse = buildArea.min === BLANK_FILTER_VALUE && buildArea.max === BLANK_FILTER_VALUE
+    const isInBuildAreaRange = !isBuildAreaFilterNotInUse && numberFilter('Build_Area_sqm', buildArea, property)
 
-    const isSalePriceFilterInUse = salePrice.min === BLANK_FILTER_VALUE && salePrice.max === BLANK_FILTER_VALUE
-    const isInSalePriceRange = !isSalePriceFilterInUse && numberFilter('Sale_Price', salePrice, property)
+    const isSalePriceFilterNotInUse = salePrice.min === BLANK_FILTER_VALUE && salePrice.max === BLANK_FILTER_VALUE
+    const isInSalePriceRange = !isSalePriceFilterNotInUse && numberFilter('Sale_Price', salePrice, property)
 
-    const isSaleTypeFilterInUse = saleType.length === 0
-    const isInSaleType = !isSaleTypeFilterInUse && saleTypeFilter(saleType, property)
+    const isSaleTypeFilterNotInUse = saleType.length === 0
+    const isInSaleType = !isSaleTypeFilterNotInUse && saleTypeFilter(saleType, property)
 
-    const isDateSoldFilterInUse = dateSold.min === dateSold.max
-    const isInSaleDateRange = !isDateSoldFilterInUse && dateFilter(dateSold, property)
+    const isDateSoldFilterNotInUse = dateSold.min === dateSold.max
+    const isInSaleDateRange = !isDateSoldFilterNotInUse && dateFilter(dateSold, property)
 
     return isInLandAreaRange || isInBuildAreaRange || isInSalePriceRange || isInSaleType || isInSaleDateRange
 }

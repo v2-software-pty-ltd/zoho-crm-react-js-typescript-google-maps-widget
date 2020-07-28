@@ -81,6 +81,8 @@ export function SalesEvidenceSearchWidget (props: SearchWidgetProps) {
                 }} />
                 <label className="thirteen">Select All Records for Sales Evidence Sub Filter
                     <input type="checkbox" onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                        console.log('e target', e.target)
+
                         const allRecords = e.target.value === 'on'
                         props.changeSearchParameters({
                             ...props.searchParameters,
