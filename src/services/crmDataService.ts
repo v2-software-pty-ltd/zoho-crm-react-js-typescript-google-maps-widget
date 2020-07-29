@@ -3,6 +3,22 @@ import { ZOHO } from '../vendor/ZSDK'
 import emailAndIdExtract from '../utils/emailAndIdExtract'
 import filterResults from '../utils/filterResults'
 
+function safelyRetrieveLocalStorageItem(storageKey: string) {
+    try {
+        return localStorage.getItem(storageKey);
+    } catch (e) {
+        console.error('Issue retrieving data from local storage');
+    }
+}
+
+export function safelySetLocalStorageItem(storageKey: string, value: string) {
+    try {
+        return localStorage.setItem(storageKey, value);
+    } catch (e) {
+        console.error('Issue setting data in local storage');
+    }
+}
+
 async function getPageOfRecords (pageNumber: number, zohoModuleToUse: string) {
     const response = await ZOHO.CRM.API.getAllRecords({
         Entity: zohoModuleToUse,
@@ -15,15 +31,49 @@ async function getPageOfRecords (pageNumber: number, zohoModuleToUse: string) {
     return response.data
 }
 
-const retrieveRecords = async function (pageNumber: number, retrievedProperties: UnprocessedResultsFromCRM[], zohoModuleToUse: string): Promise<UnprocessedResultsFromCRM[]> {
+const retrieveRecordsFromLocalStorageIfAvailable = (localStorageKey: string) => {
+    const data = safelyRetrieveLocalStorageItem(localStorageKey);
+    const parsedData = JSON.parse(data || '{}')
+    const MILLISECONDS_IN_ONE_HOUR = 1000 * 60 * 60
+
+    if (parsedData.lastRetrievalDate) {
+        const millisecondsSinceLastRetrieval = new Date().valueOf() - new Date(parsedData.lastRetrievalDate).valueOf()
+        if (millisecondsSinceLastRetrieval < MILLISECONDS_IN_ONE_HOUR && parsedData.data) {
+            return parsedData.data
+        }
+    }
+}
+
+const retrieveRecords = async function (pageNumber: number, retrievedProperties: UnprocessedResultsFromCRM[], zohoModuleToUse: string, retrieveFromLocalStorage = true): Promise<UnprocessedResultsFromCRM[]> {
+    const localStorageKey = `cached${zohoModuleToUse}`
+    if (retrieveFromLocalStorage) {
+        const dataFromLocalStorage = retrieveRecordsFromLocalStorageIfAvailable(localStorageKey)
+
+        if (dataFromLocalStorage) {
+            return dataFromLocalStorage
+        }
+
+        return retrieveRecords(
+            pageNumber,
+            [],
+            zohoModuleToUse,
+            false
+        )
+    }
+
     const thisPageResults = await getPageOfRecords(pageNumber, zohoModuleToUse)
     if (thisPageResults.length === 0) {
+        await safelySetLocalStorageItem(localStorageKey, JSON.stringify({
+            lastRetrievalDate: new Date().toISOString(),
+            data: retrievedProperties
+        }))
         return retrievedProperties
     }
     return retrieveRecords(
         pageNumber + 1,
         retrievedProperties.concat(thisPageResults),
-        zohoModuleToUse
+        zohoModuleToUse,
+        false
     )
 }
 
@@ -53,7 +103,7 @@ export async function getSearchAddressPosition (searchParameters: IntersectedSea
 }
 
 export async function updateMailComment (comment: string, results: UnprocessedResultsFromCRM[]): Promise<void> {
-    const recordData = results.filter((result) => result.id).map((result) => result.owner_details).flat().map((owner) => {
+    const recordData = results.filter((result) => result.id && result.owner_details?.length).flatMap((result) => result.owner_details).map((owner) => {
         return {
             id: owner.id,
             Last_Mailed_Date: owner.Last_Mailed_Date,
@@ -62,12 +112,26 @@ export async function updateMailComment (comment: string, results: UnprocessedRe
         }
     })
 
-    await ZOHO.CRM.FUNCTIONS.execute('update_mail_comment', {
-        arguments: JSON.stringify({
-            results_str: recordData,
-            comment: comment
+    // batch updates so we don't exceed the payload limit
+
+    const BATCH_SIZE = 5;
+    const batches = [];
+    for (let i = 0; i < recordData.length; i += BATCH_SIZE) {
+        const dataForThisBatch = recordData.slice(i, i + BATCH_SIZE);
+        batches.push(dataForThisBatch);
+    }
+
+    await Promise.all(
+        batches.map(async (messageBatch) => {
+            const payload = {
+                arguments: JSON.stringify({
+                    results_str: messageBatch,
+                    comment: comment
+                }),
+            };
+            await ZOHO.CRM.FUNCTIONS.execute('update_mail_comment', payload);
         })
-    })
+    )
 }
 
 export async function massMailResults (results: UnprocessedResultsFromCRM[]): Promise<void> {

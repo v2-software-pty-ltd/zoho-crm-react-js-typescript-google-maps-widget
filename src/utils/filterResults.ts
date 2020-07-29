@@ -77,7 +77,7 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
             if (canAddBasedOnMaxResults) {
                 const propertyTypeMatch = !isPropertyTypeFilterInUse && isUnderPropertyTypeLimit && matchForPropertyTypes(property, desiredPropertyTypes)
                 const propertyGroupMatch = !isPropertyGroupFilterInUse && isUnderPropertyGroupLimit && matchForPropertyGroups(property, desiredPropertyGroups)
-                const canAddBasedOnFilters = propertyGroupMatch || propertyTypeMatch
+                const canAddBasedOnFilters = propertyGroupMatch || propertyTypeMatch || isUnderNeighbourLimit
 
                 const ownerData = getOwnerData(property)
                 const isManaged = (property.Managed === desiredManaged) || desiredManaged === 'All'
@@ -93,9 +93,12 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                     if (propertyGroupMatch) {
                         matchTallies.propertyGroup += 1
                     }
-                    if (canAddBasedOnFilters && isUnderNeighbourLimit) {
-                        matchTallies.neighbour += 1
 
+                    if (isUnderNeighbourLimit) {
+                        matchTallies.neighbour += 1
+                    }
+
+                    if (canAddBasedOnFilters) {
                         const isDupeId = uniqueSearchRecords.includes(property.id)
                         if (!isDupeId) {
                         // N. B. This is to remove dupes retrieved during the getPageOfRecords function.
