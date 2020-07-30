@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react'
-import { IntersectedSearchAndFilterParams } from '../types'
+import { DEFAULT_SEARCH_PARAMS, IntersectedSearchAndFilterParams } from '../types'
 import { SearchWidget } from './SearchWidget'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -81,13 +81,14 @@ export function SalesEvidenceSearchWidget (props: SearchWidgetProps) {
                 }} />
                 <label className="thirteen">Select All Records for Sales Evidence Sub Filter
                     <input type="checkbox" onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                        console.log('e target', e.target)
-
-                        const allRecords = e.target.value === 'on'
-                        props.changeSearchParameters({
-                            ...props.searchParameters,
-                            allRecords
-                        })
+                        if (e.target.checked) {
+                            props.changeSearchParameters({
+                                ...props.searchParameters,
+                                allRecords: e.target.checked
+                            })
+                        } else {
+                            props.changeSearchParameters({ ...DEFAULT_SEARCH_PARAMS })
+                        }
                     }}/>
                 </label>
 
