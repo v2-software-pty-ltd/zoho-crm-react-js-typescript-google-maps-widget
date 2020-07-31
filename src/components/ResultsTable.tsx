@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import React from 'react'
 
 import { UnprocessedResultsFromCRM } from '../types'
