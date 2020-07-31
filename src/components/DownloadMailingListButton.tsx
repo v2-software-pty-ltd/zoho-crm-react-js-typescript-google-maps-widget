@@ -20,12 +20,12 @@ export function DownloadMailingListButton (props: DownloadButtonProps) {
         const contact: OwnerType = ownerDetails[0]
         let owner: OwnerType = ownerDetails[1]
 
-        if (typeof contact === 'undefined' || null) {
+        if (!contact && owner) {
             doNotMail = owner.Do_Not_Mail
             returnToSender = owner.Return_to_Sender
             postalAddress = owner.Postal_Address
             email = owner.Email
-        } else {
+        } else if (contact) {
             doNotMail = contact.Do_Not_Mail
             returnToSender = contact.Return_to_Sender
             postalAddress = contact.Postal_Address
@@ -34,8 +34,8 @@ export function DownloadMailingListButton (props: DownloadButtonProps) {
 
         if (!doNotMail || !returnToSender || !email) {
             owner = owner ? (contact.Postal_Address ? contact : owner) : contact
-            const lastMailed = owner.Last_Mailed || 'Last mailed has not been found'
-            csvRow = `"${owner.Name}","${owner.Contact_Type}","${postalAddress}","${owner.Postal_Suburb}","${owner.Postal_State}","${owner.Postal_Postcode}","${propertyAddress}, ${lastMailed}\r\n`
+            const lastMailed = owner?.Last_Mailed || 'Last mailed has not been found'
+            csvRow = `"${owner?.Name}","${owner?.Contact_Type}","${postalAddress}","${owner?.Postal_Suburb}","${owner?.Postal_State}","${owner?.Postal_Postcode}","${propertyAddress}, ${lastMailed}\r\n`
             csvRow = csvRow.replace(/null/g, '-')
         }
         return csvRow

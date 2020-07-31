@@ -1,4 +1,4 @@
-export type SearchParametersType = BaseSearchParamsType & LeasesEvidenceFilterParams
+export type IntersectedSearchAndFilterParams = SalesEvidenceFilterParams & BaseSearchParamsType & LeaseEvidenceFilterParams
 
 type BaseSearchParamsType = {
   searchAddress: string
@@ -38,32 +38,6 @@ const DEFAULT_LEASES_EVIDENCE_PARAMS = {
     }
 }
 
-const DEFAULT_SALES_EVIDENCE_PARAMS = {
-    landArea: {
-        min: 0,
-        max: 0
-    },
-    buildArea: {
-        min: 0,
-        max: 0
-    },
-    rentGross: {
-        min: 0,
-        max: 0
-    },
-    rentPerDollarMeter: {
-        min: 0,
-        max: 0
-    },
-    leasedDate: {
-        min: new Date(),
-        max: new Date()
-    },
-    reviewDate: {
-        min: new Date(),
-        max: new Date()
-    }
-}
 export const DEFAULT_SEARCH_PARAMS = {
     searchAddress: '528 Kent St, Sydney, NSW, 2000',
     propertyGroupsMaxResults: 200,
@@ -74,17 +48,29 @@ export const DEFAULT_SEARCH_PARAMS = {
     managed: ['None'],
     readyForSearch: false,
     id: `search:${(Math.random() * 1000)}`,
-    ...DEFAULT_SALES_EVIDENCE_PARAMS,
     ...DEFAULT_LEASES_EVIDENCE_PARAMS
 }
 
-export type LeasesEvidenceFilterParams = {
+export type SalesEvidenceFilterParams = {
   landArea: MinMaxNumberType
   buildArea: MinMaxNumberType
-  rentGross: MinMaxNumberType
+  dateSold: MinMaxDateType
+  salePrice: MinMaxNumberType
+  saleType: SaleTypeEnum[]
+}
+
+export type LeaseEvidenceFilterParams = {
   rentPerDollarMeter: MinMaxNumberType
+  rentGross: MinMaxNumberType
   leasedDate: MinMaxDateType
   reviewDate: MinMaxDateType
+}
+
+export enum SaleTypeEnum {
+    ALL = 'ALL',
+    INV = 'INV',
+    VP = 'VP',
+    DEV = 'DEV'
 }
 
 export type MinMaxNumberType = {
@@ -129,9 +115,12 @@ export type OwnerType = {
     Last_Mailed: string
     Last_Mailed_Date: string
 }
+export type addressForLease = {
+    name: string
+}
 
 export type UnprocessedResultsFromCRM = {
-    [index: string]: string | number | OwnerType[] | string[]
+    [index: string]: string | number | OwnerType[] | string[] | addressForLease[] | Date
     Latitude: string
     Longitude: string
     Deal_Name: string
@@ -146,9 +135,28 @@ export type UnprocessedResultsFromCRM = {
     Property_Type_Portals: string
     Property_Contacts: string
     Property_Owners: string
+    Land_Area_sqm: string
+    Build_Area_sqm: string
+    Sale_Date: string
+    Sale_Price: string
+    Sale_Type: string[]
+    Area_sqm: number
+    Base_Rental: number
+    Current_Rental: number
+    Lessee_First_Name: string
+    Lessee_Last_Name: string
+    Start_Date: Date
+    Market_Review_End_Date: Date
+    Property: addressForLease[]
+
 }
 
 export type ReactSelectOption = {
   value: string
   label: string
 }
+
+export type ReactSelectOptionEnum = {
+    value: SaleTypeEnum
+    label: SaleTypeEnum
+  }

@@ -2,11 +2,11 @@ import React, { ChangeEvent } from 'react'
 import { PropertyTypeDropdown } from './PropertyTypeDropdown'
 import { PropertyGroupDropdown } from './PropertyGroupDropdown'
 import { ManagedDrop } from './ManagedDrop'
-import { SearchParametersType } from '../types'
+import { IntersectedSearchAndFilterParams } from '../types'
 
 type SearchWidgetProps = {
-    searchParameters: SearchParametersType
-    changeSearchParameters: (newParameters: SearchParametersType) => void
+    searchParameters: IntersectedSearchAndFilterParams
+    changeSearchParameters: (newParameters: IntersectedSearchAndFilterParams) => void
 }
 
 export function SearchWidget (props: SearchWidgetProps) {
@@ -14,13 +14,13 @@ export function SearchWidget (props: SearchWidgetProps) {
         <form className="wrapper">
             <label className="one">
                 <p>Search Address*</p>
-                <p className="smaller-font">* Must contain street, suburb, state & postcode with each separated by comma</p>
-                <input className='border' value={props.searchParameters.searchAddress} onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                <input className='inputSize border' onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     props.changeSearchParameters({
                         ...props.searchParameters,
                         searchAddress: e.target.value
                     })
-                }} id="propertyAddress" required tabIndex={1} />
+                }} placeholder="Defaults to 528 Kent St, Sydney, NSW, 2000" id="propertyAddress" required tabIndex={1} />
+                <p className="smaller-font">* Must contain street, suburb, state & postcode with each separated by comma</p>
             </label>
 
             <PropertyTypeDropdown chosenPropertyTypes={props.searchParameters.propertyTypes} changePropertyTypes={(newPropertyTypes) => {
@@ -30,20 +30,20 @@ export function SearchWidget (props: SearchWidgetProps) {
                 })
             }} />
             <label className="two">Neighbours Search (max records) <br />
-                <input className="below-label border" id="numberOfRecords" value={props.searchParameters.neighboursSearchMaxRecords} onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                <input className="below-label border" id="numberOfRecords" onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     props.changeSearchParameters({
                         ...props.searchParameters,
                         neighboursSearchMaxRecords: e.target.valueAsNumber
                     })
-                }} placeholder="Enter max number of neighbour records. Defaults to 100" type="number" tabIndex={4} />
+                }} placeholder="Max" type="number" tabIndex={4} />
             </label>
             <label className="three">Property Types Filter Max Records <br />
-                <input className="below-label border" id="propertyTypeNumberOfRecords" value={props.searchParameters.propertyTypesMaxResults} onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                <input className="below-label border" id="propertyTypeNumberOfRecords" onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     props.changeSearchParameters({
                         ...props.searchParameters,
                         propertyTypesMaxResults: e.target.valueAsNumber
                     })
-                }} placeholder="Enter max number of records." type="number" tabIndex={5} />
+                }} placeholder="Max" type="number" tabIndex={5} />
             </label>
             <PropertyGroupDropdown chosenPropertyGroups={props.searchParameters.propertyGroups} changePropertyGroups={(newPropertyGroups) => {
                 props.changeSearchParameters({
@@ -52,12 +52,13 @@ export function SearchWidget (props: SearchWidgetProps) {
                 })
             }} />
             <label className="four">Property Groups Filter Max Records <br />
-                <input className="below-label border" id="propertyGroupNumberOfRecords" value={props.searchParameters.propertyGroupsMaxResults} onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                <input className="below-label border" id="propertyGroupNumberOfRecords" onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     props.changeSearchParameters({
                         ...props.searchParameters,
                         propertyGroupsMaxResults: e.target.valueAsNumber
                     })
-                }} placeholder="Enter max number of records." type="number" tabIndex={6} />
+                }} placeholder="Max" type="number" tabIndex={6} />
+
             </label>
 
             <ManagedDrop managed={props.searchParameters.managed} changedManaged={(isManaged) => {
@@ -67,5 +68,6 @@ export function SearchWidget (props: SearchWidgetProps) {
                 })
             }} />
         </form>
+
     )
 }
