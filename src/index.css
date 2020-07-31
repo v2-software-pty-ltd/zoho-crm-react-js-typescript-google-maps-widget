@@ -95,6 +95,14 @@ body {
   grid-column: 2;
   grid-row: 6;
 }
+<<<<<<< HEAD
+=======
+
+.thirteen {
+  grid-column: 2;
+  grid-row: 7;
+}
+>>>>>>> 972069b12b1a0ea0ca344831a4ee6fd86d9a1fc3
 
 label {
   height: 75%;
@@ -271,7 +279,7 @@ td {
   table {
       page-break-inside: avoid;
   }
-}   
+}
 .border {
   background-color: hsl(0,0%,100%);
   border-color: hsl(0,0%,80%);

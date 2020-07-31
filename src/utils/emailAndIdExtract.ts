@@ -6,17 +6,14 @@ type MassMailObject = {
 }
 
 export default function emailAndIdExtract (results: UnprocessedResultsFromCRM[]) {
-    const propertyObjects = results.slice(1)
-
-    const emailsAndIds = propertyObjects.reduce((resultsArray: MassMailObject[], property: UnprocessedResultsFromCRM) => {
-        if (typeof property.owner_details[0].Email === 'string') {
-            resultsArray.push({
-                email: property.owner_details[0].Email,
-                id: property.owner_details[0].id
-            })
-        }
-        return resultsArray
-    }, [])
+    const emailsAndIds = results.flatMap((property: UnprocessedResultsFromCRM) => {
+        return property.owner_details?.map((ownerOrContact) => {
+            return {
+                email: ownerOrContact.Email,
+                id: ownerOrContact.id
+            }
+        }) || []
+    })
 
     const dupeEmailsRemoved = [...new Map(emailsAndIds.map((item: MassMailObject) => [item.email, item])).values()]
 

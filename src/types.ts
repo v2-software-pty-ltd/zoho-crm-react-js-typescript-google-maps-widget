@@ -7,8 +7,14 @@ export type BaseSearchParamsType = {
   neighboursSearchMaxRecords: number
   propertyGroupsMaxResults: number
   propertyTypesMaxResults: number
+<<<<<<< HEAD
   managed: string[]
   id: string
+=======
+  managed: string
+  id: string
+  allRecords: boolean
+>>>>>>> 972069b12b1a0ea0ca344831a4ee6fd86d9a1fc3
 }
 
 const DEFAULT_SALES_EVIDENCE_PARAMS = {
@@ -28,7 +34,12 @@ const DEFAULT_SALES_EVIDENCE_PARAMS = {
         min: -1,
         max: -1
     },
+<<<<<<< HEAD
     saleType: []
+=======
+    saleType: [],
+    allRecords: false
+>>>>>>> 972069b12b1a0ea0ca344831a4ee6fd86d9a1fc3
 }
 
 export const DEFAULT_SEARCH_PARAMS = {
@@ -38,7 +49,7 @@ export const DEFAULT_SEARCH_PARAMS = {
     neighboursSearchMaxRecords: Infinity,
     propertyTypes: ['All'],
     propertyGroups: ['All'],
-    managed: ['All'],
+    managed: 'All',
     readyForSearch: false,
     id: `search:${(Math.random() * 1000)}`,
     ...DEFAULT_SALES_EVIDENCE_PARAMS

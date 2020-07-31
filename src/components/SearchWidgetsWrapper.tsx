@@ -1,6 +1,6 @@
 import React from 'react'
 import { SearchWidget } from './SearchWidget'
-import { SalesEvidenceSearchWidget } from './SalesEvidenceSearch'
+import { SalesEvidenceSearchWidget } from './SalesEvidenceSearchWidget'
 import { DEFAULT_SEARCH_PARAMS, IntersectedSearchAndFilterParams } from '../types'
 
 type SearchWidgetProps = {
@@ -57,7 +57,10 @@ export function SearchWidgetsWrapper (props: SearchWidgetProps) {
                 )
             }
             <div className='button-wrapper hide-show-buttons'>
-                <button onClick={() => { props.setReadyForSearch(true) }}>Search</button>
+                <button onClick={() => {
+                    props.setReadyForSearch(true)
+                }}>Search
+                </button>
             </div>
 
             <form>
@@ -68,8 +71,6 @@ export function SearchWidgetsWrapper (props: SearchWidgetProps) {
                             <span className='radioName'>Map Widget</span>
                             <input type="radio" checked={props.filterInUse === 'SalesEvidenceFilter'} onClick={() => props.setFilterInUse('SalesEvidenceFilter')}/>
                             <span className='radioName'>Sales Evidence Widget</span>
-                            <input type="radio" />
-                            <span className='radioName'>Leases Evidence Widget</span>
                         </div>
                     </label>
                 </div>

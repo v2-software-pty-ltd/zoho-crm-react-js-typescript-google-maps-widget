@@ -10,6 +10,8 @@ type DropdownProps = {
 export function PropertyTypeDropdown (props: DropdownProps) {
     const possiblePropertyTypes = [
         { value: 'All', label: 'All' },
+        { value: 'Filter Disabled', label: 'Filter Disabled' },
+        { value: 'Automotive', label: 'Automotive' },
         { value: 'Bulky Goods/Showroom', label: 'Bulky Goods/Showroom' },
         { value: 'Child Care', label: 'Child Care' },
         { value: 'Commercial Fast Food', label: 'Commercial Fast Food' },
@@ -18,6 +20,7 @@ export function PropertyTypeDropdown (props: DropdownProps) {
         { value: 'Gym/Fitness', label: 'Gym/Fitness' },
         { value: 'Hotel', label: 'Hotel' },
         { value: 'Medical/Dental', label: 'Medical/Dental' },
+        { value: 'Mixed Use', label: 'Mixed Use' },
         { value: 'Office', label: 'Office' },
         { value: 'Petrol', label: 'Petrol' },
         { value: 'Retail', label: 'Retail' },

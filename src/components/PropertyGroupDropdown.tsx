@@ -10,6 +10,7 @@ type DropdownProps = {
 export function PropertyGroupDropdown (props: DropdownProps) {
     const possiblePropertyGroups = [
         { value: 'All', label: 'All' },
+        { value: 'Filter Disabled', label: 'Filter Disabled' },
         { value: 'Retail', label: 'Retail' },
         { value: 'Industrial', label: 'Industrial' },
         { value: 'Commercial', label: 'Commercial' }

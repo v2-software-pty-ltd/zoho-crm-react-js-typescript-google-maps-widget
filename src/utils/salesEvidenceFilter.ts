@@ -1,59 +1,47 @@
 import { SalesEvidenceFilterParams, SaleTypeEnum, UnprocessedResultsFromCRM, MinMaxNumberType, MinMaxDateType } from '../types'
 
-function numberFilter (property: UnprocessedResultsFromCRM, filterType: string, filterValues: MinMaxNumberType) {
+function numberFilter (filterType: string, filterValues: MinMaxNumberType, property: UnprocessedResultsFromCRM) {
     return typeof property[filterType] === 'number' && property[filterType] >= filterValues.min && property[filterType] <= filterValues.max
 }
 
-function formatDateToString (date: Date): string {
-    const dateYear = date.getFullYear()
-    const monthValuesStartAtOne = 1
-    let dateMonth: string | number = date.getMonth() + monthValuesStartAtOne
-    let dateDate: string | number = date.getDate()
-    const numberToLeftPadZero = 9
-    if (dateMonth <= numberToLeftPadZero) dateMonth = `0${dateMonth}`
-    if (dateDate <= numberToLeftPadZero) dateDate = `0${dateDate}`
-    return `${dateYear}-${dateMonth}-${dateDate}`
-}
-
-function dateFilter (property: UnprocessedResultsFromCRM, dateSold: MinMaxDateType): boolean {
+function dateFilter (dateSold: MinMaxDateType, property: UnprocessedResultsFromCRM): boolean {
     if (typeof dateSold.min !== 'undefined' && typeof dateSold.max !== 'undefined') {
-        const minDate = formatDateToString(dateSold.min)
-        const maxDate = formatDateToString(dateSold.max)
-        return typeof property.Sale_Date === 'string' && property.Sale_Date >= minDate && property.Sale_Date <= maxDate
+        const minDate = dateSold.min.toISOString().split('T')[0]
+        const maxDate = dateSold.max.toISOString().split('T')[0]
+        return !!property.Sale_Date && property.Sale_Date >= minDate && property.Sale_Date <= maxDate
     }
     return false
 }
 
-function saleTypeFilter (property: UnprocessedResultsFromCRM, saleTypes: SaleTypeEnum[]): boolean {
+function saleTypeFilter (saleTypes: SaleTypeEnum[], property: UnprocessedResultsFromCRM): boolean {
     return saleTypes.some((saleType: SaleTypeEnum) => {
         return property.Sale_Type.includes(saleType)
     })
 }
 
-export default function salesEvidenceFilter (property: UnprocessedResultsFromCRM, filterParameters: SalesEvidenceFilterParams[]): boolean {
+export default function salesEvidenceFilter (filterParameters: SalesEvidenceFilterParams, property: UnprocessedResultsFromCRM): boolean {
     const {
         landArea,
         buildArea,
         salePrice,
         saleType,
         dateSold
-    } = filterParameters[0]
-    const FILTER_NOT_USED_NUM_TYPE = -1
-    const isLandAreaFilterInUse = landArea.min === FILTER_NOT_USED_NUM_TYPE && landArea.max === FILTER_NOT_USED_NUM_TYPE
-    const isInLandAreaRange = !isLandAreaFilterInUse && numberFilter(property, 'Land_Area_sqm', landArea)
+    } = filterParameters
+    const BLANK_FILTER_VALUE = -1
+    const isLandAreaFilterNotInUse = landArea.min === BLANK_FILTER_VALUE && landArea.max === BLANK_FILTER_VALUE
+    const isInLandAreaRange = !isLandAreaFilterNotInUse && numberFilter('Land_Area_sqm', landArea, property)
 
-    const isBuildAreaFilterInUse = buildArea.min === FILTER_NOT_USED_NUM_TYPE && buildArea.max === FILTER_NOT_USED_NUM_TYPE
-    const isInBuildAreaRange = !isBuildAreaFilterInUse && numberFilter(property, 'Build_Area_sqm', buildArea)
+    const isBuildAreaFilterNotInUse = buildArea.min === BLANK_FILTER_VALUE && buildArea.max === BLANK_FILTER_VALUE
+    const isInBuildAreaRange = !isBuildAreaFilterNotInUse && numberFilter('Build_Area_sqm', buildArea, property)
 
-    const isSalePriceFilterInUse = salePrice.min === FILTER_NOT_USED_NUM_TYPE && salePrice.max === FILTER_NOT_USED_NUM_TYPE
-    const isInSalePriceRange = !isSalePriceFilterInUse && numberFilter(property, 'Sale_Price', salePrice)
+    const isSalePriceFilterNotInUse = salePrice.min === BLANK_FILTER_VALUE && salePrice.max === BLANK_FILTER_VALUE
+    const isInSalePriceRange = !isSalePriceFilterNotInUse && numberFilter('Sale_Price', salePrice, property)
 
-    const FILTER_NOT_USED_ARR_TYPE = 0
-    const isSaleTypeFilterInUse = saleType.length === FILTER_NOT_USED_ARR_TYPE
-    const isInSaleType = !isSaleTypeFilterInUse && saleTypeFilter(property, saleType)
+    const isSaleTypeFilterNotInUse = saleType.length === 0
+    const isInSaleType = !isSaleTypeFilterNotInUse && saleTypeFilter(saleType, property)
 
-    const isDateSoldFilterInUse = dateSold.min === dateSold.max
-    const isInSaleDateRange = !isDateSoldFilterInUse && dateFilter(property, dateSold)
+    const isDateSoldFilterNotInUse = dateSold.min === dateSold.max
+    const isInSaleDateRange = !isDateSoldFilterNotInUse && dateFilter(dateSold, property)
 
     return isInLandAreaRange || isInBuildAreaRange || isInSalePriceRange || isInSaleType || isInSaleDateRange
 }
