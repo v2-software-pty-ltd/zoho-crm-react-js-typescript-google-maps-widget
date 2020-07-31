@@ -38,5 +38,5 @@ export function DownloadContactListButton (props: DownloadButtonProps) {
         }
     )
     const downloadUrl = URL.createObjectURL(resultsBlob)
-    return (<a href={downloadUrl} className="button" download="contactlist.csv" >Download Call List</a>)
+    return (<a href={downloadUrl} className="button" download="call-list.csv" >Download Call List</a>)
 }
