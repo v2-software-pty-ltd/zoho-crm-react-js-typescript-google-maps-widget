@@ -1,21 +1,21 @@
 import { IntersectedSearchAndFilterParams, UnprocessedResultsFromCRM, PositionType } from '../types'
 import { ZOHO } from '../vendor/ZSDK'
-import emailAndIdExtract from '../utils/emailAndIdExtract'
 import filterResults from '../utils/filterResults'
+import emailAndIdExtract from '../utils/emailAndIdExtract'
 
-function safelyRetrieveLocalStorageItem(storageKey: string) {
+function safelyRetrieveLocalStorageItem (storageKey: string) {
     try {
-        return localStorage.getItem(storageKey);
+        return localStorage.getItem(storageKey)
     } catch (e) {
-        console.error('Issue retrieving data from local storage');
+        console.error('Issue retrieving data from local storage')
     }
 }
 
-export function safelySetLocalStorageItem(storageKey: string, value: string) {
+export function safelySetLocalStorageItem (storageKey: string, value: string) {
     try {
-        return localStorage.setItem(storageKey, value);
+        return localStorage.setItem(storageKey, value)
     } catch (e) {
-        console.error('Issue setting data in local storage');
+        console.error('Issue setting data in local storage')
     }
 }
 
@@ -32,7 +32,7 @@ async function getPageOfRecords (pageNumber: number, zohoModuleToUse: string) {
 }
 
 const retrieveRecordsFromLocalStorageIfAvailable = (localStorageKey: string) => {
-    const data = safelyRetrieveLocalStorageItem(localStorageKey);
+    const data = safelyRetrieveLocalStorageItem(localStorageKey)
     const parsedData = JSON.parse(data || '{}')
     const MILLISECONDS_IN_ONE_HOUR = 1000 * 60 * 60
 
@@ -63,7 +63,7 @@ const retrieveRecords = async function (pageNumber: number, retrievedProperties:
 
     const thisPageResults = await getPageOfRecords(pageNumber, zohoModuleToUse)
     if (thisPageResults.length === 0) {
-        await safelySetLocalStorageItem(localStorageKey, JSON.stringify({
+        safelySetLocalStorageItem(localStorageKey, JSON.stringify({
             lastRetrievalDate: new Date().toISOString(),
             data: retrievedProperties
         }))
@@ -114,11 +114,11 @@ export async function updateMailComment (comment: string, results: UnprocessedRe
 
     // batch updates so we don't exceed the payload limit
 
-    const BATCH_SIZE = 5;
-    const batches = [];
+    const BATCH_SIZE = 5
+    const batches = []
     for (let i = 0; i < recordData.length; i += BATCH_SIZE) {
-        const dataForThisBatch = recordData.slice(i, i + BATCH_SIZE);
-        batches.push(dataForThisBatch);
+        const dataForThisBatch = recordData.slice(i, i + BATCH_SIZE)
+        batches.push(dataForThisBatch)
     }
 
     await Promise.all(
@@ -127,9 +127,9 @@ export async function updateMailComment (comment: string, results: UnprocessedRe
                 arguments: JSON.stringify({
                     results_str: messageBatch,
                     comment: comment
-                }),
-            };
-            await ZOHO.CRM.FUNCTIONS.execute('update_mail_comment', payload);
+                })
+            }
+            await ZOHO.CRM.FUNCTIONS.execute('update_mail_comment', payload)
         })
     )
 }
