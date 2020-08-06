@@ -24,7 +24,7 @@ export default function DownloadSalesEvidenceListButton (props: DownloadButtonPr
         csvRow = csvRow.replace(/null/g, '-')
         return csvRow
     }
-    const HEADER_ROW = '"Property Address","Land Area (sqm)","Build Area (sqm)","Date Sold","Sale Price"\r\n'
+    const HEADER_ROW = 'Property Address,Land Area (sqm),Build Area (sqm),Date Sold,Sale Price\r\n'
     const csvRows = dedupedProperties.map(generateCSVRow).join('')
     const csvData = `${HEADER_ROW}${csvRows}`
     const resultsBlob = new Blob(

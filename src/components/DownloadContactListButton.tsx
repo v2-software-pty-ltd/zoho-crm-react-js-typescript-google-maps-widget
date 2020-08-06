@@ -8,7 +8,7 @@ type DownloadButtonProps = {
 }
 
 export function DownloadContactListButton (props: DownloadButtonProps) {
-    const csvHeader = '"Property Address", "Owner Name", "Owner Mobile", "Owner Work Phone", "Contact Name", "Contact Mobile", "Contact Work Phone"\r\n'
+    const csvHeader = 'Property Address,Owner Name,Owner Mobile,Owner Work Phone,Contact Name,Contact Mobile,Contact Work Phone\r\n'
     const arrayOfPropertyObjects = props.results
 
     const uniqueProperties = getUniqueListBy(arrayOfPropertyObjects, 'id')

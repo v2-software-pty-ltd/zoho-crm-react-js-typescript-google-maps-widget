@@ -45,19 +45,35 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
     searchParameters.forEach((searchParams: IntersectedSearchAndFilterParams) => {
         const desiredPropertyTypes = searchParams.propertyTypes
         const desiredPropertyGroups = searchParams.propertyGroups
-        const maxResultsForPropertyTypes = searchParams.propertyTypesMaxResults
-        const maxResultsForPropertyGroups = searchParams.propertyGroupsMaxResults
+        const isPropertyTypeFilterInUse = desiredPropertyTypes.length !== 0
+        const isPropertyGroupFilterInUse = desiredPropertyGroups.length !== 0
+
         const desiredManaged = searchParams.managed
-        const maxNumNeighbours = searchParams.neighboursSearchMaxRecords
+        const isManagedFilterInUse = desiredManaged !== 'All'
+        let maxNumNeighbours = searchParams.neighboursSearchMaxRecords
+        let allRecordsForSalesEvidenceFilter = false
+        if (filterInUse === 'SalesEvidenceFilter') {
+            allRecordsForSalesEvidenceFilter = searchParams.allRecords
+            if (!allRecordsForSalesEvidenceFilter && searchParams.neighboursSearchMaxRecords === Infinity) {
+                maxNumNeighbours = 0
+            }
+            // N.B. to get the select all records for sales evidence checkbox to work
+            if (!isPropertyGroupFilterInUse && !isPropertyTypeFilterInUse && !allRecordsForSalesEvidenceFilter) {
+                desiredPropertyGroups.push('All')
+                desiredPropertyTypes.push('All')
+            }
+        } else if ((isPropertyGroupFilterInUse || isPropertyTypeFilterInUse || isManagedFilterInUse) && searchParams.neighboursSearchMaxRecords === Infinity) {
+            maxNumNeighbours = 0
+        }
+
+        const maxResultsForPropertyTypes: number = searchParams.propertyTypesMaxResults
+        const maxResultsForPropertyGroups: number = searchParams.propertyGroupsMaxResults
 
         const matchTallies: MatchTallies = {
             neighbour: 0,
             propertyType: 0,
             propertyGroup: 0
         }
-
-        const isPropertyTypeFilterInUse = desiredPropertyTypes.includes('Filter Disabled')
-        const isPropertyGroupFilterInUse = desiredPropertyGroups.includes('Filter Disabled')
 
         unsortedPropertyResults.forEach((property: UnprocessedResultsFromCRM) => {
             if (!property.Latitude || !property.Longitude) {
@@ -67,46 +83,62 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
             const isUnderPropertyTypeLimit = matchTallies.propertyType < maxResultsForPropertyTypes
             const isUnderPropertyGroupLimit = matchTallies.propertyGroup < maxResultsForPropertyGroups
             const canAddBasedOnMaxResults = isUnderNeighbourLimit || isUnderPropertyTypeLimit || isUnderPropertyGroupLimit
-
             if (canAddBasedOnMaxResults) {
-                const propertyTypeMatch = !isPropertyTypeFilterInUse && isUnderPropertyTypeLimit && matchForPropertyTypes(property, desiredPropertyTypes)
-                const propertyGroupMatch = !isPropertyGroupFilterInUse && isUnderPropertyGroupLimit && matchForPropertyGroups(property, desiredPropertyGroups)
+                const propertyTypeMatch = isPropertyTypeFilterInUse && isUnderPropertyTypeLimit && matchForPropertyTypes(property, desiredPropertyTypes)
+                const propertyGroupMatch = isPropertyGroupFilterInUse && isUnderPropertyGroupLimit && matchForPropertyGroups(property, desiredPropertyGroups)
+
                 let canAddBasedOnFilters = propertyGroupMatch || propertyTypeMatch
+
                 if (filterInUse === 'SalesEvidenceFilter') {
+                    // N.B. when using sales evidence filter and type or group aren't used
+                    if (!isPropertyGroupFilterInUse && !isPropertyTypeFilterInUse) {
+                        canAddBasedOnFilters = true
+                    }
                     // N.B. the Sales Evidence Filter doesn't have the ability to search for multiple properties hence only passing in the single search param object.
-                    const allRecordsForSalesEvidenceFilter = searchParams.allRecords
                     canAddBasedOnFilters = allRecordsForSalesEvidenceFilter ? true : canAddBasedOnFilters && salesEvidenceFilter(searchParams, property)
                 }
 
-                const ownerData = getOwnerData(property)
                 const isManaged = (property.Managed === desiredManaged) || desiredManaged === 'All'
-                const shouldAddProperty = isManaged && canAddBasedOnFilters
+                let shouldAddProperty
+                const arePropertyFiltersInUse = isPropertyGroupFilterInUse || isPropertyTypeFilterInUse
+                if (isManagedFilterInUse && !arePropertyFiltersInUse) {
+                    // N.B. used to show all properties that are managed
+                    shouldAddProperty = isManaged
+                } else if (isManagedFilterInUse && arePropertyFiltersInUse) {
+                    // N.B. used to show properties type or group and if they are managed
+                    shouldAddProperty = isManaged && canAddBasedOnFilters
+                } else if (maxNumNeighbours !== 0 || maxNumNeighbours !== Infinity) {
+                    // N.B. used if max neighbour limit field has a value entered
+                    shouldAddProperty = canAddBasedOnFilters || isUnderNeighbourLimit
+                } else {
+                    shouldAddProperty = canAddBasedOnFilters
+                }
 
                 if (shouldAddProperty) {
-                    if (ownerData.length > 0) {
-                        property.owner_details = ownerData
-                    }
-                    if (propertyTypeMatch) {
-                        matchTallies.propertyType += 1
-                    }
-                    if (propertyGroupMatch) {
-                        matchTallies.propertyGroup += 1
-                    }
-                    if (isUnderNeighbourLimit) {
-                        matchTallies.neighbour += 1
-                    }
+                    const isDupeId = uniqueSearchRecords.includes(property.id)
+                    if (!isDupeId) {
+                        // N. B. This is to remove dupes retrieved during the getPageOfRecords function.
+                        uniqueSearchRecords.push(property.id)
 
-                    if (canAddBasedOnFilters) {
-                        const isDupeId = uniqueSearchRecords.includes(property.id)
-                        if (!isDupeId) {
-                            // N. B. This is to remove dupes retrieved during the getPageOfRecords function.
-                            uniqueSearchRecords.push(property.id)
-                            matchedProperties.push(property)
+                        const ownerData = getOwnerData(property)
+                        if (ownerData.length > 0) {
+                            property.owner_details = ownerData
                         }
+                        if (propertyTypeMatch) {
+                            matchTallies.propertyType += 1
+                        }
+                        if (propertyGroupMatch && !propertyTypeMatch) {
+                            matchTallies.propertyGroup += 1
+                        }
+                        if (isUnderNeighbourLimit && !canAddBasedOnFilters) {
+                            matchTallies.neighbour += 1
+                        }
+                        matchedProperties.push(property)
                     }
                 }
             }
         })
     })
+
     return { matchedProperties, uniqueSearchRecords }
 }
