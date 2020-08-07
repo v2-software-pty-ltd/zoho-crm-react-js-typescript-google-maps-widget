@@ -74,15 +74,10 @@ export type BaseSearchParamsType = {
 }
 
 export enum SaleTypeEnum {
-  ALL = 'ALL',
-  INV = 'INV',
-  VP = 'VP',
-  DEV = 'DEV'
-}
-
-export type MinMaxDateType = {
-  min: Date | undefined
-  max: Date | undefined
+    ALL = 'ALL',
+    INV = 'INV',
+    VP = 'VP',
+    DEV = 'DEV'
 }
 
 export type MinMaxNumberType = {
@@ -105,6 +100,11 @@ export type LeaseEvidenceFilterParams = {
   rentPerDollarMeter: MinMaxNumberType
   leasedDate: MinMaxDateType
   reviewDate: MinMaxDateType
+}
+
+export type MinMaxDateType = {
+  min: Date | undefined
+  max: Date | undefined
 }
 
 export type PositionType = {
