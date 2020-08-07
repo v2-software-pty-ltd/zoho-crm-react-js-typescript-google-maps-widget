@@ -76,7 +76,7 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                  </div>
              )
             }
-            {props.filterInUse === 'LeaseFilter' &&
+            {props.filterInUse === 'LeaseEvidenceFilter' &&
              (
                  <div style={{ padding: '20px' }}>
                      <table>
@@ -91,7 +91,7 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                          </thead>
                          <tbody>
                              {props.results.map((result) => {
-                                 const propertyAddress = result.Property.find((address) => address.name)
+                                 const propertyAddress = result?.Property?.find((address) => address.name) || result.Deal_Name || result.Reverse_Geocoded_Address
                                  const rentPerDollarMeter = result.Area_sqm
                                  const landArea = result.Land_Area_sqm
                                  const buildArea = result.Build_Area_sqm

@@ -1,8 +1,8 @@
 // TODO - tsconfig replace CommonJS with esnext
-import { LeasesEvidenceFilterParams, UnprocessedResultsFromCRM } from '../types'
-import { genericNumberFilter, dateFilter } from './filterUtilityFunctions'
+import { LeaseEvidenceFilterParams, UnprocessedResultsFromCRM } from '../types'
+import { genericNumberFilter, genericDateFilter } from './filterUtilityFunctions'
 
-export default function leasesEvidenceFilter (property: UnprocessedResultsFromCRM, filterParameters: LeasesEvidenceFilterParams[]): boolean {
+export default function leasesEvidenceFilter (filterParameters: LeaseEvidenceFilterParams, property: UnprocessedResultsFromCRM): boolean {
     const {
         landArea,
         buildArea,
@@ -10,25 +10,25 @@ export default function leasesEvidenceFilter (property: UnprocessedResultsFromCR
         rentPerDollarMeter,
         leasedDate,
         reviewDate
-    } = filterParameters[0]
+    } = filterParameters
 
     const FILTER_NOT_USED_NUM_TYPE = -1
     const isLandAreaFilterInUse = landArea.min === FILTER_NOT_USED_NUM_TYPE && landArea.max === FILTER_NOT_USED_NUM_TYPE
-    const isInLandAreaRange = !isLandAreaFilterInUse && genericNumberFilter(property, 'Land_Area_sqm', landArea)
+    const isInLandAreaRange = !isLandAreaFilterInUse && genericNumberFilter(landArea, 'Land_Area_sqm', property)
 
     const isBuildAreaFilterInUse = buildArea.min === FILTER_NOT_USED_NUM_TYPE && buildArea.max === FILTER_NOT_USED_NUM_TYPE
-    const isInBuildAreaRange = !isBuildAreaFilterInUse && genericNumberFilter(property, 'Build_Area_sqm', buildArea)
+    const isInBuildAreaRange = !isBuildAreaFilterInUse && genericNumberFilter(buildArea, 'Build_Area_sqm', property)
 
     const isRentGrossFilterInUse = rentGross.min === FILTER_NOT_USED_NUM_TYPE && rentGross.max === FILTER_NOT_USED_NUM_TYPE
-    const isInRentGrossRange = !isRentGrossFilterInUse && genericNumberFilter(property, 'Current_Rental', rentGross)
+    const isInRentGrossRange = !isRentGrossFilterInUse && genericNumberFilter(rentGross, 'Current_Rental', property)
 
     const isRentPerDollarFilterInUse = rentPerDollarMeter.min === FILTER_NOT_USED_NUM_TYPE && rentPerDollarMeter.max === FILTER_NOT_USED_NUM_TYPE
-    const isInRentPerDollarMeterRange = !isRentPerDollarFilterInUse && genericNumberFilter(property, 'per_sqm1', rentPerDollarMeter)
+    const isInRentPerDollarMeterRange = !isRentPerDollarFilterInUse && genericNumberFilter(rentPerDollarMeter, 'per_sqm1', property)
 
     const isLeaseDateFilterInUse = leasedDate.min === leasedDate.max
-    const isInLeasedDateRange = !isLeaseDateFilterInUse && dateFilter(property, 'Rent_Start_Date', leasedDate)
+    const isInLeasedDateRange = !isLeaseDateFilterInUse && genericDateFilter(leasedDate, 'Rent_Start_Date', property)
     const isReviewDateFilterInUse = reviewDate.min === reviewDate.max
-    const isInReviewDateRange = !isReviewDateFilterInUse && dateFilter(property, 'Market_Review', reviewDate)
+    const isInReviewDateRange = !isReviewDateFilterInUse && genericDateFilter(reviewDate, 'Market_Review', property)
 
     return isInLandAreaRange || isInBuildAreaRange || isInRentGrossRange || isInRentPerDollarMeterRange || isInLeasedDateRange || isInReviewDateRange
 }

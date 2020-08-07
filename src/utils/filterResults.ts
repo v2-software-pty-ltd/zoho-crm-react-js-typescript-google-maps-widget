@@ -1,5 +1,6 @@
 import { IntersectedSearchAndFilterParams, UnprocessedResultsFromCRM, OwnerType } from '../types'
 import salesEvidenceFilter from './salesEvidenceFilter'
+import leasesEvidenceFilter from './leasesEvidenceFilter'
 
 type MatchTallies = {
   [index: string]: number
@@ -51,14 +52,16 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
         const desiredManaged = searchParams.managed
         const isManagedFilterInUse = desiredManaged !== 'All'
         let maxNumNeighbours = searchParams.neighboursSearchMaxRecords
-        let allRecordsForSalesEvidenceFilter = false
-        if (filterInUse === 'SalesEvidenceFilter') {
-            allRecordsForSalesEvidenceFilter = searchParams.allRecords
-            if (!allRecordsForSalesEvidenceFilter && searchParams.neighboursSearchMaxRecords === Infinity) {
+        let allRecordsForSalesOrLeaseFilter = false
+
+        const subFilterInUse = filterInUse === 'SalesEvidenceFilter' || filterInUse === 'LeaseEvidenceFilter'
+        if (subFilterInUse) {
+            allRecordsForSalesOrLeaseFilter = searchParams.allRecords
+            if (!allRecordsForSalesOrLeaseFilter && searchParams.neighboursSearchMaxRecords === Infinity) {
                 maxNumNeighbours = 0
             }
             // N.B. to get the select all records for sales evidence checkbox to work
-            if (!isPropertyGroupFilterInUse && !isPropertyTypeFilterInUse && !allRecordsForSalesEvidenceFilter) {
+            if (!isPropertyGroupFilterInUse && !isPropertyTypeFilterInUse && !allRecordsForSalesOrLeaseFilter) {
                 desiredPropertyGroups.push('All')
                 desiredPropertyTypes.push('All')
             }
@@ -89,13 +92,19 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
 
                 let canAddBasedOnFilters = propertyGroupMatch || propertyTypeMatch
 
-                if (filterInUse === 'SalesEvidenceFilter') {
-                    // N.B. when using sales evidence filter and type or group aren't used
+                if (subFilterInUse) {
+                    // N.B. when using sales or leases evidence filter and type or group aren't used
                     if (!isPropertyGroupFilterInUse && !isPropertyTypeFilterInUse) {
                         canAddBasedOnFilters = true
                     }
-                    // N.B. the Sales Evidence Filter doesn't have the ability to search for multiple properties hence only passing in the single search param object.
-                    canAddBasedOnFilters = allRecordsForSalesEvidenceFilter ? true : canAddBasedOnFilters && salesEvidenceFilter(searchParams, property)
+                    if (filterInUse === 'SalesEvidenceFilter') {
+                        canAddBasedOnFilters = allRecordsForSalesOrLeaseFilter ? true : canAddBasedOnFilters && salesEvidenceFilter(searchParams, property)
+                    }
+                    if (filterInUse === 'LeaseEvidenceFilter') {
+                        console.log('property', property)
+
+                        canAddBasedOnFilters = allRecordsForSalesOrLeaseFilter ? true : canAddBasedOnFilters && leasesEvidenceFilter(searchParams, property)
+                    }
                 }
 
                 const isManaged = (property.Managed === desiredManaged) || desiredManaged === 'All'
@@ -120,10 +129,13 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                         // N. B. This is to remove dupes retrieved during the getPageOfRecords function.
                         uniqueSearchRecords.push(property.id)
 
-                        const ownerData = getOwnerData(property)
-                        if (ownerData.length > 0) {
-                            property.owner_details = ownerData
+                        if (filterInUse !== 'LeaseEvidenceFilter') {
+                            const ownerData = getOwnerData(property)
+                            if (ownerData.length > 0) {
+                                property.owner_details = ownerData
+                            }
                         }
+
                         if (propertyTypeMatch) {
                             matchTallies.propertyType += 1
                         }

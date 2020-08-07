@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react'
-import { IntersectedSearchAndFilterParams } from '../types'
+import { IntersectedSearchAndFilterParams, DEFAULT_SEARCH_PARAMS } from '../types'
 import { SearchWidget } from './SearchWidget'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -14,7 +14,7 @@ export function LeasesSearch (props: LeasesSearchProps) {
         <>
             <SearchWidget changeSearchParameters={props.changeSearchParameters} searchParameters={props.searchParameters} />
             <form className="wrapper">
-                <label className="eight">Land Area m2<br />
+                <label className="eight">Land Area m<sup>2</sup><br />
                     <input className="minMaxSize border" id="landAreaMin" onChange={(e: ChangeEvent<HTMLInputElement>) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
@@ -45,13 +45,13 @@ export function LeasesSearch (props: LeasesSearchProps) {
                 </label>
 
                 <label className="twelve">Leases Date<br />
-                    <DatePicker className='border' selected={props.searchParameters.leasedDate.min} onChange={(changeDate: Date) => {
+                    <DatePicker className='border' selected={props.searchParameters.leasedDate.min} dateFormat='dd/MM/yyyy' placeholderText='Min' onChange={(changeDate: Date) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
                             leasedDate: { min: changeDate, max: props.searchParameters.leasedDate.min }
                         })
                     }} />
-                    <DatePicker className='border' selected={props.searchParameters.leasedDate.max} onChange={(changeDate: Date) => {
+                    <DatePicker className='border' selected={props.searchParameters.leasedDate.max} dateFormat='dd/MM/yyyy' placeholderText='Max' onChange={(changeDate: Date) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
                             leasedDate: { min: props.searchParameters.leasedDate.min, max: changeDate }
@@ -59,20 +59,20 @@ export function LeasesSearch (props: LeasesSearchProps) {
                     }} />
                 </label>
                 <label className="thirteen">Review Date<br />
-                    <DatePicker className='border' selected={props.searchParameters.reviewDate.min} onChange={(changeDate: Date) => {
+                    <DatePicker className='border' selected={props.searchParameters.reviewDate.min} dateFormat='dd/MM/yyyy' placeholderText='Min' onChange={(changeDate: Date) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
                             reviewDate: { min: changeDate, max: props.searchParameters.reviewDate.min }
                         })
                     }} />
-                    <DatePicker className='border' selected={props.searchParameters.dateSold.max} onChange={(changeDate: Date) => {
+                    <DatePicker className='border' selected={props.searchParameters.dateSold.max} dateFormat='dd/MM/yyyy' placeholderText='Max' onChange={(changeDate: Date) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
                             reviewDate: { min: props.searchParameters.reviewDate.min, max: changeDate }
                         })
                     }}/>
                 </label>
-                <label className="eleven ">Rent $/m2<br />
+                <label className="eleven ">Rent $/m<sup>2</sup><br />
                     <input className="minMaxSize border" id="rentPerDollarMin" onChange={(e: ChangeEvent<HTMLInputElement>) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
@@ -100,6 +100,18 @@ export function LeasesSearch (props: LeasesSearchProps) {
                             rentGross: { min: props.searchParameters.rentGross.min, max: e.target.valueAsNumber }
                         })
                     }} placeholder="Max" type="number" tabIndex={6} />
+                </label>
+                <label className="fourteen">Select All Records for Lease Evidence Sub Filter
+                    <input type="checkbox" onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                        if (e.target.checked) {
+                            props.changeSearchParameters({
+                                ...props.searchParameters,
+                                allRecords: e.target.checked
+                            })
+                        } else {
+                            props.changeSearchParameters({ ...DEFAULT_SEARCH_PARAMS })
+                        }
+                    }}/>
                 </label>
             </form>
         </>

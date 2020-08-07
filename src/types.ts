@@ -37,12 +37,12 @@ const DEFAULT_LEASE_EVIDENCE_PARAMS = {
         max: 0
     },
     leasedDate: {
-        min: new Date(),
-        max: new Date()
+        min: undefined,
+        max: undefined
     },
     reviewDate: {
-        min: new Date(),
-        max: new Date()
+        min: undefined,
+        max: undefined
     }
 }
 export const DEFAULT_SEARCH_PARAMS = {
@@ -59,7 +59,7 @@ export const DEFAULT_SEARCH_PARAMS = {
     ...DEFAULT_LEASE_EVIDENCE_PARAMS
 }
 
-export type IntersectedSearchAndFilterParams = SalesEvidenceFilterParams & BaseSearchParamsType
+export type IntersectedSearchAndFilterParams = SalesEvidenceFilterParams & BaseSearchParamsType & LeaseEvidenceFilterParams
 
 export type BaseSearchParamsType = {
   searchAddress: string
@@ -102,7 +102,7 @@ export type LeaseEvidenceFilterParams = {
   landArea: MinMaxNumberType
   buildArea: MinMaxNumberType
   rentGross: MinMaxNumberType
-  rentDollarMeter: MinMaxNumberType
+  rentPerDollarMeter: MinMaxNumberType
   leasedDate: MinMaxDateType
   reviewDate: MinMaxDateType
 }
@@ -172,7 +172,6 @@ export type UnprocessedResultsFromCRM = {
     Start_Date: Date
     Market_Review_End_Date: Date
     Property: addressForLease[]
-
 }
 
 export type ReactSelectOption = {

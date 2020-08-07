@@ -63,7 +63,7 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsA
                             </div>
                         )
                     }
-                    {filterInUse === 'LeaseFilter' &&
+                    {filterInUse === 'LeaseEvidenceFilter' &&
                         (
                             <div className="download-button-wrapper pagebreak">
                                 <DownloadLeasesListButton results={results} />

@@ -91,7 +91,6 @@ export function SalesEvidenceSearchWidget (props: SearchWidgetProps) {
                         }
                     }}/>
                 </label>
-
             </form>
         </>
     )

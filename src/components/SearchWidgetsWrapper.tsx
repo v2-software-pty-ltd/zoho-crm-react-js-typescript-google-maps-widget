@@ -1,6 +1,6 @@
 import React from 'react'
 import { SearchWidget } from './SearchWidget'
-import { SalesEvidenceSearchWidget } from './salesEvidenceSearch'
+import { SalesEvidenceSearchWidget } from './SalesEvidenceSearchWidget'
 import { LeasesSearch } from './LeasesSearch'
 import { DEFAULT_SEARCH_PARAMS, IntersectedSearchAndFilterParams } from '../types'
 
@@ -57,7 +57,7 @@ export function SearchWidgetsWrapper (props: SearchWidgetProps) {
                     </div>
                 )
             }
-            {props.filterInUse === 'LeaseFilter' &&
+            {props.filterInUse === 'LeaseEvidenceFilter' &&
                 (
                     <div className="search-params-wrapper" key={props.searchParameters[0].id}>
                         <LeasesSearch
@@ -91,7 +91,10 @@ export function SearchWidgetsWrapper (props: SearchWidgetProps) {
                                 props.setFilterInUse('SalesEvidenceFilter')
                             }}/>
                             <span className='radioName'>Sales Evidence Widget</span>
-                            <input type="radio" checked={props.filterInUse === 'LeaseFilter'} onClick={() => props.setFilterInUse('LeaseFilter')}/>
+                            <input type="radio" checked={props.filterInUse === 'LeaseEvidenceFilter'} onClick={() => {
+                                props.changeSearchParameters([{ ...DEFAULT_SEARCH_PARAMS }])
+                                props.setFilterInUse('LeaseEvidenceFilter')
+                            }}/>
                             <span className='radioName'>Leases Evidence Widget</span>
                         </div>
                     </label>
