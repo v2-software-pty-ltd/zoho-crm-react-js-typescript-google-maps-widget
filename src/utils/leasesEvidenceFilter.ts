@@ -28,7 +28,7 @@ export default function leasesEvidenceFilter (filterParameters: LeasesEvidenceFi
     const isLeaseDateFilterInUse = leasedDate.min === leasedDate.max
     const isInLeasedDateRange = !isLeaseDateFilterInUse && genericDateFilter(leasedDate, 'Rent_Start_Date', property)
     const isReviewDateFilterInUse = reviewDate.min === reviewDate.max
-    const isInReviewDateRange = !isReviewDateFilterInUse && genericDateFilter(reviewDate, 'Market_Review', property)
+    const isInReviewDateRange = !isReviewDateFilterInUse && genericDateFilter(reviewDate, 'Next_MR_Start_Date', property)
 
     return isInLandAreaRange || isInBuildAreaRange || isInRentGrossRange || isInRentPerDollarMeterRange || isInLeasedDateRange || isInReviewDateRange
 }
