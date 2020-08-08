@@ -102,6 +102,11 @@ export type LeasesEvidenceFilterParams = {
   reviewDate: MinMaxDateType
 }
 
+export type dateTest = {
+    min: Date
+    max: Date
+}
+
 export type MinMaxDateType = {
   min: Date | undefined
   max: Date | undefined
