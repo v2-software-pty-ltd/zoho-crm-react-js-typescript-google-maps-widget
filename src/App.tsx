@@ -28,7 +28,7 @@ function prepareDataForMap (results: UnprocessedResultsFromCRM[], searchAddressP
         },
         addressesToRender: results.map((result) => {
             return {
-                address: result.Deal_Name,
+                address: result.Deal_Name || result.Full_Address,
                 position: {
                     lat: parseFloat(result.Latitude),
                     lng: parseFloat(result.Longitude)
@@ -63,7 +63,7 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsA
                             </div>
                         )
                     }
-                    {filterInUse === 'LeaseEvidenceFilter' &&
+                    {filterInUse === 'LeasesEvidenceFilter' &&
                         (
                             <div className="download-button-wrapper pagebreak">
                                 <DownloadLeasesListButton results={results} />

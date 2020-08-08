@@ -59,7 +59,7 @@ export const DEFAULT_SEARCH_PARAMS = {
     ...DEFAULT_LEASE_EVIDENCE_PARAMS
 }
 
-export type IntersectedSearchAndFilterParams = SalesEvidenceFilterParams & BaseSearchParamsType & LeaseEvidenceFilterParams
+export type IntersectedSearchAndFilterParams = SalesEvidenceFilterParams & BaseSearchParamsType & LeasesEvidenceFilterParams
 
 export type BaseSearchParamsType = {
   searchAddress: string
@@ -93,7 +93,7 @@ export type SalesEvidenceFilterParams = {
   saleType: SaleTypeEnum[]
 }
 
-export type LeaseEvidenceFilterParams = {
+export type LeasesEvidenceFilterParams = {
   landArea: MinMaxNumberType
   buildArea: MinMaxNumberType
   rentGross: MinMaxNumberType
@@ -139,12 +139,9 @@ export type OwnerType = {
     Last_Mailed: string
     Last_Mailed_Date: string
 }
-export type addressForLease = {
-    name: string
-}
 
 export type UnprocessedResultsFromCRM = {
-    [index: string]: string | number | OwnerType[] | string[] | addressForLease[] | Date
+    [index: string]: string | number | OwnerType[] | string[] | AddressForLease | Date
     Latitude: string
     Longitude: string
     Deal_Name: string
@@ -171,7 +168,12 @@ export type UnprocessedResultsFromCRM = {
     Lessee_Last_Name: string
     Start_Date: Date
     Market_Review_End_Date: Date
-    Property: addressForLease[]
+    Property: AddressForLease
+    Full_Address: string
+}
+
+export type AddressForLease = {
+    name: string
 }
 
 export type ReactSelectOption = {

@@ -57,7 +57,7 @@ export function SearchWidgetsWrapper (props: SearchWidgetProps) {
                     </div>
                 )
             }
-            {props.filterInUse === 'LeaseEvidenceFilter' &&
+            {props.filterInUse === 'LeasesEvidenceFilter' &&
                 (
                     <div className="search-params-wrapper" key={props.searchParameters[0].id}>
                         <LeasesSearch
@@ -91,9 +91,9 @@ export function SearchWidgetsWrapper (props: SearchWidgetProps) {
                                 props.setFilterInUse('SalesEvidenceFilter')
                             }}/>
                             <span className='radioName'>Sales Evidence Widget</span>
-                            <input type="radio" checked={props.filterInUse === 'LeaseEvidenceFilter'} onClick={() => {
+                            <input type="radio" checked={props.filterInUse === 'LeasesEvidenceFilter'} onClick={() => {
                                 props.changeSearchParameters([{ ...DEFAULT_SEARCH_PARAMS }])
-                                props.setFilterInUse('LeaseEvidenceFilter')
+                                props.setFilterInUse('LeasesEvidenceFilter')
                             }}/>
                             <span className='radioName'>Leases Evidence Widget</span>
                         </div>

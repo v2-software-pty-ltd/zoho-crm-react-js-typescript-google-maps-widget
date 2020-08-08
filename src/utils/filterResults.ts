@@ -54,7 +54,7 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
         let maxNumNeighbours = searchParams.neighboursSearchMaxRecords
         let allRecordsForSalesOrLeaseFilter = false
 
-        const subFilterInUse = filterInUse === 'SalesEvidenceFilter' || filterInUse === 'LeaseEvidenceFilter'
+        const subFilterInUse = filterInUse === 'SalesEvidenceFilter' || filterInUse === 'LeasesEvidenceFilter'
         if (subFilterInUse) {
             allRecordsForSalesOrLeaseFilter = searchParams.allRecords
             if (!allRecordsForSalesOrLeaseFilter && searchParams.neighboursSearchMaxRecords === Infinity) {
@@ -100,9 +100,7 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                     if (filterInUse === 'SalesEvidenceFilter') {
                         canAddBasedOnFilters = allRecordsForSalesOrLeaseFilter ? true : canAddBasedOnFilters && salesEvidenceFilter(searchParams, property)
                     }
-                    if (filterInUse === 'LeaseEvidenceFilter') {
-                        console.log('property', property)
-
+                    if (filterInUse === 'LeasesEvidenceFilter') {
                         canAddBasedOnFilters = allRecordsForSalesOrLeaseFilter ? true : canAddBasedOnFilters && leasesEvidenceFilter(searchParams, property)
                     }
                 }
@@ -129,7 +127,7 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                         // N. B. This is to remove dupes retrieved during the getPageOfRecords function.
                         uniqueSearchRecords.push(property.id)
 
-                        if (filterInUse !== 'LeaseEvidenceFilter') {
+                        if (filterInUse !== 'LeasesEvidenceFilter') {
                             const ownerData = getOwnerData(property)
                             if (ownerData.length > 0) {
                                 property.owner_details = ownerData

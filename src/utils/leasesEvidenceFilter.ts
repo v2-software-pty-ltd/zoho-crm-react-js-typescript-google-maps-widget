@@ -1,8 +1,8 @@
 // TODO - tsconfig replace CommonJS with esnext
-import { LeaseEvidenceFilterParams, UnprocessedResultsFromCRM } from '../types'
+import { LeasesEvidenceFilterParams, UnprocessedResultsFromCRM } from '../types'
 import { genericNumberFilter, genericDateFilter } from './filterUtilityFunctions'
 
-export default function leasesEvidenceFilter (filterParameters: LeaseEvidenceFilterParams, property: UnprocessedResultsFromCRM): boolean {
+export default function leasesEvidenceFilter (filterParameters: LeasesEvidenceFilterParams, property: UnprocessedResultsFromCRM): boolean {
     const {
         landArea,
         buildArea,

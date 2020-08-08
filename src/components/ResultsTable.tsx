@@ -76,33 +76,30 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                  </div>
              )
             }
-            {props.filterInUse === 'LeaseEvidenceFilter' &&
+            {props.filterInUse === 'LeasesEvidenceFilter' &&
              (
                  <div style={{ padding: '20px' }}>
                      <table>
                          <thead>
                              <tr>
+                                 <th>No.</th>
                                  <th>Address</th>
+                                 <th>Rent $/m<sup>2</sup></th>
                                  <th>Land Area</th>
                                  <th>Build Area</th>
-                                 <th>Date Sold</th>
-                                 <th>Sale Price</th>
+                                 <th>Current Rent (Gross)</th>
                              </tr>
                          </thead>
                          <tbody>
-                             {props.results.map((result) => {
-                                 const propertyAddress = result?.Property?.find((address) => address.name) || result.Deal_Name || result.Reverse_Geocoded_Address
-                                 const rentPerDollarMeter = result.Area_sqm
-                                 const landArea = result.Land_Area_sqm
-                                 const buildArea = result.Build_Area_sqm
-                                 const rentCurrent = result.Current_Rental
+                             {props.results.map((result, index) => {
                                  return (
-                                     <tr key={result.id}>
-                                         <td>{propertyAddress}</td>
-                                         <td>{rentPerDollarMeter}</td>
-                                         <td>{landArea}</td>
-                                         <td>{buildArea}</td>
-                                         <td>{rentCurrent}</td>
+                                     <tr key={`${result.id}-${index}`}>
+                                         <td>{index + 1}</td>
+                                         <td>{result.Full_Address}</td>
+                                         <td>{result.Area_sqm}</td>
+                                         <td>{result.Land_Area_sqm}</td>
+                                         <td>{result.Build_Area_sqm}</td>
+                                         <td>{result.Current_Rental}</td>
                                      </tr>
                                  )
                              })}
@@ -110,41 +107,6 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                      </table>
                  </div>
              )
-            }
-            {props.filterInUse === 'LeaseFilter' &&
-             (
-                <div style={{ padding: '20px' }}>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Address</th>
-                            <th>Land Area</th>
-                            <th>Build Area</th>
-                            <th>Date Sold</th>
-                            <th>Sale Price</th>
-                        </tr>
-                    </thead>
-                        <tbody>
-                        {props.results.map((result) => {
-                            let propertyAddress = result.Property.find((address) => address.name)
-                            const rentPerDollarMeter = result.Area_sqm
-                            const landArea = result.Land_Area_sqm
-                            const buildArea = result.Build_Area_sqm
-                            const rentCurrent = result.Current_Rental
-                            return (
-                                <tr key={result.id}>
-                                    <td>{propertyAddress}</td>
-                                    <td>{rentPerDollarMeter}</td>
-                                    <td>{landArea}</td>
-                                    <td>{buildArea}</td>
-                                    <td>{rentCurrent}</td>
-                                </tr>
-                            )
-                        })}
-                    </tbody>
-                </table>
-            </div>
-                )
             }
         </div>
     )
