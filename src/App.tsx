@@ -11,6 +11,7 @@ import DownloadLeasesListButton from './components/DownloadLeasesListButton'
 import { UnprocessedResultsFromCRM, ResultsType, DEFAULT_SEARCH_PARAMS, PositionType, IntersectedSearchAndFilterParams } from './types'
 import { UpdateLastMailedButton } from './components/UpdateLastMailedButton'
 import { MassMailButton } from './components/MassMailButton'
+import { PrintButton } from './components/PrintButton'
 
 function prepareDataForMap (results: UnprocessedResultsFromCRM[], searchAddressPosition: PositionType): ResultsType | undefined {
     if (!results || results.length === 0) {
@@ -50,6 +51,7 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsA
                                 <div className="download-button-wrapper pagebreak">
                                     <DownloadContactListButton results={results} />
                                     <DownloadMailingListButton results={results} />
+                                    <PrintButton />
                                     <MassMailButton results={results} />
                                 </div>
                                 <UpdateLastMailedButton results={results} />
@@ -60,6 +62,7 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsA
                         (
                             <div className="download-button-wrapper pagebreak">
                                 <DownloadSalesEvidenceListButton results={results} />
+                                <PrintButton />
                             </div>
                         )
                     }
@@ -67,6 +70,7 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsA
                         (
                             <div className="download-button-wrapper pagebreak">
                                 <DownloadLeasesListButton results={results} />
+                                <PrintButton />
                             </div>
                         )
                     }
