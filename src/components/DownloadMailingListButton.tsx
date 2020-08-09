@@ -15,6 +15,7 @@ export function DownloadMailingListButton (props: DownloadButtonProps) {
         let postalAddress
         let email
         const propertyAddress = propertyObject.Deal_Name
+        const propertyType = propertyObject.Property_Type_Portals
         const relatedContact = propertyObject.owner_details?.find((owner: OwnerType) => owner.Contact_Type === 'Director')
         const owner = propertyObject.owner_details?.find((owner: OwnerType) => owner.Contact_Type === 'Owner')
 
@@ -34,19 +35,20 @@ export function DownloadMailingListButton (props: DownloadButtonProps) {
         }
 
         const isDupe = ownerContactDupeRemoval.includes(`${ownerOrRelatedContact?.Postal_Address}-${ownerOrRelatedContact?.Name}`)
-        if (!doNotMail || !returnToSender || !email) {
+        if (!doNotMail && !returnToSender && !email) {
             if (propertyAddress && postalAddress) {
                 if (!isDupe) {
                     ownerContactDupeRemoval.push(`${ownerOrRelatedContact?.Postal_Address}-${ownerOrRelatedContact?.Name}`)
                     const lastMailed = owner?.Last_Mailed || relatedContact?.Last_Mailed || 'Last mailed has not been found'
-                    csvRow = `"${ownerOrRelatedContact?.Name}","${ownerOrRelatedContact?.Contact_Type}","${postalAddress}","${ownerOrRelatedContact?.Postal_Suburb}","${ownerOrRelatedContact?.Postal_State}","${ownerOrRelatedContact?.Postal_Postcode}","${propertyAddress}", "${lastMailed}"\r\n`
+                    csvRow = `"${ownerOrRelatedContact?.Name}","${ownerOrRelatedContact?.Contact_Type}","${postalAddress}","${ownerOrRelatedContact?.Postal_Suburb}","${ownerOrRelatedContact?.Postal_State}","${ownerOrRelatedContact?.Postal_Postcode}","${propertyAddress}", "${propertyType}", "${lastMailed}"\r\n`
                     csvRow = csvRow.replace(/null/g, '-')
                 }
             }
         }
         return csvRow
     }
-    const HEADER_ROW = '"Contact Name","Contact Type","Mailing Street Address","Mailing Suburb","Mailing State","Mailing Postcode","Property Address","Property Type (Marketing)","Company", "Last Mailed"\r\n'
+
+    const HEADER_ROW = 'Contact Name,Contact Type,Mailing Street Address,Mailing Suburb,Mailing State,Mailing Postcode,Property Address,Property Type (Marketing),Last Mailed\r\n'
     const csvRows = matchingPropertiesAndOwners.map(generateCSVRow).join('')
     const csvData = `${HEADER_ROW}${csvRows}`
     const resultsBlob = new Blob(
