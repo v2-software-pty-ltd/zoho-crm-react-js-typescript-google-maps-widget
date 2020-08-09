@@ -15,8 +15,7 @@ const DEFAULT_SALES_EVIDENCE_PARAMS = {
         min: -1,
         max: -1
     },
-    saleType: [],
-    allRecords: false
+    saleType: []
 }
 
 const DEFAULT_LEASE_EVIDENCE_PARAMS = {
@@ -46,7 +45,7 @@ const DEFAULT_LEASE_EVIDENCE_PARAMS = {
     }
 }
 export const DEFAULT_SEARCH_PARAMS = {
-    searchAddress: '528 Kent St, Sydney, NSW, 2000',
+    searchAddress: '2 Leeds Street, Rhodes, NSW, 2138',
     propertyGroupsMaxResults: Infinity,
     propertyTypesMaxResults: Infinity,
     neighboursSearchMaxRecords: Infinity,
@@ -55,6 +54,7 @@ export const DEFAULT_SEARCH_PARAMS = {
     managed: 'All',
     readyForSearch: false,
     id: `search:${(Math.random() * 1000)}`,
+    allRecords: false,
     ...DEFAULT_SALES_EVIDENCE_PARAMS,
     ...DEFAULT_LEASE_EVIDENCE_PARAMS
 }

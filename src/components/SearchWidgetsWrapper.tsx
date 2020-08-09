@@ -13,6 +13,7 @@ type SearchWidgetProps = {
 }
 
 export function SearchWidgetsWrapper (props: SearchWidgetProps) {
+    console.log('props.search outside of RETURN', props.searchParameters, DEFAULT_SEARCH_PARAMS)
     return (
         <div>
             {props.filterInUse === 'BaseFilter' && props.searchParameters.map((searchParameters, idx) => {
@@ -50,7 +51,11 @@ export function SearchWidgetsWrapper (props: SearchWidgetProps) {
                         <SalesEvidenceSearchWidget
                             searchParameters={props.searchParameters[0]}
                             changeSearchParameters={(newSearchParams) => {
+                                console.log('newSearchParams', newSearchParams)
+
                                 const updatedSearchParams = [...props.searchParameters]
+                                console.log('props.searchParameters', props.searchParameters)
+
                                 updatedSearchParams[0] = newSearchParams
                                 props.changeSearchParameters(updatedSearchParams)
                             }} />
@@ -87,6 +92,8 @@ export function SearchWidgetsWrapper (props: SearchWidgetProps) {
                             }}/>
                             <span className='radioName'>Map Widget</span>
                             <input type="radio" checked={props.filterInUse === 'SalesEvidenceFilter'} onClick={() => {
+                                console.log('props.searchP', props.searchParameters, DEFAULT_SEARCH_PARAMS)
+
                                 props.changeSearchParameters([{ ...DEFAULT_SEARCH_PARAMS }])
                                 props.setFilterInUse('SalesEvidenceFilter')
                             }}/>

@@ -53,7 +53,7 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
         const isManagedFilterInUse = desiredManaged !== 'All'
         let maxNumNeighbours = searchParams.neighboursSearchMaxRecords
         let allRecordsForSalesOrLeaseFilter = false
-
+        debugger
         const subFilterInUse = filterInUse === 'SalesEvidenceFilter' || filterInUse === 'LeasesEvidenceFilter'
         if (subFilterInUse) {
             allRecordsForSalesOrLeaseFilter = searchParams.allRecords
@@ -120,6 +120,7 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                 } else {
                     shouldAddProperty = canAddBasedOnFilters
                 }
+                debugger
 
                 if (shouldAddProperty) {
                     const isDupeId = uniqueSearchRecords.includes(property.id)
@@ -148,6 +149,8 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                 }
             }
         })
+        desiredPropertyGroups.pop()
+        desiredPropertyTypes.pop()
     })
 
     return { matchedProperties, uniqueSearchRecords }

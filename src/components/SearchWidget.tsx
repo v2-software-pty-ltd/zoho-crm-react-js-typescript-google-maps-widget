@@ -23,6 +23,8 @@ export function SearchWidget (props: SearchWidgetProps) {
                 <p className="smaller-font">* Must contain street, suburb, state & postcode with each separated by comma</p>
             </label>
             <PropertyTypeDropdown chosenPropertyTypes={props.searchParameters.propertyTypes} changePropertyTypes={(newPropertyTypes) => {
+                console.log('newPropertyTypes', newPropertyTypes, props.searchParameters)
+
                 props.changeSearchParameters({
                     ...props.searchParameters,
                     propertyTypes: newPropertyTypes
@@ -59,6 +61,8 @@ export function SearchWidget (props: SearchWidgetProps) {
                 }} placeholder="Max" type="number" tabIndex={5} />
             </label>
             <PropertyGroupDropdown chosenPropertyGroups={props.searchParameters.propertyGroups} changePropertyGroups={(newPropertyGroups) => {
+                console.log('newPropertyGroups', newPropertyGroups, props.searchParameters)
+
                 props.changeSearchParameters({
                     ...props.searchParameters,
                     propertyGroups: newPropertyGroups
