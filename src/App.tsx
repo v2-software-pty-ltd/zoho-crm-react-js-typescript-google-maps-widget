@@ -101,8 +101,6 @@ function App () {
         if (isReadyForSearch) {
             const getDataFromCrm = async () => {
                 setLoading(true)
-                console.log('searchParameters', searchParameters)
-
                 const { matchedProperties, uniqueSearchRecords } = await findMatchingRecords(searchParameters, filterInUse)
                 const searchAddressPosition = await getSearchAddressPosition(searchParameters)
                 setSearchAddressPosition(searchAddressPosition)

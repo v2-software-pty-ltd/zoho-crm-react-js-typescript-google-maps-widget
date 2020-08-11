@@ -1,12 +1,4 @@
 const DEFAULT_SALES_EVIDENCE_PARAMS = {
-    landArea: {
-        min: -1,
-        max: -1
-    },
-    buildArea: {
-        min: -1,
-        max: -1
-    },
     dateSold: {
         min: undefined,
         max: undefined
@@ -19,21 +11,13 @@ const DEFAULT_SALES_EVIDENCE_PARAMS = {
 }
 
 const DEFAULT_LEASE_EVIDENCE_PARAMS = {
-    landArea: {
-        min: 0,
-        max: 0
-    },
-    buildArea: {
-        min: 0,
-        max: 0
-    },
     rentGross: {
-        min: 0,
-        max: 0
+        min: -1,
+        max: -1
     },
     rentPerDollarMeter: {
-        min: 0,
-        max: 0
+        min: -1,
+        max: -1
     },
     leasedDate: {
         min: undefined,
@@ -44,6 +28,18 @@ const DEFAULT_LEASE_EVIDENCE_PARAMS = {
         max: undefined
     }
 }
+
+const SHARED_SALE_LEASE_DEFAULT_PARAMS = {
+    landArea: {
+        min: -1,
+        max: -1
+    },
+    buildArea: {
+        min: -1,
+        max: -1
+    }
+}
+
 export const DEFAULT_SEARCH_PARAMS = {
     searchAddress: '2 Leeds Street, Rhodes, NSW, 2138',
     propertyGroupsMaxResults: Infinity,
@@ -56,7 +52,8 @@ export const DEFAULT_SEARCH_PARAMS = {
     id: `search:${(Math.random() * 1000)}`,
     allRecords: false,
     ...DEFAULT_SALES_EVIDENCE_PARAMS,
-    ...DEFAULT_LEASE_EVIDENCE_PARAMS
+    ...DEFAULT_LEASE_EVIDENCE_PARAMS,
+    ...SHARED_SALE_LEASE_DEFAULT_PARAMS
 }
 
 export type IntersectedSearchAndFilterParams = SalesEvidenceFilterParams & BaseSearchParamsType & LeasesEvidenceFilterParams
@@ -175,6 +172,7 @@ export type UnprocessedResultsFromCRM = {
     Market_Review_End_Date: Date
     Property: AddressForLease
     Full_Address: string
+    per_sqm1: number
 }
 
 export type AddressForLease = {

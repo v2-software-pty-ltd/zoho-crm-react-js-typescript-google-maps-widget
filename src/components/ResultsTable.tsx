@@ -96,7 +96,7 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                                      <tr key={`${result.id}-${index}`}>
                                          <td>{index + 1}</td>
                                          <td>{result.Full_Address}</td>
-                                         <td>{result.Area_sqm}</td>
+                                         <td>{result.per_sqm1}</td>
                                          <td>{result.Land_Area_sqm}</td>
                                          <td>{result.Build_Area_sqm}</td>
                                          <td>{result.Current_Rental}</td>

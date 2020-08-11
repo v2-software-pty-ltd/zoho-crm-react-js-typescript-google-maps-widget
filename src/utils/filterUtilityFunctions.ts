@@ -1,7 +1,7 @@
 import { UnprocessedResultsFromCRM, MinMaxNumberType, MinMaxDateType } from '../types'
 
 export function genericNumberFilter (filterValues: MinMaxNumberType, filterType: string, property: UnprocessedResultsFromCRM) {
-    return typeof property[filterType] === 'number' && (property[filterType] >= filterValues.min || property[filterType] <= filterValues.max)
+    return typeof property[filterType] === 'number' && (property[filterType] >= filterValues.min && property[filterType] <= filterValues.max)
 }
 
 export function genericDateFilter (dateSold: MinMaxDateType, filterType: string, property: UnprocessedResultsFromCRM): boolean {

@@ -15,6 +15,7 @@ export default function salesEvidenceFilter (filterParameters: SalesEvidenceFilt
         saleType,
         dateSold
     } = filterParameters
+
     const BLANK_FILTER_VALUE = -1
     const isLandAreaFilterNotInUse = landArea.min === BLANK_FILTER_VALUE && landArea.max === BLANK_FILTER_VALUE
     const isInLandAreaRange = !isLandAreaFilterNotInUse && genericNumberFilter(landArea, 'Land_Area_sqm', property)

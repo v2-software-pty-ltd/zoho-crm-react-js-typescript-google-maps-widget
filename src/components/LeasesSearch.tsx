@@ -48,7 +48,7 @@ export function LeasesSearch (props: LeasesSearchProps) {
                     <DatePicker className='border' selected={props.searchParameters.leasedDate.min} dateFormat='dd/MM/yyyy' placeholderText='Min' onChange={(changeDate: Date) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
-                            leasedDate: { min: changeDate, max: props.searchParameters.leasedDate.min }
+                            leasedDate: { min: changeDate, max: props.searchParameters.leasedDate.max }
                         })
                     }} />
                     <DatePicker className='border' selected={props.searchParameters.leasedDate.max} dateFormat='dd/MM/yyyy' placeholderText='Max' onChange={(changeDate: Date) => {
@@ -62,10 +62,10 @@ export function LeasesSearch (props: LeasesSearchProps) {
                     <DatePicker className='border' selected={props.searchParameters.reviewDate.min} dateFormat='dd/MM/yyyy' placeholderText='Min' onChange={(changeDate: Date) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
-                            reviewDate: { min: changeDate, max: props.searchParameters.reviewDate.min }
+                            reviewDate: { min: changeDate, max: props.searchParameters.reviewDate.max }
                         })
                     }} />
-                    <DatePicker className='border' selected={props.searchParameters.dateSold.max} dateFormat='dd/MM/yyyy' placeholderText='Max' onChange={(changeDate: Date) => {
+                    <DatePicker className='border' selected={props.searchParameters.reviewDate.max} dateFormat='dd/MM/yyyy' placeholderText='Max' onChange={(changeDate: Date) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
                             reviewDate: { min: props.searchParameters.reviewDate.min, max: changeDate }

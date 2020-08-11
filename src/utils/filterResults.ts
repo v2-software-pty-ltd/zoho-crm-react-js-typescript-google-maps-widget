@@ -51,16 +51,17 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
 
         const desiredManaged = searchParams.managed
         const isManagedFilterInUse = desiredManaged !== 'All'
+
         let maxNumNeighbours = searchParams.neighboursSearchMaxRecords
         let allRecordsForSalesOrLeaseFilter = false
-        debugger
         const subFilterInUse = filterInUse === 'SalesEvidenceFilter' || filterInUse === 'LeasesEvidenceFilter'
         if (subFilterInUse) {
             allRecordsForSalesOrLeaseFilter = searchParams.allRecords
+            // N.B. if the get select all records checkbox isn't selected
             if (!allRecordsForSalesOrLeaseFilter && searchParams.neighboursSearchMaxRecords === Infinity) {
                 maxNumNeighbours = 0
             }
-            // N.B. to get the select all records for sales evidence checkbox to work
+            // N.B. to get subfilters to work w/o using base filter
             if (!isPropertyGroupFilterInUse && !isPropertyTypeFilterInUse && !allRecordsForSalesOrLeaseFilter) {
                 desiredPropertyGroups.push('All')
                 desiredPropertyTypes.push('All')
@@ -93,7 +94,7 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                 let canAddBasedOnFilters = propertyGroupMatch || propertyTypeMatch
 
                 if (subFilterInUse) {
-                    // N.B. when using sales or leases evidence filter and type or group aren't used
+                    // N.B. when using sales evidence filter and type or group aren't used
                     if (!isPropertyGroupFilterInUse && !isPropertyTypeFilterInUse) {
                         canAddBasedOnFilters = true
                     }
@@ -106,6 +107,7 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                 }
 
                 const isManaged = (property.Managed === desiredManaged) || desiredManaged === 'All'
+
                 let shouldAddProperty
                 const arePropertyFiltersInUse = isPropertyGroupFilterInUse || isPropertyTypeFilterInUse
                 if (isManagedFilterInUse && !arePropertyFiltersInUse) {
@@ -114,27 +116,25 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                 } else if (isManagedFilterInUse && arePropertyFiltersInUse) {
                     // N.B. used to show properties type or group and if they are managed
                     shouldAddProperty = isManaged && canAddBasedOnFilters
-                } else if (maxNumNeighbours !== 0 || maxNumNeighbours !== Infinity) {
+                } else if (maxNumNeighbours !== 0 && maxNumNeighbours !== Infinity) {
                     // N.B. used if max neighbour limit field has a value entered
                     shouldAddProperty = canAddBasedOnFilters || isUnderNeighbourLimit
                 } else {
                     shouldAddProperty = canAddBasedOnFilters
                 }
-                debugger
 
                 if (shouldAddProperty) {
                     const isDupeId = uniqueSearchRecords.includes(property.id)
                     if (!isDupeId) {
                         // N. B. This is to remove dupes retrieved during the getPageOfRecords function.
                         uniqueSearchRecords.push(property.id)
-
+                        // N.B. Owner is not required in leases evidence filter
                         if (filterInUse !== 'LeasesEvidenceFilter') {
                             const ownerData = getOwnerData(property)
                             if (ownerData.length > 0) {
                                 property.owner_details = ownerData
                             }
                         }
-
                         if (propertyTypeMatch) {
                             matchTallies.propertyType += 1
                         }
@@ -149,8 +149,6 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                 }
             }
         })
-        desiredPropertyGroups.pop()
-        desiredPropertyTypes.pop()
     })
 
     return { matchedProperties, uniqueSearchRecords }
