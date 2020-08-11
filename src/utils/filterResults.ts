@@ -51,7 +51,6 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
 
         const desiredManaged = searchParams.managed
         const isManagedFilterInUse = desiredManaged !== 'All'
-
         let maxNumNeighbours = searchParams.neighboursSearchMaxRecords
         let allRecordsForSalesOrLeaseFilter = false
         const subFilterInUse = filterInUse === 'SalesEvidenceFilter' || filterInUse === 'LeasesEvidenceFilter'
@@ -92,7 +91,6 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                 const propertyGroupMatch = isPropertyGroupFilterInUse && isUnderPropertyGroupLimit && matchForPropertyGroups(property, desiredPropertyGroups)
 
                 let canAddBasedOnFilters = propertyGroupMatch || propertyTypeMatch
-
                 if (subFilterInUse) {
                     // N.B. when using sales evidence filter and type or group aren't used
                     if (!isPropertyGroupFilterInUse && !isPropertyTypeFilterInUse) {
@@ -107,7 +105,6 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                 }
 
                 const isManaged = (property.Managed === desiredManaged) || desiredManaged === 'All'
-
                 let shouldAddProperty
                 const arePropertyFiltersInUse = isPropertyGroupFilterInUse || isPropertyTypeFilterInUse
                 if (isManagedFilterInUse && !arePropertyFiltersInUse) {
