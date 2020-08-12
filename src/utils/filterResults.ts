@@ -70,10 +70,13 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
 
         const desiredManaged = searchParams.managed
         const isManagedFilterInUse = desiredManaged !== 'All'
+<<<<<<< HEAD
 
         const isBaseFiltersInUse = isPropertyGroupFilterInUse || isPropertyTypeFilterInUse || isManagedFilterInUse
         const isSalesOrLeaseFiltersInUse = checkSalesOrLeaseFilter(searchParams)
 
+=======
+>>>>>>> 2ce8fbaf59ede4369fef9142e34414c46a297313
         let maxNumNeighbours = searchParams.neighboursSearchMaxRecords
         let allRecordsForSalesOrLeaseFilter = false
         const subFilterInUse = filterInUse === 'SalesEvidenceFilter' || filterInUse === 'LeasesEvidenceFilter'
@@ -114,7 +117,10 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                 const propertyGroupMatch = isPropertyGroupFilterInUse && isUnderPropertyGroupLimit && matchForPropertyGroups(property, desiredPropertyGroups)
 
                 let canAddBasedOnFilters = propertyGroupMatch || propertyTypeMatch
+<<<<<<< HEAD
                 let isSalesOrLeaseEvidenceFilterUsed
+=======
+>>>>>>> 2ce8fbaf59ede4369fef9142e34414c46a297313
                 if (subFilterInUse) {
                     // N.B. when using sales evidence filter and type or group aren't used
                     if (!isPropertyGroupFilterInUse && !isPropertyTypeFilterInUse) {
@@ -130,8 +136,12 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                     }
                 }
 
+<<<<<<< HEAD
                 const isManaged = property.Managed === desiredManaged || property.Managed || desiredManaged === 'All'
                 debugger
+=======
+                const isManaged = (property.Managed === desiredManaged) || desiredManaged === 'All'
+>>>>>>> 2ce8fbaf59ede4369fef9142e34414c46a297313
                 let shouldAddProperty
                 const arePropertyFiltersInUse = isPropertyGroupFilterInUse || isPropertyTypeFilterInUse
                 const what = false
