@@ -1,4 +1,4 @@
-import { IntersectedSearchAndFilterParams, UnprocessedResultsFromCRM, OwnerType } from '../types'
+import { IntersectedSearchAndFilterParams, UnprocessedResultsFromCRM, OwnerType, DEFAULT_BASE_FILTER_PARAMS, SaleTypeEnum, MinMaxDateType, MinMaxNumberType, SalesTypeArray } from '../types'
 import salesEvidenceFilter from './salesEvidenceFilter'
 import leasesEvidenceFilter from './leasesEvidenceFilter'
 
@@ -39,6 +39,25 @@ function getOwnerData (property: UnprocessedResultsFromCRM) {
     return ownerData
 }
 
+function checkSalesOrLeaseFilter (searchParams: IntersectedSearchAndFilterParams) {
+    const defaultBaseFilterKeys = Object.keys(DEFAULT_BASE_FILTER_PARAMS)
+    const newSearchParamObject: IntersectedSearchAndFilterParams = Object.create(searchParams)
+    defaultBaseFilterKeys.forEach((baseFilterKey: string) => {
+        delete newSearchParamObject[baseFilterKey]
+    })
+    const salesAndLeaseSearchParamValues: (undefined | boolean | number)[] = Object.values(newSearchParamObject).flatMap((valueObject: string | number | boolean | string[]) => {
+        if (Array.isArray(valueObject)) {
+            return !SalesTypeArray.some((salesType: SaleTypeEnum) => valueObject.includes(salesType))
+        } else {
+            return Object.values(valueObject)
+        }
+    })
+
+    return salesAndLeaseSearchParamValues.some((value: number | undefined | boolean) => {
+        return typeof value === 'undefined' || value === -1 || value
+    })
+}
+
 export default function filterResults (unsortedPropertyResults: UnprocessedResultsFromCRM[], searchParameters: IntersectedSearchAndFilterParams[], filterInUse: string): { matchedProperties: UnprocessedResultsFromCRM[], uniqueSearchRecords: string[] } {
     const matchedProperties: UnprocessedResultsFromCRM[] = []
     const uniqueSearchRecords: string[] = []
@@ -51,6 +70,9 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
 
         const desiredManaged = searchParams.managed
         const isManagedFilterInUse = desiredManaged !== 'All'
+
+        const isBaseFiltersInUse = isPropertyGroupFilterInUse || isPropertyTypeFilterInUse || isManagedFilterInUse
+        const isSalesOrLeaseFiltersInUse = checkSalesOrLeaseFilter(searchParams)
 
         let maxNumNeighbours = searchParams.neighboursSearchMaxRecords
         let allRecordsForSalesOrLeaseFilter = false
@@ -66,10 +88,10 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                 desiredPropertyGroups.push('All')
                 desiredPropertyTypes.push('All')
             }
-        } else if ((isPropertyGroupFilterInUse || isPropertyTypeFilterInUse || isManagedFilterInUse) && searchParams.neighboursSearchMaxRecords === Infinity) {
+        } else if (isBaseFiltersInUse && searchParams.neighboursSearchMaxRecords === Infinity) {
             maxNumNeighbours = 0
         }
-
+        debugger
         const maxResultsForPropertyTypes: number = searchParams.propertyTypesMaxResults
         const maxResultsForPropertyGroups: number = searchParams.propertyGroupsMaxResults
 
@@ -92,25 +114,28 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                 const propertyGroupMatch = isPropertyGroupFilterInUse && isUnderPropertyGroupLimit && matchForPropertyGroups(property, desiredPropertyGroups)
 
                 let canAddBasedOnFilters = propertyGroupMatch || propertyTypeMatch
-
+                let isSalesOrLeaseEvidenceFilterUsed
                 if (subFilterInUse) {
                     // N.B. when using sales evidence filter and type or group aren't used
                     if (!isPropertyGroupFilterInUse && !isPropertyTypeFilterInUse) {
                         canAddBasedOnFilters = true
                     }
                     if (filterInUse === 'SalesEvidenceFilter') {
-                        canAddBasedOnFilters = allRecordsForSalesOrLeaseFilter ? true : canAddBasedOnFilters && salesEvidenceFilter(searchParams, property)
+                        isSalesOrLeaseEvidenceFilterUsed = canAddBasedOnFilters && salesEvidenceFilter(searchParams, property)
+                        canAddBasedOnFilters = allRecordsForSalesOrLeaseFilter ? true : isSalesOrLeaseEvidenceFilterUsed
                     }
                     if (filterInUse === 'LeasesEvidenceFilter') {
-                        canAddBasedOnFilters = allRecordsForSalesOrLeaseFilter ? true : canAddBasedOnFilters && leasesEvidenceFilter(searchParams, property)
+                        isSalesOrLeaseEvidenceFilterUsed = canAddBasedOnFilters && leasesEvidenceFilter(searchParams, property)
+                        canAddBasedOnFilters = allRecordsForSalesOrLeaseFilter ? true : isSalesOrLeaseEvidenceFilterUsed
                     }
                 }
 
-                const isManaged = (property.Managed === desiredManaged) || desiredManaged === 'All'
-
+                const isManaged = property.Managed === desiredManaged || property.Managed || desiredManaged === 'All'
+                debugger
                 let shouldAddProperty
                 const arePropertyFiltersInUse = isPropertyGroupFilterInUse || isPropertyTypeFilterInUse
-                if (isManagedFilterInUse && !arePropertyFiltersInUse) {
+                const what = false
+                if (isManagedFilterInUse && !arePropertyFiltersInUse && what) {
                     // N.B. used to show all properties that are managed
                     shouldAddProperty = isManaged
                 } else if (isManagedFilterInUse && arePropertyFiltersInUse) {
@@ -122,7 +147,7 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                 } else {
                     shouldAddProperty = canAddBasedOnFilters
                 }
-
+                debugger
                 if (shouldAddProperty) {
                     const isDupeId = uniqueSearchRecords.includes(property.id)
                     if (!isDupeId) {
@@ -141,7 +166,13 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                         if (propertyGroupMatch && !propertyTypeMatch) {
                             matchTallies.propertyGroup += 1
                         }
-                        if (isUnderNeighbourLimit && !canAddBasedOnFilters) {
+                        let isBaseFilterOrSubFilter
+                        if (isBaseFiltersInUse) {
+                            isBaseFilterOrSubFilter = propertyGroupMatch || propertyTypeMatch
+                        } else {
+                            isBaseFilterOrSubFilter = canAddBasedOnFilters
+                        }
+                        if (isUnderNeighbourLimit && !isBaseFilterOrSubFilter) {
                             matchTallies.neighbour += 1
                         }
                         matchedProperties.push(property)
@@ -149,6 +180,7 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                 }
             }
         })
+        console.log('matchTallies', matchTallies)
     })
 
     return { matchedProperties, uniqueSearchRecords }

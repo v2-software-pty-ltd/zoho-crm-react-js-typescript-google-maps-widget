@@ -40,7 +40,7 @@ const SHARED_SALE_LEASE_DEFAULT_PARAMS = {
     }
 }
 
-export const DEFAULT_SEARCH_PARAMS = {
+export const DEFAULT_BASE_FILTER_PARAMS = {
     searchAddress: '2 Leeds Street, Rhodes, NSW, 2138',
     propertyGroupsMaxResults: Infinity,
     propertyTypesMaxResults: Infinity,
@@ -50,15 +50,20 @@ export const DEFAULT_SEARCH_PARAMS = {
     managed: 'All',
     readyForSearch: false,
     id: `search:${(Math.random() * 1000)}`,
-    allRecords: false,
+    allRecords: false
+}
+
+export const DEFAULT_SEARCH_PARAMS = {
+    ...DEFAULT_BASE_FILTER_PARAMS,
     ...DEFAULT_SALES_EVIDENCE_PARAMS,
     ...DEFAULT_LEASE_EVIDENCE_PARAMS,
     ...SHARED_SALE_LEASE_DEFAULT_PARAMS
 }
-
+export type SalesAndLeasesFilterParams = SalesEvidenceFilterParams & LeasesEvidenceFilterParams
 export type IntersectedSearchAndFilterParams = SalesEvidenceFilterParams & BaseSearchParamsType & LeasesEvidenceFilterParams
 
 export type BaseSearchParamsType = {
+  [index: string]: string | string[] | number | boolean
   searchAddress: string
   propertyTypes: string[]
   propertyGroups: string[]
@@ -68,18 +73,6 @@ export type BaseSearchParamsType = {
   managed: string
   id: string
   allRecords: boolean
-}
-
-export enum SaleTypeEnum {
-    ALL = 'ALL',
-    INV = 'INV',
-    VP = 'VP',
-    DEV = 'DEV'
-}
-
-export type MinMaxNumberType = {
-  min: number
-  max: number
 }
 
 export type SalesEvidenceFilterParams = {
@@ -99,9 +92,22 @@ export type LeasesEvidenceFilterParams = {
   reviewDate: MinMaxDateType
 }
 
-export type dateTest = {
-    min: Date
-    max: Date
+export enum SaleTypeEnum {
+  ALL = 'ALL',
+  INV = 'INV',
+  VP = 'VP',
+  DEV = 'DEV'
+}
+
+export const SalesTypeArray = [
+    SaleTypeEnum.INV,
+    SaleTypeEnum.VP,
+    SaleTypeEnum.DEV
+]
+
+export type MinMaxNumberType = {
+  min: number
+  max: number
 }
 
 export type MinMaxDateType = {
