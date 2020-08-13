@@ -88,6 +88,8 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                                  <th>Land Area</th>
                                  <th>Build Area</th>
                                  <th>Current Rent (Gross)</th>
+                                 <th>Type</th>
+                                 <th>Managed</th>
                              </tr>
                          </thead>
                          <tbody>
@@ -100,6 +102,8 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                                          <td>{result.Land_Area_sqm}</td>
                                          <td>{result.Build_Area_sqm}</td>
                                          <td>{result.Current_Rental}</td>
+                                         <td>{result.Property_Category_Mailing}</td>
+                                         <td>{result.Managed ? 'Yes' : 'No'}</td>
                                      </tr>
                                  )
                              })}

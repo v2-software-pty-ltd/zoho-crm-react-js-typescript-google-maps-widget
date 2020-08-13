@@ -63,7 +63,7 @@ export type SalesAndLeasesFilterParams = SalesEvidenceFilterParams & LeasesEvide
 export type IntersectedSearchAndFilterParams = SalesEvidenceFilterParams & BaseSearchParamsType & LeasesEvidenceFilterParams
 
 export type BaseSearchParamsType = {
-  [index: string]: string | string[] | number | boolean
+  [index: string]: any
   searchAddress: string
   propertyTypes: string[]
   propertyGroups: string[]
@@ -149,17 +149,17 @@ export type OwnerType = {
 }
 
 export type UnprocessedResultsFromCRM = {
-    [index: string]: string | number | OwnerType[] | string[] | AddressForLease | Date
+    [index: string]: string | number | OwnerType[] | string[] | AddressForLease | Date | boolean
     Latitude: string
     Longitude: string
     Deal_Name: string
     id: string
-    distance: number | string
+    distance: number
     owner_details: OwnerType[]
     Postcode: string
     State: string
     Property_Category_Mailing: string[]
-    Managed: string
+    Managed: string | boolean
     Reversed_Geocoded_Address: string
     Property_Type_Portals: string
     Property_Contacts: string
@@ -179,6 +179,7 @@ export type UnprocessedResultsFromCRM = {
     Property: AddressForLease
     Full_Address: string
     per_sqm1: number
+
 }
 
 export type AddressForLease = {

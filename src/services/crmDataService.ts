@@ -2,6 +2,7 @@ import { IntersectedSearchAndFilterParams, UnprocessedResultsFromCRM, PositionTy
 import { ZOHO } from '../vendor/ZSDK'
 import filterResults from '../utils/filterResults'
 import emailAndIdExtract from '../utils/emailAndIdExtract'
+import { orderResultsByDistance } from '../utils/filterUtilityFunctions'
 
 function safelyRetrieveLocalStorageItem (storageKey: string) {
     try {
@@ -77,17 +78,18 @@ const retrieveRecords = async function (pageNumber: number, retrievedProperties:
     )
 }
 
-export async function findMatchingRecords (searchParameters: IntersectedSearchAndFilterParams[], filterInUse: string): Promise<{ matchedProperties: UnprocessedResultsFromCRM[], uniqueSearchRecords: string[] }> {
+export async function findMatchingRecords (searchParameters: IntersectedSearchAndFilterParams[], filterInUse: string, searchAddressPosition: PositionType): Promise<{ matchedProperties: UnprocessedResultsFromCRM[], numberOfUniqueSearchRecords: number }> {
     const zohoModuleToUse = filterInUse === 'LeasesEvidenceFilter' ? 'Properties' : 'Deals'
     const matchingResults = await retrieveRecords(0, [], zohoModuleToUse)
 
     if (Object.keys(matchingResults).includes('Error')) {
         alert('Error retrieving search results')
     }
+    const { resultsOrderedByDistance, numberOfUniqueSearchRecords } = orderResultsByDistance(matchingResults, searchAddressPosition)
 
-    const results = filterResults(matchingResults, searchParameters, filterInUse)
+    const matchedProperties = filterResults(resultsOrderedByDistance, searchParameters, filterInUse)
 
-    return results
+    return { matchedProperties, numberOfUniqueSearchRecords }
 }
 
 export async function getSearchAddressPosition (searchParameters: IntersectedSearchAndFilterParams[]): Promise<PositionType> {

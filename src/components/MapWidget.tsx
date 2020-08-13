@@ -27,12 +27,13 @@ export function MapWidget (props: MapProps) {
                     zoom={11}
                     mapContainerStyle={containerStyle}
                 >
-                    {uniqueAddresses.map(address => {
+                    {uniqueAddresses.map((address, index) => {
                         return (
+                        // TODO - add logic add range for same address
                             <Marker key={address.address} position={{
                                 lat: address.position.lat,
                                 lng: address.position.lng
-                            }} />
+                            }} label={`${index}`} />
                         )
                     })}
                 </GoogleMap>

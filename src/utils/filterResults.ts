@@ -41,26 +41,33 @@ function getOwnerData (property: UnprocessedResultsFromCRM) {
 
 function checkSalesOrLeaseFilter (searchParams: IntersectedSearchAndFilterParams) {
     const defaultBaseFilterKeys = Object.keys(DEFAULT_BASE_FILTER_PARAMS)
-    const newSearchParamObject: IntersectedSearchAndFilterParams = Object.create(searchParams)
+    const newSearchParamObject: IntersectedSearchAndFilterParams = Object.assign({}, searchParams)
     defaultBaseFilterKeys.forEach((baseFilterKey: string) => {
         delete newSearchParamObject[baseFilterKey]
     })
-    const salesAndLeaseSearchParamValues: (undefined | boolean | number)[] = Object.values(newSearchParamObject).flatMap((valueObject: string | number | boolean | string[]) => {
+    const salesAndLeaseSearchParamValues: (undefined | boolean | number)[] = Object.values(newSearchParamObject).flatMap((valueObject: SaleTypeEnum[] | MinMaxDateType | MinMaxNumberType) => {
         if (Array.isArray(valueObject)) {
-            return !SalesTypeArray.some((salesType: SaleTypeEnum) => valueObject.includes(salesType))
+            return SalesTypeArray.some((salesType: SaleTypeEnum) => valueObject.includes(salesType))
         } else {
             return Object.values(valueObject)
         }
     })
 
     return salesAndLeaseSearchParamValues.some((value: number | undefined | boolean) => {
-        return typeof value === 'undefined' || value === -1 || value
+        const isDateUsed = typeof value === 'undefined'
+        const isNumberUsed = value === -1
+        if (isDateUsed) {
+            return !isDateUsed
+        } else if (isNumberUsed) {
+            return !isNumberUsed
+        } else {
+            return value
+        }
     })
 }
 
-export default function filterResults (unsortedPropertyResults: UnprocessedResultsFromCRM[], searchParameters: IntersectedSearchAndFilterParams[], filterInUse: string): { matchedProperties: UnprocessedResultsFromCRM[], uniqueSearchRecords: string[] } {
+export default function filterResults (unsortedPropertyResults: UnprocessedResultsFromCRM[], searchParameters: IntersectedSearchAndFilterParams[], filterInUse: string): UnprocessedResultsFromCRM[] {
     const matchedProperties: UnprocessedResultsFromCRM[] = []
-    const uniqueSearchRecords: string[] = []
 
     searchParameters.forEach((searchParams: IntersectedSearchAndFilterParams) => {
         const desiredPropertyTypes = searchParams.propertyTypes
@@ -70,13 +77,10 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
 
         const desiredManaged = searchParams.managed
         const isManagedFilterInUse = desiredManaged !== 'All'
-<<<<<<< HEAD
 
         const isBaseFiltersInUse = isPropertyGroupFilterInUse || isPropertyTypeFilterInUse || isManagedFilterInUse
         const isSalesOrLeaseFiltersInUse = checkSalesOrLeaseFilter(searchParams)
 
-=======
->>>>>>> 2ce8fbaf59ede4369fef9142e34414c46a297313
         let maxNumNeighbours = searchParams.neighboursSearchMaxRecords
         let allRecordsForSalesOrLeaseFilter = false
         const subFilterInUse = filterInUse === 'SalesEvidenceFilter' || filterInUse === 'LeasesEvidenceFilter'
@@ -115,83 +119,86 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
             if (canAddBasedOnMaxResults) {
                 const propertyTypeMatch = isPropertyTypeFilterInUse && isUnderPropertyTypeLimit && matchForPropertyTypes(property, desiredPropertyTypes)
                 const propertyGroupMatch = isPropertyGroupFilterInUse && isUnderPropertyGroupLimit && matchForPropertyGroups(property, desiredPropertyGroups)
-
-                let canAddBasedOnFilters = propertyGroupMatch || propertyTypeMatch
-<<<<<<< HEAD
-                let isSalesOrLeaseEvidenceFilterUsed
-=======
->>>>>>> 2ce8fbaf59ede4369fef9142e34414c46a297313
+                const propertyGroupAndTypeMatch = propertyGroupMatch || propertyTypeMatch
+                let canAddBasedOnFilters = propertyGroupAndTypeMatch
+                debugger
+                let salesOrLeaseMatch
                 if (subFilterInUse) {
                     // N.B. when using sales evidence filter and type or group aren't used
                     if (!isPropertyGroupFilterInUse && !isPropertyTypeFilterInUse) {
                         canAddBasedOnFilters = true
                     }
                     if (filterInUse === 'SalesEvidenceFilter') {
-                        isSalesOrLeaseEvidenceFilterUsed = canAddBasedOnFilters && salesEvidenceFilter(searchParams, property)
-                        canAddBasedOnFilters = allRecordsForSalesOrLeaseFilter ? true : isSalesOrLeaseEvidenceFilterUsed
+                        salesOrLeaseMatch = salesEvidenceFilter(searchParams, property)
+                        canAddBasedOnFilters = allRecordsForSalesOrLeaseFilter ? true : canAddBasedOnFilters && salesOrLeaseMatch
                     }
                     if (filterInUse === 'LeasesEvidenceFilter') {
-                        isSalesOrLeaseEvidenceFilterUsed = canAddBasedOnFilters && leasesEvidenceFilter(searchParams, property)
-                        canAddBasedOnFilters = allRecordsForSalesOrLeaseFilter ? true : isSalesOrLeaseEvidenceFilterUsed
+                        salesOrLeaseMatch = leasesEvidenceFilter(searchParams, property)
+                        canAddBasedOnFilters = allRecordsForSalesOrLeaseFilter ? true : canAddBasedOnFilters && salesOrLeaseMatch
                     }
                 }
 
-<<<<<<< HEAD
                 const isManaged = property.Managed === desiredManaged || property.Managed || desiredManaged === 'All'
                 debugger
-=======
-                const isManaged = (property.Managed === desiredManaged) || desiredManaged === 'All'
->>>>>>> 2ce8fbaf59ede4369fef9142e34414c46a297313
                 let shouldAddProperty
                 const arePropertyFiltersInUse = isPropertyGroupFilterInUse || isPropertyTypeFilterInUse
-                const what = false
-                if (isManagedFilterInUse && !arePropertyFiltersInUse && what) {
+                if (isManagedFilterInUse && !arePropertyFiltersInUse && !isSalesOrLeaseFiltersInUse) {
                     // N.B. used to show all properties that are managed
                     shouldAddProperty = isManaged
-                } else if (isManagedFilterInUse && arePropertyFiltersInUse) {
-                    // N.B. used to show properties type or group and if they are managed
-                    shouldAddProperty = isManaged && canAddBasedOnFilters
+                } else if (isManagedFilterInUse && (arePropertyFiltersInUse || isSalesOrLeaseFiltersInUse)) {
+                    if (subFilterInUse) {
+                        // N.B. Each base filter (Managed, Type, Group) has to work independently with the sub filters. This is to get managed to work independently with subfilter
+                        shouldAddProperty = (isManaged && salesOrLeaseMatch) || canAddBasedOnFilters
+                    } else {
+                        // N.B. used to show properties type or group and if they are managed
+                        shouldAddProperty = isManaged && canAddBasedOnFilters
+                    }
                 } else if (maxNumNeighbours !== 0 && maxNumNeighbours !== Infinity) {
                     // N.B. used if max neighbour limit field has a value entered
-                    shouldAddProperty = canAddBasedOnFilters || isUnderNeighbourLimit
+                    shouldAddProperty = canAddBasedOnFilters
                 } else {
                     shouldAddProperty = canAddBasedOnFilters
                 }
+                // if (isUnderNeighbourLimit && !canAddBasedOnFilters) {
+                //     // results 201
+                //     shouldAddProperty = true
+                // }
                 debugger
-                if (shouldAddProperty) {
-                    const isDupeId = uniqueSearchRecords.includes(property.id)
-                    if (!isDupeId) {
-                        // N. B. This is to remove dupes retrieved during the getPageOfRecords function.
-                        uniqueSearchRecords.push(property.id)
-                        // N.B. Owner is not required in leases evidence filter
-                        if (filterInUse !== 'LeasesEvidenceFilter') {
-                            const ownerData = getOwnerData(property)
-                            if (ownerData.length > 0) {
-                                property.owner_details = ownerData
-                            }
+                if (shouldAddProperty || isUnderNeighbourLimit) {
+                    // N.B. Owner is not required in leases evidence filter
+                    if (filterInUse !== 'LeasesEvidenceFilter') {
+                        const ownerData = getOwnerData(property)
+                        if (ownerData.length > 0) {
+                            property.owner_details = ownerData
                         }
-                        if (propertyTypeMatch) {
-                            matchTallies.propertyType += 1
-                        }
-                        if (propertyGroupMatch && !propertyTypeMatch) {
-                            matchTallies.propertyGroup += 1
-                        }
-                        let isBaseFilterOrSubFilter
-                        if (isBaseFiltersInUse) {
-                            isBaseFilterOrSubFilter = propertyGroupMatch || propertyTypeMatch
-                        } else {
-                            isBaseFilterOrSubFilter = canAddBasedOnFilters
-                        }
-                        if (isUnderNeighbourLimit && !isBaseFilterOrSubFilter) {
-                            matchTallies.neighbour += 1
-                        }
-                        matchedProperties.push(property)
                     }
+                    if (propertyTypeMatch) {
+                        matchTallies.propertyType += 1
+                    }
+                    if (propertyGroupMatch && !propertyTypeMatch) {
+                        matchTallies.propertyGroup += 1
+                    }
+                    // N.B. to correctly add neighbours to the count depending on what filter is used
+                    // I think I may have to fix this conditional up a bit
+                    // const isBaseFilterOrSubFilter = canAddBasedOnFilters
+                    // if (isBaseFiltersInUse) {
+                    //     isBaseFilterOrSubFilter = propertyGroupMatch || propertyTypeMatch || isManaged
+                    // } else {
+                    //     isBaseFilterOrSubFilter = canAddBasedOnFilters || isManaged
+                    // }
+                    // N.B. this will add those
+                    // isUnderNeighbourLimit && (!propertyGroupAndTypeMatch || !isManaged || !salesOrLeaseMatch) = 157 results
+                    // isUnderNeighbourLimit && !canAddBasedOnFilters = 159
+                    // isUnderNeighbourLimit && !propertyGroupAndTypeMatch = 219
+                    if (isUnderNeighbourLimit && !canAddBasedOnFilters) {
+                        matchTallies.neighbour += 1
+                    }
+                    matchedProperties.push(property)
                 }
             }
         })
         console.log('matchTallies', matchTallies)
     })
 
-    return { matchedProperties, uniqueSearchRecords }
+    return matchedProperties
 }
