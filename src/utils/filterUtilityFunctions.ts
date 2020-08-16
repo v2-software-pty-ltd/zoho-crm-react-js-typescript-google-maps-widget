@@ -13,22 +13,6 @@ export function genericDateFilter (dateSold: MinMaxDateType, filterType: string,
     return false
 }
 
-// function calculateDistance (searchAddress: PositionType, propertyLat: number, propertyLng: number) {
-//     const radlat1 = Math.PI * searchAddress.lat / 180
-//     const radlon1 = Math.PI * searchAddress.lng / 180
-
-//     const radlat2 = Math.PI * propertyLat / 180
-//     const radlon2 = Math.PI * propertyLng / 180
-//     const theta = searchAddress.lat - lon2
-//     const radtheta = Math.PI * theta / 180
-//     let dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta)
-//     dist = Math.acos(dist)
-//     dist = dist * 180 / Math.PI
-//     dist = dist * 60 * 1.1515
-//     dist = dist * 1.609344
-//     return dist
-// }
-
 function toRad (value: number) {
     return value * Math.PI / 180
 }
@@ -49,21 +33,39 @@ function calculateDistance (searchAddress: PositionType, propertyLat: number, pr
 
 export function orderResultsByDistance (matchingResults: UnprocessedResultsFromCRM[], searchAddressPosition: PositionType): { resultsOrderedByDistance: UnprocessedResultsFromCRM[], numberOfUniqueSearchRecords: number} {
     const uniqueSearchRecords: string[] = []
-    matchingResults.forEach(property => {
+
+    const propertiesWithDistance = matchingResults.reduce((acc: UnprocessedResultsFromCRM[], property) => {
         const isDupeId = uniqueSearchRecords.includes(property.id)
-        if (!isDupeId) {
+        if (!isDupeId && (property.Latitude || property.Longitude)) {
             // N. B. This is to remove dupes retrieved during the getPageOfRecords function.
             uniqueSearchRecords.push(property.id)
             const propertyLat = parseFloat(property.Latitude)
             const propertyLng = parseFloat(property.Longitude)
             const distanceFromSearchAddress = calculateDistance(searchAddressPosition, propertyLat, propertyLng)
             property.distance = distanceFromSearchAddress
+            acc.push(property)
         }
-    })
+        return acc
+    }, [])
+    // N.B. group properties by distance and sort by ascending order
+    const resultsOrderedByDistance: UnprocessedResultsFromCRM[] = Object.values(propertiesWithDistance.reduce(groupByDistance, {}))
+        .map((group: UnprocessedResultsFromCRM[]) => group.sort((property1: UnprocessedResultsFromCRM, property2: UnprocessedResultsFromCRM) => property1.distance - property2.distance))
+        .sort((property1: UnprocessedResultsFromCRM[], property2: UnprocessedResultsFromCRM[]) => property1[0].distance - property2[0].distance).flat()
 
-    const resultsOrderedByDistance = matchingResults.sort((property1, property2) =>
-        property1.distance - property2.distance
-    )
     const numberOfUniqueSearchRecords = uniqueSearchRecords.length
     return { resultsOrderedByDistance, numberOfUniqueSearchRecords }
+}
+
+type GroupByDistanceType = {
+  [index: number]: UnprocessedResultsFromCRM[]
+}
+
+function groupByDistance (acc: GroupByDistanceType, property: UnprocessedResultsFromCRM) {
+    const distance = property.distance
+    if (distance in acc) {
+        acc[distance].push(property)
+    } else {
+        acc[distance] = [property]
+    }
+    return acc
 }

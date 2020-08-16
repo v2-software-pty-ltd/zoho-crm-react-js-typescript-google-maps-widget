@@ -109,9 +109,6 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
         }
 
         unsortedPropertyResults.forEach((property: UnprocessedResultsFromCRM) => {
-            if (!property.Latitude || !property.Longitude) {
-                return
-            }
             const isUnderNeighbourLimit = matchTallies.neighbour < maxNumNeighbours
             const isUnderPropertyTypeLimit = matchTallies.propertyType < maxResultsForPropertyTypes
             const isUnderPropertyGroupLimit = matchTallies.propertyGroup < maxResultsForPropertyGroups
@@ -121,7 +118,7 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                 const propertyGroupMatch = isPropertyGroupFilterInUse && isUnderPropertyGroupLimit && matchForPropertyGroups(property, desiredPropertyGroups)
                 const propertyGroupAndTypeMatch = propertyGroupMatch || propertyTypeMatch
                 let canAddBasedOnFilters = propertyGroupAndTypeMatch
-                debugger
+
                 let salesOrLeaseMatch
                 if (subFilterInUse) {
                     // N.B. when using sales evidence filter and type or group aren't used
@@ -137,9 +134,8 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                         canAddBasedOnFilters = allRecordsForSalesOrLeaseFilter ? true : canAddBasedOnFilters && salesOrLeaseMatch
                     }
                 }
-
                 const isManaged = property.Managed === desiredManaged || property.Managed || desiredManaged === 'All'
-                debugger
+
                 let shouldAddProperty
                 const arePropertyFiltersInUse = isPropertyGroupFilterInUse || isPropertyTypeFilterInUse
                 if (isManagedFilterInUse && !arePropertyFiltersInUse && !isSalesOrLeaseFiltersInUse) {
@@ -163,7 +159,7 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                 //     // results 201
                 //     shouldAddProperty = true
                 // }
-                debugger
+
                 if (shouldAddProperty || isUnderNeighbourLimit) {
                     // N.B. Owner is not required in leases evidence filter
                     if (filterInUse !== 'LeasesEvidenceFilter') {
@@ -199,6 +195,5 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
         })
         console.log('matchTallies', matchTallies)
     })
-
     return matchedProperties
 }

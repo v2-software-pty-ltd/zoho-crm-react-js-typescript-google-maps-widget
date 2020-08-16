@@ -41,7 +41,7 @@ const SHARED_SALE_LEASE_DEFAULT_PARAMS = {
 }
 
 export const DEFAULT_BASE_FILTER_PARAMS = {
-    searchAddress: '2 Leeds Street, Rhodes, NSW, 2138',
+    searchAddress: '528 Kent St, Sydney, NSW, 2000',
     propertyGroupsMaxResults: Infinity,
     propertyTypesMaxResults: Infinity,
     neighboursSearchMaxRecords: Infinity,
