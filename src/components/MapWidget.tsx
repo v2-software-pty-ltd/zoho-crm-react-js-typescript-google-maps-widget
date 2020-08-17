@@ -40,7 +40,7 @@ export function MapWidget (props: MapProps) {
                                 rangeOfPropertiesSameGeoLocation = []
                             }
                             return (
-                                <Marker key={address.address} position={{
+                                <Marker key={`${address.address}-${index}`} position={{
                                     lat: address.position.lat,
                                     lng: address.position.lng
                                 }} label={markerValue} zIndex={1}/>

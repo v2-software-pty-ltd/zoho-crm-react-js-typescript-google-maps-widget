@@ -31,7 +31,7 @@ function calculateDistance (searchAddress: PositionType, propertyLat: number, pr
     return distance
 }
 
-export function orderResultsByDistance (matchingResults: UnprocessedResultsFromCRM[], searchAddressPosition: PositionType): { resultsOrderedByDistance: UnprocessedResultsFromCRM[], numberOfUniqueSearchRecords: number} {
+export function orderResultsByDistance (matchingResults: UnprocessedResultsFromCRM[], searchAddressPosition: PositionType): UnprocessedResultsFromCRM[] {
     const uniqueSearchRecords: string[] = []
 
     const propertiesWithDistance = matchingResults.reduce((acc: UnprocessedResultsFromCRM[], property) => {
@@ -52,8 +52,7 @@ export function orderResultsByDistance (matchingResults: UnprocessedResultsFromC
         .map((group: UnprocessedResultsFromCRM[]) => group.sort((property1: UnprocessedResultsFromCRM, property2: UnprocessedResultsFromCRM) => property1.distance - property2.distance))
         .sort((property1: UnprocessedResultsFromCRM[], property2: UnprocessedResultsFromCRM[]) => property1[0].distance - property2[0].distance).flat()
 
-    const numberOfUniqueSearchRecords = uniqueSearchRecords.length
-    return { resultsOrderedByDistance, numberOfUniqueSearchRecords }
+    return resultsOrderedByDistance
 }
 
 type GroupByDistanceType = {

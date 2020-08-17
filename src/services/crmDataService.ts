@@ -85,10 +85,10 @@ export async function findMatchingRecords (searchParameters: IntersectedSearchAn
     if (Object.keys(matchingResults).includes('Error')) {
         alert('Error retrieving search results')
     }
-    const { resultsOrderedByDistance, numberOfUniqueSearchRecords } = orderResultsByDistance(matchingResults, searchAddressPosition)
+    const resultsOrderedByDistance = orderResultsByDistance(matchingResults, searchAddressPosition)
 
     const matchedProperties = filterResults(resultsOrderedByDistance, searchParameters, filterInUse)
-
+    const numberOfUniqueSearchRecords = matchedProperties.length
     return { matchedProperties, numberOfUniqueSearchRecords }
 }
 
