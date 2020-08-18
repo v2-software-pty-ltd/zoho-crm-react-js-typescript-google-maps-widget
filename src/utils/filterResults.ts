@@ -114,7 +114,6 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
             const isUnderPropertyTypeLimit = matchTallies.propertyType < maxResultsForPropertyTypes
             const isUnderPropertyGroupLimit = matchTallies.propertyGroup < maxResultsForPropertyGroups
             const canAddBasedOnMaxResults = isUnderNeighbourLimit || isUnderPropertyTypeLimit || isUnderPropertyGroupLimit
-
             if (canAddBasedOnMaxResults) {
                 const propertyTypeMatch = isPropertyTypeFilterInUse && isUnderPropertyTypeLimit && matchForPropertyTypes(property, desiredPropertyTypes)
                 const propertyGroupMatch = isPropertyGroupFilterInUse && isUnderPropertyGroupLimit && matchForPropertyGroups(property, desiredPropertyGroups)
