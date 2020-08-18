@@ -170,6 +170,8 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                         matchTallies.propertyGroup += 1
                     }
                     // N.B. to correctly add neighbours to the count depending on what filter is used
+                    // and whether managed filter is used. If these filters are used it won't add to
+                    // the neighbours count
                     let canAddToNeighbourCountBasedOnFilters: boolean | string = canAddBasedOnFilters
                     if (filterInUse === 'BaseFilter') {
                         if (isManagedFilterInUse && !arePropertyFiltersInUse) {
@@ -183,7 +185,11 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                         if (isManagedFilterInUse && !arePropertyFiltersInUse) {
                             canAddToNeighbourCountBasedOnFilters = !salesOrLeaseMatch || !isManaged
                         } else if (isManagedFilterInUse && arePropertyFiltersInUse) {
-                            canAddToNeighbourCountBasedOnFilters = (!isManaged && !propertyGroupAndTypeMatch) || !salesOrLeaseMatch
+                            if (isPropertyTypeOrGroupMaxRecordInUse) {
+                                canAddToNeighbourCountBasedOnFilters = filterInUse === 'LeasesEvidenceFilter' ? (!isManaged && !propertyGroupAndTypeMatch) || !salesOrLeaseMatch : !isManaged && !propertyGroupAndTypeMatch
+                            } else {
+                                canAddToNeighbourCountBasedOnFilters = (!isManaged && !propertyGroupAndTypeMatch) || !salesOrLeaseMatch
+                            }
                         } else {
                             canAddToNeighbourCountBasedOnFilters = isPropertyTypeOrGroupMaxRecordInUse ? !propertyGroupAndTypeMatch : !propertyGroupAndTypeMatch || !salesOrLeaseMatch
                         }
