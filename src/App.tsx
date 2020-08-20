@@ -103,7 +103,7 @@ function App () {
                 setLoading(true)
                 const searchAddressPosition = await getSearchAddressPosition(searchParameters)
                 const { matchedProperties, numberOfUniqueSearchRecords } = await findMatchingRecords(searchParameters, filterInUse, searchAddressPosition)
-                setSearchAddressPosition(searchAddressPosition)
+                setSearchAddressPosition(searchAddressPosition[0].position)
                 setUniqueSearchRecords(numberOfUniqueSearchRecords)
                 updateResults(matchedProperties)
                 setLoading(false)

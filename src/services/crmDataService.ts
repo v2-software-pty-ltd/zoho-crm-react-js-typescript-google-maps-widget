@@ -1,4 +1,4 @@
-import { IntersectedSearchAndFilterParams, UnprocessedResultsFromCRM, PositionType } from '../types'
+import { IntersectedSearchAndFilterParams, UnprocessedResultsFromCRM, AddressType } from '../types'
 import { ZOHO } from '../vendor/ZSDK'
 import filterResults from '../utils/filterResults'
 import emailAndIdExtract from '../utils/emailAndIdExtract'
@@ -78,30 +78,37 @@ const retrieveRecords = async function (pageNumber: number, retrievedProperties:
     )
 }
 
-export async function findMatchingRecords (searchParameters: IntersectedSearchAndFilterParams[], filterInUse: string, searchAddressPosition: PositionType): Promise<{ matchedProperties: UnprocessedResultsFromCRM[], numberOfUniqueSearchRecords: number }> {
+export async function findMatchingRecords (searchParameters: IntersectedSearchAndFilterParams[], filterInUse: string, searchAddressPosition: AddressType[]): Promise<{ matchedProperties: UnprocessedResultsFromCRM[], numberOfUniqueSearchRecords: number }> {
     const zohoModuleToUse = filterInUse === 'LeasesEvidenceFilter' ? 'Properties' : 'Deals'
     const matchingResults = await retrieveRecords(0, [], zohoModuleToUse)
 
     if (Object.keys(matchingResults).includes('Error')) {
         alert('Error retrieving search results')
     }
-    const resultsOrderedByDistance = orderResultsByDistance(matchingResults, searchAddressPosition)
+    const resultsOrderedByDistance = searchAddressPosition.map((addressObject: AddressType) => {
+        return orderResultsByDistance(matchingResults, addressObject.position)
+    })
 
     const matchedProperties = filterResults(resultsOrderedByDistance, searchParameters, filterInUse)
     const numberOfUniqueSearchRecords = matchedProperties.length
     return { matchedProperties, numberOfUniqueSearchRecords }
 }
 
-export async function getSearchAddressPosition (searchParameters: IntersectedSearchAndFilterParams[]): Promise<PositionType> {
-    const firstSearchAddress = searchParameters[0].searchAddress
-
-    const geocodeResult = await ZOHO.CRM.FUNCTIONS.execute('geocode_address', {
-        arguments: JSON.stringify({
-            search_address: firstSearchAddress
+export async function getSearchAddressPosition (searchParameters: IntersectedSearchAndFilterParams[]): Promise<AddressType[]> {
+    const searchAddresses = await Promise.all(searchParameters.map(async (searchParams: IntersectedSearchAndFilterParams) => {
+        const geocodeResult = await ZOHO.CRM.FUNCTIONS.execute('geocode_address', {
+            arguments: JSON.stringify({
+                search_address: searchParams.searchAddress
+            })
         })
-    })
 
-    return JSON.parse(geocodeResult.details.output)
+        return {
+            address: searchParams.searchAddress,
+            position: JSON.parse(geocodeResult.details.output)
+        }
+    }))
+
+    return searchAddresses
 }
 
 export async function updateMailComment (comment: string, results: UnprocessedResultsFromCRM[]): Promise<void> {

@@ -66,10 +66,10 @@ function checkSalesOrLeaseFilter (searchParams: IntersectedSearchAndFilterParams
     })
 }
 
-export default function filterResults (unsortedPropertyResults: UnprocessedResultsFromCRM[], searchParameters: IntersectedSearchAndFilterParams[], filterInUse: string): UnprocessedResultsFromCRM[] {
+export default function filterResults (unsortedPropertyResults: UnprocessedResultsFromCRM[][], searchParameters: IntersectedSearchAndFilterParams[], filterInUse: string): UnprocessedResultsFromCRM[] {
     const matchedProperties: UnprocessedResultsFromCRM[] = []
 
-    searchParameters.forEach((searchParams: IntersectedSearchAndFilterParams) => {
+    searchParameters.forEach((searchParams: IntersectedSearchAndFilterParams, index: number) => {
         const desiredPropertyTypes = searchParams.propertyTypes
         const desiredPropertyGroups = searchParams.propertyGroups
         const isPropertyTypeFilterInUse = desiredPropertyTypes.length !== 0
@@ -109,7 +109,7 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
             propertyGroup: 0
         }
 
-        unsortedPropertyResults.forEach((property: UnprocessedResultsFromCRM) => {
+        unsortedPropertyResults[index].forEach((property: UnprocessedResultsFromCRM) => {
             const isUnderNeighbourLimit = matchTallies.neighbour < maxNumNeighbours
             const isUnderPropertyTypeLimit = matchTallies.propertyType < maxResultsForPropertyTypes
             const isUnderPropertyGroupLimit = matchTallies.propertyGroup < maxResultsForPropertyGroups
