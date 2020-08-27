@@ -153,6 +153,10 @@ export async function massMailResults (results: UnprocessedResultsFromCRM[]): Pr
     })
 }
 
+export async function unselectMassEmailField (): Promise<void> {
+    await ZOHO.CRM.FUNCTIONS.execute('unselect_mass_email_field', {})
+}
+
 export async function getGoogleMapsAPIKeyFromCRM () {
     await ZOHO.embeddedApp.init()
     const googleMapsAPIKey = await ZOHO.CRM.API.getOrgVariable('ethicaltechnology_google_maps_api_key')
