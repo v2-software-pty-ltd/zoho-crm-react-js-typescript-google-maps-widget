@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { UnprocessedResultsFromCRM } from '../types'
+import { formatDate, convertToCurrency } from '../utils/utils'
 
 type ResultsTableProps = {
     results: UnprocessedResultsFromCRM[]
@@ -66,8 +67,8 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                                          <td>{result.Deal_Name}</td>
                                          <td>{result.Land_Area_sqm}</td>
                                          <td>{result.Build_Area_sqm}</td>
-                                         <td>{result.Sale_Date}</td>
-                                         <td>{result.Sale_Price}</td>
+                                         <td>{formatDate(result.Sale_Date)}</td>
+                                         <td>{convertToCurrency(result.Sale_Price)}</td>
                                      </tr>
                                  )
                              })}
@@ -84,7 +85,7 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                              <tr>
                                  <th>No.</th>
                                  <th>Address</th>
-                                 <th>Rent $/m<sup>2</sup></th>
+                                 <th>Current $ Per Sqm</th>
                                  <th>Land Area</th>
                                  <th>Build Area</th>
                                  <th>Current Rent (Gross)</th>
@@ -96,7 +97,7 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                                      <tr key={`${result.id}-${index}`}>
                                          <td>{index + 1}</td>
                                          <td>{result.Full_Address}</td>
-                                         <td>{result.per_sqm1}</td>
+                                         <td>{result.Current_Per_Sqm}</td>
                                          <td>{result.Land_Area_sqm}</td>
                                          <td>{result.Build_Area_sqm}</td>
                                          <td>{result.Current_Rental}</td>
