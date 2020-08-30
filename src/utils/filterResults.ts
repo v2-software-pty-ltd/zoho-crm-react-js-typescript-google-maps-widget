@@ -119,8 +119,8 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                 const propertyGroupMatch = isPropertyGroupFilterInUse && isUnderPropertyGroupLimit && matchForPropertyGroups(property, desiredPropertyGroups)
                 const propertyGroupAndTypeMatch = propertyGroupMatch || propertyTypeMatch
 
-                let canAddBasedOnFilters = propertyGroupAndTypeMatch
-                let salesOrLeaseMatch = false
+                let canAddBasedOnFilters: boolean | undefined = propertyGroupAndTypeMatch
+                let salesOrLeaseMatch: boolean | undefined = false
                 if (subFilterInUse) {
                     // N.B. when using sales evidence filter and type or group aren't used
                     if (!isPropertyGroupFilterInUse && !isPropertyTypeFilterInUse) {
@@ -171,7 +171,7 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                     // N.B. to correctly add neighbours to the count depending on what filter is used
                     // and whether managed filter is used. If these filters are used it won't add to
                     // the neighbours count
-                    let canAddToNeighbourCountBasedOnFilters: boolean | string = canAddBasedOnFilters
+                    let canAddToNeighbourCountBasedOnFilters: boolean | string | undefined = canAddBasedOnFilters
                     if (filterInUse === 'BaseFilter') {
                         if (isManagedFilterInUse && !arePropertyFiltersInUse) {
                             canAddToNeighbourCountBasedOnFilters = !canAddBasedOnFilters && !isManaged

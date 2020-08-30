@@ -85,6 +85,7 @@ export async function findMatchingRecords (searchParameters: IntersectedSearchAn
     if (Object.keys(matchingResults).includes('Error')) {
         alert('Error retrieving search results')
     }
+
     const resultsOrderedByDistance = searchAddressPosition.map((addressObject: AddressType) => {
         return orderResultsByDistance(matchingResults, addressObject.position)
     })
