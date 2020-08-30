@@ -101,18 +101,6 @@ export function LeasesSearch (props: LeasesSearchProps) {
                         })
                     }} placeholder="Max" type="number" tabIndex={6} />
                 </label>
-                <label className="fourteen">Select All Records for Lease Evidence Sub Filter
-                    <input type="checkbox" onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                        if (e.target.checked) {
-                            props.changeSearchParameters({
-                                ...props.searchParameters,
-                                allRecords: e.target.checked
-                            })
-                        } else {
-                            props.changeSearchParameters({ ...DEFAULT_SEARCH_PARAMS })
-                        }
-                    }}/>
-                </label>
             </form>
         </>
     )

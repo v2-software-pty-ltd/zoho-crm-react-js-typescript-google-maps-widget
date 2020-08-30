@@ -15,33 +15,34 @@ export default function salesEvidenceFilter (filterParameters: SalesEvidenceFilt
         saleType,
         dateSold
     } = filterParameters
-    let propertyFitCriteria
+    // N.B. to get the sub filters to work as AND logic
+    let doesPropertyFitCriteria
 
     const BLANK_FILTER_VALUE = -1
     const isLandAreaFilterInUse = landArea.min !== BLANK_FILTER_VALUE && landArea.max !== BLANK_FILTER_VALUE
     if (isLandAreaFilterInUse) {
-        propertyFitCriteria = typeof propertyFitCriteria === 'undefined' ? genericNumberFilter(landArea, 'Land_Area_sqm', property) : propertyFitCriteria && genericNumberFilter(landArea, 'Land_Area_sqm', property)
+        doesPropertyFitCriteria = typeof doesPropertyFitCriteria === 'undefined' ? genericNumberFilter(landArea, 'Land_Area_sqm', property) : doesPropertyFitCriteria && genericNumberFilter(landArea, 'Land_Area_sqm', property)
     }
 
     const isBuildAreaFilterInUse = buildArea.min !== BLANK_FILTER_VALUE && buildArea.max !== BLANK_FILTER_VALUE
     if (isBuildAreaFilterInUse) {
-        propertyFitCriteria = typeof propertyFitCriteria === 'undefined' ? genericNumberFilter(buildArea, 'Build_Area_sqm', property) : propertyFitCriteria && genericNumberFilter(buildArea, 'Build_Area_sqm', property)
+        doesPropertyFitCriteria = typeof doesPropertyFitCriteria === 'undefined' ? genericNumberFilter(buildArea, 'Build_Area_sqm', property) : doesPropertyFitCriteria && genericNumberFilter(buildArea, 'Build_Area_sqm', property)
     }
 
     const isSalePriceFilterInUse = salePrice.min !== BLANK_FILTER_VALUE && salePrice.max !== BLANK_FILTER_VALUE
     if (isSalePriceFilterInUse) {
-        propertyFitCriteria = typeof propertyFitCriteria === 'undefined' ? genericNumberFilter(salePrice, 'Sale_Price', property) : propertyFitCriteria && genericNumberFilter(salePrice, 'Sale_Price', property)
+        doesPropertyFitCriteria = typeof doesPropertyFitCriteria === 'undefined' ? genericNumberFilter(salePrice, 'Sale_Price', property) : doesPropertyFitCriteria && genericNumberFilter(salePrice, 'Sale_Price', property)
     }
 
     const isSaleTypeFilterInUse = saleType.length !== 0
     if (isSaleTypeFilterInUse) {
-        propertyFitCriteria = typeof propertyFitCriteria === 'undefined' ? saleTypeFilter(saleType, property) : propertyFitCriteria && saleTypeFilter(saleType, property)
+        doesPropertyFitCriteria = typeof doesPropertyFitCriteria === 'undefined' ? saleTypeFilter(saleType, property) : doesPropertyFitCriteria && saleTypeFilter(saleType, property)
     }
 
     const isDateSoldFilterInUse = dateSold.min !== dateSold.max
     if (isDateSoldFilterInUse) {
-        propertyFitCriteria = typeof propertyFitCriteria === 'undefined' ? genericDateFilter(dateSold, 'Sale_Date', property) : propertyFitCriteria && genericDateFilter(dateSold, 'Sale_Date', property)
+        doesPropertyFitCriteria = typeof doesPropertyFitCriteria === 'undefined' ? genericDateFilter(dateSold, 'Sale_Date', property) : doesPropertyFitCriteria && genericDateFilter(dateSold, 'Sale_Date', property)
     }
 
-    return propertyFitCriteria
+    return doesPropertyFitCriteria
 }

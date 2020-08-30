@@ -83,23 +83,10 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
         const isSalesOrLeaseFiltersInUse = checkSalesOrLeaseFilter(searchParams)
 
         let maxNumNeighbours = searchParams.neighboursSearchMaxRecords
-        let allRecordsForSalesOrLeaseFilter = false
         const subFilterInUse = filterInUse === 'SalesEvidenceFilter' || filterInUse === 'LeasesEvidenceFilter'
-        if (subFilterInUse) {
-            allRecordsForSalesOrLeaseFilter = searchParams.allRecords
-            // N.B. if the get select all records checkbox isn't selected
-            if (!allRecordsForSalesOrLeaseFilter && searchParams.neighboursSearchMaxRecords === Infinity) {
-                maxNumNeighbours = 0
-            }
-            // N.B. to get subfilters to work w/o using base filter
-            if (!isPropertyGroupFilterInUse && !isPropertyTypeFilterInUse && !allRecordsForSalesOrLeaseFilter) {
-                desiredPropertyGroups.push('All')
-                desiredPropertyTypes.push('All')
-            }
-        } else if (isBaseFiltersInUse && searchParams.neighboursSearchMaxRecords === Infinity) {
+        if ((isBaseFiltersInUse || subFilterInUse) && searchParams.neighboursSearchMaxRecords === Infinity) {
             maxNumNeighbours = 0
         }
-
         const maxResultsForPropertyTypes: number = searchParams.propertyTypesMaxResults
         const maxResultsForPropertyGroups: number = searchParams.propertyGroupsMaxResults
 
@@ -128,11 +115,11 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                     }
                     if (filterInUse === 'SalesEvidenceFilter') {
                         salesOrLeaseMatch = salesEvidenceFilter(searchParams, property)
-                        canAddBasedOnFilters = allRecordsForSalesOrLeaseFilter ? true : canAddBasedOnFilters && salesOrLeaseMatch
+                        canAddBasedOnFilters = canAddBasedOnFilters && salesOrLeaseMatch
                     }
                     if (filterInUse === 'LeasesEvidenceFilter') {
                         salesOrLeaseMatch = leasesEvidenceFilter(searchParams, property)
-                        canAddBasedOnFilters = allRecordsForSalesOrLeaseFilter ? true : canAddBasedOnFilters && salesOrLeaseMatch
+                        canAddBasedOnFilters = canAddBasedOnFilters && salesOrLeaseMatch
                     }
                 }
                 const isManaged = typeof property.Managed === 'string' ? property.Managed === desiredManaged || desiredManaged === 'All' : property.Managed

@@ -49,8 +49,7 @@ export const DEFAULT_BASE_FILTER_PARAMS = {
     propertyGroups: [],
     managed: 'All',
     readyForSearch: false,
-    id: `search:${(Math.random() * 1000)}`,
-    allRecords: false
+    id: `search:${(Math.random() * 1000)}`
 }
 
 export const DEFAULT_SEARCH_PARAMS = {
@@ -72,7 +71,6 @@ export type BaseSearchParamsType = {
   propertyTypesMaxResults: number
   managed: string
   id: string
-  allRecords: boolean
 }
 
 export type SalesEvidenceFilterParams = {

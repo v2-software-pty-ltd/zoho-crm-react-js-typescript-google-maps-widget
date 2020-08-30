@@ -2,7 +2,7 @@
 import { LeasesEvidenceFilterParams, UnprocessedResultsFromCRM } from '../types'
 import { genericNumberFilter, genericDateFilter } from './filterUtilityFunctions'
 
-export default function leasesEvidenceFilter (filterParameters: LeasesEvidenceFilterParams, property: UnprocessedResultsFromCRM): boolean {
+export default function leasesEvidenceFilter (filterParameters: LeasesEvidenceFilterParams, property: UnprocessedResultsFromCRM): boolean | undefined {
     const {
         landArea,
         buildArea,
@@ -11,24 +11,38 @@ export default function leasesEvidenceFilter (filterParameters: LeasesEvidenceFi
         leasedDate,
         reviewDate
     } = filterParameters
+    // N.B. to get the sub filters to work as AND logic
+    let doesPropertyFitCriteria
 
     const FILTER_NOT_USED_NUM_TYPE = -1
-    const isLandAreaFilterInUse = landArea.min === FILTER_NOT_USED_NUM_TYPE && landArea.max === FILTER_NOT_USED_NUM_TYPE
-    const isInLandAreaRange = !isLandAreaFilterInUse && genericNumberFilter(landArea, 'Land_Area_sqm', property)
+    const isLandAreaFilterInUse = landArea.min !== FILTER_NOT_USED_NUM_TYPE && landArea.max !== FILTER_NOT_USED_NUM_TYPE
+    if (isLandAreaFilterInUse) {
+        doesPropertyFitCriteria = typeof doesPropertyFitCriteria === 'undefined' ? genericNumberFilter(landArea, 'Land_Area_sqm', property) : doesPropertyFitCriteria && genericNumberFilter(landArea, 'Land_Area_sqm', property)
+    }
 
-    const isBuildAreaFilterInUse = buildArea.min === FILTER_NOT_USED_NUM_TYPE && buildArea.max === FILTER_NOT_USED_NUM_TYPE
-    const isInBuildAreaRange = !isBuildAreaFilterInUse && genericNumberFilter(buildArea, 'Build_Area_sqm', property)
+    const isBuildAreaFilterInUse = buildArea.min !== FILTER_NOT_USED_NUM_TYPE && buildArea.max !== FILTER_NOT_USED_NUM_TYPE
+    if (isBuildAreaFilterInUse) {
+        doesPropertyFitCriteria = typeof doesPropertyFitCriteria === 'undefined' ? genericNumberFilter(buildArea, 'Build_Area_sqm', property) : doesPropertyFitCriteria && genericNumberFilter(buildArea, 'Build_Area_sqm', property)
+    }
 
-    const isRentGrossFilterInUse = rentGross.min === FILTER_NOT_USED_NUM_TYPE && rentGross.max === FILTER_NOT_USED_NUM_TYPE
-    const isInRentGrossRange = !isRentGrossFilterInUse && genericNumberFilter(rentGross, 'Current_Rental', property)
+    const isRentGrossFilterInUse = rentGross.min !== FILTER_NOT_USED_NUM_TYPE && rentGross.max !== FILTER_NOT_USED_NUM_TYPE
+    if (isRentGrossFilterInUse) {
+        doesPropertyFitCriteria = typeof doesPropertyFitCriteria === 'undefined' ? genericNumberFilter(rentGross, 'Current_Rental', property) : doesPropertyFitCriteria && genericNumberFilter(rentGross, 'Current_Rental', property)
+    }
 
-    const isRentPerDollarFilterInUse = rentPerDollarMeter.min === FILTER_NOT_USED_NUM_TYPE && rentPerDollarMeter.max === FILTER_NOT_USED_NUM_TYPE
-    const isInRentPerDollarMeterRange = !isRentPerDollarFilterInUse && genericNumberFilter(rentPerDollarMeter, 'per_sqm1', property)
+    const isRentPerDollarFilterInUse = rentPerDollarMeter.min !== FILTER_NOT_USED_NUM_TYPE && rentPerDollarMeter.max !== FILTER_NOT_USED_NUM_TYPE
+    if (isRentPerDollarFilterInUse) {
+        doesPropertyFitCriteria = typeof doesPropertyFitCriteria === 'undefined' ? genericNumberFilter(rentPerDollarMeter, 'per_sqm1', property) : doesPropertyFitCriteria && genericNumberFilter(rentPerDollarMeter, 'per_sqm1', property)
+    }
 
-    const isLeaseDateFilterInUse = leasedDate.min === leasedDate.max
-    const isInLeasedDateRange = !isLeaseDateFilterInUse && genericDateFilter(leasedDate, 'Rent_Start_Date', property)
-    const isReviewDateFilterInUse = reviewDate.min === reviewDate.max
-    const isInReviewDateRange = !isReviewDateFilterInUse && genericDateFilter(reviewDate, 'Next_MR_Start_Date', property)
+    const isLeaseDateFilterInUse = leasedDate.min !== leasedDate.max
+    if (isLeaseDateFilterInUse) {
+        doesPropertyFitCriteria = typeof doesPropertyFitCriteria === 'undefined' ? genericDateFilter(leasedDate, 'Rent_Start_Date', property) : doesPropertyFitCriteria && genericDateFilter(leasedDate, 'Rent_Start_Date', property)
+    }
+    const isReviewDateFilterInUse = reviewDate.min !== reviewDate.max
+    if (isReviewDateFilterInUse) {
+        doesPropertyFitCriteria = typeof doesPropertyFitCriteria === 'undefined' ? genericDateFilter(reviewDate, 'Next_MR_Start_Date', property) : doesPropertyFitCriteria && genericDateFilter(reviewDate, 'Next_MR_Start_Date', property)
+    }
 
-    return isInLandAreaRange || isInBuildAreaRange || isInRentGrossRange || isInRentPerDollarMeterRange || isInLeasedDateRange || isInReviewDateRange
+    return doesPropertyFitCriteria
 }
