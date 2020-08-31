@@ -9,7 +9,6 @@ type DropdownProps = {
 
 export function PropertyTypeDropdown (props: DropdownProps) {
     const possiblePropertyTypes = [
-        { value: 'All', label: 'All' },
         { value: 'Automotive', label: 'Automotive' },
         { value: 'Bulky Goods/Showroom', label: 'Bulky Goods/Showroom' },
         { value: 'Child Care', label: 'Child Care' },

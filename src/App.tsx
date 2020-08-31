@@ -7,9 +7,11 @@ import { ResultsTableWidget } from './components/ResultsTable'
 import { DownloadMailingListButton } from './components/DownloadMailingListButton'
 import { DownloadContactListButton } from './components/DownloadContactListButton'
 import DownloadSalesEvidenceListButton from './components/DownloadSalesEvidenceListButton'
+import DownloadLeasesListButton from './components/DownloadLeasesListButton'
 import { UnprocessedResultsFromCRM, ResultsType, DEFAULT_SEARCH_PARAMS, PositionType, IntersectedSearchAndFilterParams } from './types'
 import { UpdateLastMailedButton } from './components/UpdateLastMailedButton'
 import { MassMailButton } from './components/MassMailButton'
+import { PrintButton } from './components/PrintButton'
 
 function prepareDataForMap (results: UnprocessedResultsFromCRM[], searchAddressPosition: PositionType): ResultsType | undefined {
     if (!results || results.length === 0) {
@@ -27,7 +29,7 @@ function prepareDataForMap (results: UnprocessedResultsFromCRM[], searchAddressP
         },
         addressesToRender: results.map((result) => {
             return {
-                address: result.Deal_Name,
+                address: result.Deal_Name || result.Full_Address,
                 position: {
                     lat: parseFloat(result.Latitude),
                     lng: parseFloat(result.Longitude)
@@ -49,6 +51,7 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsA
                                 <div className="download-button-wrapper pagebreak">
                                     <DownloadContactListButton results={results} />
                                     <DownloadMailingListButton results={results} />
+                                    <PrintButton />
                                     <MassMailButton results={results} />
                                 </div>
                                 <UpdateLastMailedButton results={results} />
@@ -59,6 +62,15 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsA
                         (
                             <div className="download-button-wrapper pagebreak">
                                 <DownloadSalesEvidenceListButton results={results} />
+                                <PrintButton />
+                            </div>
+                        )
+                    }
+                    {filterInUse === 'LeasesEvidenceFilter' &&
+                        (
+                            <div className="download-button-wrapper pagebreak">
+                                <DownloadLeasesListButton results={results} />
+                                <PrintButton />
                             </div>
                         )
                     }
@@ -89,10 +101,10 @@ function App () {
         if (isReadyForSearch) {
             const getDataFromCrm = async () => {
                 setLoading(true)
-                const { matchedProperties, uniqueSearchRecords } = await findMatchingRecords(searchParameters, filterInUse)
                 const searchAddressPosition = await getSearchAddressPosition(searchParameters)
-                setSearchAddressPosition(searchAddressPosition)
-                setUniqueSearchRecords(uniqueSearchRecords.length)
+                const { matchedProperties, numberOfUniqueSearchRecords } = await findMatchingRecords(searchParameters, filterInUse, searchAddressPosition)
+                setSearchAddressPosition(searchAddressPosition[0].position)
+                setUniqueSearchRecords(numberOfUniqueSearchRecords)
                 updateResults(matchedProperties)
                 setLoading(false)
                 setReadyForSearch(false)

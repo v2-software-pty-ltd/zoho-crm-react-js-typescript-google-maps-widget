@@ -1,26 +1,4 @@
-export type IntersectedSearchAndFilterParams = SalesEvidenceFilterParams & BaseSearchParamsType
-
-export type BaseSearchParamsType = {
-  searchAddress: string
-  propertyTypes: string[]
-  propertyGroups: string[]
-  neighboursSearchMaxRecords: number
-  propertyGroupsMaxResults: number
-  propertyTypesMaxResults: number
-  managed: string
-  id: string
-  allRecords: boolean
-}
-
 const DEFAULT_SALES_EVIDENCE_PARAMS = {
-    landArea: {
-        min: -1,
-        max: -1
-    },
-    buildArea: {
-        min: -1,
-        max: -1
-    },
     dateSold: {
         min: undefined,
         max: undefined
@@ -29,11 +7,40 @@ const DEFAULT_SALES_EVIDENCE_PARAMS = {
         min: -1,
         max: -1
     },
-    saleType: [],
-    allRecords: false
+    saleType: []
 }
 
-export const DEFAULT_SEARCH_PARAMS = {
+const DEFAULT_LEASE_EVIDENCE_PARAMS = {
+    rentGross: {
+        min: -1,
+        max: -1
+    },
+    rentPerDollarMeter: {
+        min: -1,
+        max: -1
+    },
+    leasedDate: {
+        min: undefined,
+        max: undefined
+    },
+    reviewDate: {
+        min: undefined,
+        max: undefined
+    }
+}
+
+const SHARED_SALE_LEASE_DEFAULT_PARAMS = {
+    landArea: {
+        min: -1,
+        max: -1
+    },
+    buildArea: {
+        min: -1,
+        max: -1
+    }
+}
+
+export const DEFAULT_BASE_FILTER_PARAMS = {
     searchAddress: '528 Kent St, Sydney, NSW, 2000',
     propertyGroupsMaxResults: Infinity,
     propertyTypesMaxResults: Infinity,
@@ -42,8 +49,45 @@ export const DEFAULT_SEARCH_PARAMS = {
     propertyGroups: [],
     managed: 'All',
     readyForSearch: false,
-    id: `search:${(Math.random() * 1000)}`,
-    ...DEFAULT_SALES_EVIDENCE_PARAMS
+    id: `search:${(Math.random() * 1000)}`
+}
+
+export const DEFAULT_SEARCH_PARAMS = {
+    ...DEFAULT_BASE_FILTER_PARAMS,
+    ...DEFAULT_SALES_EVIDENCE_PARAMS,
+    ...DEFAULT_LEASE_EVIDENCE_PARAMS,
+    ...SHARED_SALE_LEASE_DEFAULT_PARAMS
+}
+export type SalesAndLeasesFilterParams = SalesEvidenceFilterParams & LeasesEvidenceFilterParams
+export type IntersectedSearchAndFilterParams = SalesEvidenceFilterParams & BaseSearchParamsType & LeasesEvidenceFilterParams
+
+export type BaseSearchParamsType = {
+  [index: string]: any
+  searchAddress: string
+  propertyTypes: string[]
+  propertyGroups: string[]
+  neighboursSearchMaxRecords: number
+  propertyGroupsMaxResults: number
+  propertyTypesMaxResults: number
+  managed: string
+  id: string
+}
+
+export type SalesEvidenceFilterParams = {
+  landArea: MinMaxNumberType
+  buildArea: MinMaxNumberType
+  dateSold: MinMaxDateType
+  salePrice: MinMaxNumberType
+  saleType: SaleTypeEnum[]
+}
+
+export type LeasesEvidenceFilterParams = {
+  landArea: MinMaxNumberType
+  buildArea: MinMaxNumberType
+  rentGross: MinMaxNumberType
+  rentPerDollarMeter: MinMaxNumberType
+  leasedDate: MinMaxDateType
+  reviewDate: MinMaxDateType
 }
 
 export enum SaleTypeEnum {
@@ -53,22 +97,20 @@ export enum SaleTypeEnum {
   DEV = 'DEV'
 }
 
-export type MinMaxDateType = {
-  min: Date | undefined
-  max: Date | undefined
-}
+export const SalesTypeArray = [
+    SaleTypeEnum.INV,
+    SaleTypeEnum.VP,
+    SaleTypeEnum.DEV
+]
 
 export type MinMaxNumberType = {
   min: number
   max: number
 }
 
-export type SalesEvidenceFilterParams = {
-  landArea: MinMaxNumberType
-  buildArea: MinMaxNumberType
-  dateSold: MinMaxDateType
-  salePrice: MinMaxNumberType
-  saleType: SaleTypeEnum[]
+export type MinMaxDateType = {
+  min: Date | undefined
+  max: Date | undefined
 }
 
 export type PositionType = {
@@ -105,17 +147,17 @@ export type OwnerType = {
 }
 
 export type UnprocessedResultsFromCRM = {
-    [index: string]: string | number | OwnerType[] | string[]
+    [index: string]: string | number | OwnerType[] | string[] | AddressForLease | Date | boolean
     Latitude: string
     Longitude: string
     Deal_Name: string
     id: string
-    distance: number | string
+    distance: number
     owner_details: OwnerType[]
     Postcode: string
     State: string
     Property_Category_Mailing: string[]
-    Managed: string
+    Managed: string | boolean
     Reversed_Geocoded_Address: string
     Property_Type_Portals: string
     Property_Contacts: string
@@ -124,7 +166,24 @@ export type UnprocessedResultsFromCRM = {
     Build_Area_sqm: string
     Sale_Type: string[]
     Sale_Date: string
-    Sale_Price: string
+    Sale_Price: number
+    Area_sqm: number
+    Base_Rental: number
+    Current_Rental: number
+    Start_Date: string
+    Last_MR_Start_Date: string
+    Property: AddressForLease
+    Full_Address: string
+    per_sqm1: number
+    Lessee: TenantNameType
+}
+
+type TenantNameType = {
+  name: string
+}
+
+export type AddressForLease = {
+    name: string
 }
 
 export type ReactSelectOption = {

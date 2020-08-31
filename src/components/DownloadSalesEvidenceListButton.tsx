@@ -1,6 +1,7 @@
 import React from 'react'
 import { UnprocessedResultsFromCRM } from '../types'
 import getUniqueListBy from '../utils/getUniqueListBy'
+import { formatDate, convertToCurrency } from '../utils/utils'
 
 type DownloadButtonProps = {
     results: UnprocessedResultsFromCRM[]
@@ -14,8 +15,8 @@ export default function DownloadSalesEvidenceListButton (props: DownloadButtonPr
         const propertyAddress = propertyObject.Deal_Name
         const landArea = propertyObject.Land_Area_sqm
         const buildArea = propertyObject.Build_Area_sqm
-        const dateSold = propertyObject.Sale_Date
-        const salePrice = propertyObject.Sale_Price
+        const dateSold = formatDate(propertyObject.Sale_Date)
+        const salePrice = convertToCurrency(propertyObject.Sale_Price)
 
         let csvRow: string = ''
         if (landArea || buildArea || dateSold || salePrice) {

@@ -1,6 +1,7 @@
 import React from 'react'
 import { SearchWidget } from './SearchWidget'
 import { SalesEvidenceSearchWidget } from './SalesEvidenceSearchWidget'
+import { LeasesSearch } from './LeasesSearch'
 import { DEFAULT_SEARCH_PARAMS, IntersectedSearchAndFilterParams } from '../types'
 
 type SearchWidgetProps = {
@@ -56,6 +57,19 @@ export function SearchWidgetsWrapper (props: SearchWidgetProps) {
                     </div>
                 )
             }
+            {props.filterInUse === 'LeasesEvidenceFilter' &&
+                (
+                    <div className="search-params-wrapper" key={props.searchParameters[0].id}>
+                        <LeasesSearch
+                            searchParameters={props.searchParameters[0]}
+                            changeSearchParameters={(newSearchParams) => {
+                                const updatedSearchParams = [...props.searchParameters]
+                                updatedSearchParams[0] = newSearchParams
+                                props.changeSearchParameters(updatedSearchParams)
+                            }} />
+                    </div>
+                )
+            }
             <div className='button-wrapper hide-show-buttons'>
                 <button onClick={() => {
                     props.setReadyForSearch(true)
@@ -77,6 +91,11 @@ export function SearchWidgetsWrapper (props: SearchWidgetProps) {
                                 props.setFilterInUse('SalesEvidenceFilter')
                             }}/>
                             <span className='radioName'>Sales Evidence Widget</span>
+                            <input type="radio" checked={props.filterInUse === 'LeasesEvidenceFilter'} onClick={() => {
+                                props.changeSearchParameters([{ ...DEFAULT_SEARCH_PARAMS }])
+                                props.setFilterInUse('LeasesEvidenceFilter')
+                            }}/>
+                            <span className='radioName'>Leases Evidence Widget</span>
                         </div>
                     </label>
                 </div>
