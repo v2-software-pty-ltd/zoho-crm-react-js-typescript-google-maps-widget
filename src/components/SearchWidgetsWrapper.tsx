@@ -1,7 +1,8 @@
 import React from 'react'
 import { SearchWidget } from './SearchWidget'
 import { SalesEvidenceSearchWidget } from './SalesEvidenceSearchWidget'
-import { DEFAULT_SEARCH_PARAMS, IntersectedSearchAndFilterParams } from '../types'
+import { LeasesSearch } from './LeasesSearch'
+import { DEFAULT_SEARCH_PARAMS, IntersectedSearchAndFilterParams, UnprocessedResultsFromCRM } from '../types'
 
 type SearchWidgetProps = {
     searchParameters: IntersectedSearchAndFilterParams[]
@@ -9,6 +10,7 @@ type SearchWidgetProps = {
     setReadyForSearch: (isReady: boolean) => void
     setFilterInUse: (stateChange: string) => void
     filterInUse: string
+    updateResults: (results: UnprocessedResultsFromCRM[]) => void
 }
 
 export function SearchWidgetsWrapper (props: SearchWidgetProps) {
@@ -56,6 +58,19 @@ export function SearchWidgetsWrapper (props: SearchWidgetProps) {
                     </div>
                 )
             }
+            {props.filterInUse === 'LeasesEvidenceFilter' &&
+                (
+                    <div className="search-params-wrapper" key={props.searchParameters[0].id}>
+                        <LeasesSearch
+                            searchParameters={props.searchParameters[0]}
+                            changeSearchParameters={(newSearchParams) => {
+                                const updatedSearchParams = [...props.searchParameters]
+                                updatedSearchParams[0] = newSearchParams
+                                props.changeSearchParameters(updatedSearchParams)
+                            }} />
+                    </div>
+                )
+            }
             <div className='button-wrapper hide-show-buttons'>
                 <button onClick={() => {
                     props.setReadyForSearch(true)
@@ -68,15 +83,23 @@ export function SearchWidgetsWrapper (props: SearchWidgetProps) {
                     <label>
                         <div className="radio">
                             <input name='radio' type="radio" checked={props.filterInUse === 'BaseFilter'} onClick={() => {
+                                props.updateResults([])
                                 props.changeSearchParameters([{ ...DEFAULT_SEARCH_PARAMS }])
                                 props.setFilterInUse('BaseFilter')
                             }}/>
                             <span className='radioName'>Map Widget</span>
                             <input type="radio" checked={props.filterInUse === 'SalesEvidenceFilter'} onClick={() => {
+                                props.updateResults([])
                                 props.changeSearchParameters([{ ...DEFAULT_SEARCH_PARAMS }])
                                 props.setFilterInUse('SalesEvidenceFilter')
                             }}/>
                             <span className='radioName'>Sales Evidence Widget</span>
+                            <input type="radio" checked={props.filterInUse === 'LeasesEvidenceFilter'} onClick={() => {
+                                props.updateResults([])
+                                props.changeSearchParameters([{ ...DEFAULT_SEARCH_PARAMS }])
+                                props.setFilterInUse('LeasesEvidenceFilter')
+                            }}/>
+                            <span className='radioName'>Leases Evidence Widget</span>
                         </div>
                     </label>
                 </div>

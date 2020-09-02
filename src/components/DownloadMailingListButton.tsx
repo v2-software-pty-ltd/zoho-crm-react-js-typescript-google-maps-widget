@@ -40,7 +40,7 @@ export function DownloadMailingListButton (props: DownloadButtonProps) {
                 if (!isDupe) {
                     ownerContactDupeRemoval.push(`${ownerOrRelatedContact?.Postal_Address}-${ownerOrRelatedContact?.Name}`)
                     const lastMailed = owner?.Last_Mailed || relatedContact?.Last_Mailed || 'Last mailed has not been found'
-                    csvRow = `"${ownerOrRelatedContact?.Name}","${ownerOrRelatedContact?.Contact_Type}","${postalAddress}","${ownerOrRelatedContact?.Postal_Suburb}","${ownerOrRelatedContact?.Postal_State}","${ownerOrRelatedContact?.Postal_Postcode}","${propertyAddress}", "${propertyType}", "${lastMailed}"\r\n`
+                    csvRow = `"${ownerOrRelatedContact?.Name}","${ownerOrRelatedContact?.Contact_Type}","${postalAddress}","${ownerOrRelatedContact?.Postal_Suburb}","${ownerOrRelatedContact?.Postal_State}","${ownerOrRelatedContact?.Postal_Postcode}","${propertyAddress}", ${propertyType}, ${lastMailed}\r\n`
                     csvRow = csvRow.replace(/null/g, '-')
                 }
             }

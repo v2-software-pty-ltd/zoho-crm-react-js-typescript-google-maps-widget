@@ -1,7 +1,8 @@
-import { IntersectedSearchAndFilterParams, UnprocessedResultsFromCRM, PositionType } from '../types'
+import { IntersectedSearchAndFilterParams, UnprocessedResultsFromCRM, AddressType } from '../types'
 import { ZOHO } from '../vendor/ZSDK'
 import filterResults from '../utils/filterResults'
 import emailAndIdExtract from '../utils/emailAndIdExtract'
+import { orderResultsByDistance } from '../utils/filterUtilityFunctions'
 
 function safelyRetrieveLocalStorageItem (storageKey: string) {
     try {
@@ -77,7 +78,7 @@ const retrieveRecords = async function (pageNumber: number, retrievedProperties:
     )
 }
 
-export async function findMatchingRecords (searchParameters: IntersectedSearchAndFilterParams[], filterInUse: string): Promise<{ matchedProperties: UnprocessedResultsFromCRM[], uniqueSearchRecords: string[] }> {
+export async function findMatchingRecords (searchParameters: IntersectedSearchAndFilterParams[], filterInUse: string, searchAddressPosition: AddressType[]): Promise<{ matchedProperties: UnprocessedResultsFromCRM[], numberOfUniqueSearchRecords: number }> {
     const zohoModuleToUse = filterInUse === 'LeasesEvidenceFilter' ? 'Properties' : 'Deals'
     const matchingResults = await retrieveRecords(0, [], zohoModuleToUse)
 
@@ -85,21 +86,30 @@ export async function findMatchingRecords (searchParameters: IntersectedSearchAn
         alert('Error retrieving search results')
     }
 
-    const results = filterResults(matchingResults, searchParameters, filterInUse)
-
-    return results
-}
-
-export async function getSearchAddressPosition (searchParameters: IntersectedSearchAndFilterParams[]): Promise<PositionType> {
-    const firstSearchAddress = searchParameters[0].searchAddress
-
-    const geocodeResult = await ZOHO.CRM.FUNCTIONS.execute('geocode_address', {
-        arguments: JSON.stringify({
-            search_address: firstSearchAddress
-        })
+    const resultsOrderedByDistance = searchAddressPosition.map((addressObject: AddressType) => {
+        return orderResultsByDistance(matchingResults, addressObject.position)
     })
 
-    return JSON.parse(geocodeResult.details.output)
+    const matchedProperties = filterResults(resultsOrderedByDistance, searchParameters, filterInUse)
+    const numberOfUniqueSearchRecords = matchedProperties.length
+    return { matchedProperties, numberOfUniqueSearchRecords }
+}
+
+export async function getSearchAddressPosition (searchParameters: IntersectedSearchAndFilterParams[]): Promise<AddressType[]> {
+    const searchAddresses = await Promise.all(searchParameters.map(async (searchParams: IntersectedSearchAndFilterParams) => {
+        const geocodeResult = await ZOHO.CRM.FUNCTIONS.execute('geocode_address', {
+            arguments: JSON.stringify({
+                search_address: searchParams.searchAddress
+            })
+        })
+
+        return {
+            address: searchParams.searchAddress,
+            position: JSON.parse(geocodeResult.details.output)
+        }
+    }))
+
+    return searchAddresses
 }
 
 export async function updateMailComment (comment: string, results: UnprocessedResultsFromCRM[]): Promise<void> {
@@ -113,22 +123,28 @@ export async function updateMailComment (comment: string, results: UnprocessedRe
     })
 
     // batch updates so we don't exceed the payload limit
-
-    const BATCH_SIZE = 5
+    const BATCH_SIZE = 20
     const batches = []
     for (let i = 0; i < recordData.length; i += BATCH_SIZE) {
         const dataForThisBatch = recordData.slice(i, i + BATCH_SIZE)
         batches.push(dataForThisBatch)
     }
 
+    const waitMilliseconds = async (millisecondsToWait: number) => {
+        return new Promise((resolve) => {
+            setTimeout(resolve, millisecondsToWait)
+        })
+    }
+
     await Promise.all(
-        batches.map(async (messageBatch) => {
+        batches.map(async (messageBatch, idx) => {
             const payload = {
                 arguments: JSON.stringify({
                     results_str: messageBatch,
                     comment: comment
                 })
             }
+            await waitMilliseconds(idx * 500)
             await ZOHO.CRM.FUNCTIONS.execute('update_mail_comment', payload)
         })
     )
@@ -142,6 +158,10 @@ export async function massMailResults (results: UnprocessedResultsFromCRM[]): Pr
             emails_and_ids: emailsAndIds
         })
     })
+}
+
+export async function unselectMassEmailField (): Promise<void> {
+    await ZOHO.CRM.FUNCTIONS.execute('unselect_mass_email_field', {})
 }
 
 export async function getGoogleMapsAPIKeyFromCRM () {
