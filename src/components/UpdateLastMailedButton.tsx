@@ -13,7 +13,9 @@ export function UpdateLastMailedButton (props: UpdateLastMailedProps) {
             <textarea value={comment} onChange={(e) => changeComment(e.target.value)}/>
             <button onClick={async () => {
                 setLoading(true)
-                await updateMailComment(comment, props.results)
+                const test = await updateMailComment(comment, props.results)
+                console.log('test', test)
+
                 setLoading(false)
             }}>
                 {isLoading && 'Saving...'} Update Last Mailed

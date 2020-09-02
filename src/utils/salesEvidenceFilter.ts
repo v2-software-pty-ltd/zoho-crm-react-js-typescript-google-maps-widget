@@ -1,17 +1,5 @@
-import { SalesEvidenceFilterParams, SaleTypeEnum, UnprocessedResultsFromCRM, MinMaxNumberType, MinMaxDateType } from '../types'
-
-function numberFilter (filterType: string, filterValues: MinMaxNumberType, property: UnprocessedResultsFromCRM) {
-    return typeof property[filterType] === 'number' && property[filterType] >= filterValues.min && property[filterType] <= filterValues.max
-}
-
-function dateFilter (dateSold: MinMaxDateType, property: UnprocessedResultsFromCRM): boolean {
-    if (typeof dateSold.min !== 'undefined' && typeof dateSold.max !== 'undefined') {
-        const minDate = dateSold.min.toISOString().split('T')[0]
-        const maxDate = dateSold.max.toISOString().split('T')[0]
-        return !!property.Sale_Date && property.Sale_Date >= minDate && property.Sale_Date <= maxDate
-    }
-    return false
-}
+import { SalesEvidenceFilterParams, SaleTypeEnum, UnprocessedResultsFromCRM } from '../types'
+import { genericDateFilter, genericNumberFilter } from './filterUtilityFunctions'
 
 function saleTypeFilter (saleTypes: SaleTypeEnum[], property: UnprocessedResultsFromCRM): boolean {
     return saleTypes.some((saleType: SaleTypeEnum) => {
@@ -19,7 +7,7 @@ function saleTypeFilter (saleTypes: SaleTypeEnum[], property: UnprocessedResults
     })
 }
 
-export default function salesEvidenceFilter (filterParameters: SalesEvidenceFilterParams, property: UnprocessedResultsFromCRM): boolean {
+export default function salesEvidenceFilter (filterParameters: SalesEvidenceFilterParams, property: UnprocessedResultsFromCRM): boolean | undefined {
     const {
         landArea,
         buildArea,
@@ -27,21 +15,39 @@ export default function salesEvidenceFilter (filterParameters: SalesEvidenceFilt
         saleType,
         dateSold
     } = filterParameters
+    // N.B. to get the sub filters to work as AND logic
+    let doesPropertyFitCriteria
+
+    // Filter field - Land Area m2
     const BLANK_FILTER_VALUE = -1
-    const isLandAreaFilterNotInUse = landArea.min === BLANK_FILTER_VALUE && landArea.max === BLANK_FILTER_VALUE
-    const isInLandAreaRange = !isLandAreaFilterNotInUse && numberFilter('Land_Area_sqm', landArea, property)
+    const isLandAreaFilterInUse = landArea.min !== BLANK_FILTER_VALUE && landArea.max !== BLANK_FILTER_VALUE
+    if (isLandAreaFilterInUse) {
+        doesPropertyFitCriteria = typeof doesPropertyFitCriteria === 'undefined' ? genericNumberFilter(landArea, 'Land_Area_sqm', property) : doesPropertyFitCriteria && genericNumberFilter(landArea, 'Land_Area_sqm', property)
+    }
 
-    const isBuildAreaFilterNotInUse = buildArea.min === BLANK_FILTER_VALUE && buildArea.max === BLANK_FILTER_VALUE
-    const isInBuildAreaRange = !isBuildAreaFilterNotInUse && numberFilter('Build_Area_sqm', buildArea, property)
+    // Filter field - Build Area m2
+    const isBuildAreaFilterInUse = buildArea.min !== BLANK_FILTER_VALUE && buildArea.max !== BLANK_FILTER_VALUE
+    if (isBuildAreaFilterInUse) {
+        doesPropertyFitCriteria = typeof doesPropertyFitCriteria === 'undefined' ? genericNumberFilter(buildArea, 'Build_Area_sqm', property) : doesPropertyFitCriteria && genericNumberFilter(buildArea, 'Build_Area_sqm', property)
+    }
 
-    const isSalePriceFilterNotInUse = salePrice.min === BLANK_FILTER_VALUE && salePrice.max === BLANK_FILTER_VALUE
-    const isInSalePriceRange = !isSalePriceFilterNotInUse && numberFilter('Sale_Price', salePrice, property)
+    // Filter field - Sale Price $
+    const isSalePriceFilterInUse = salePrice.min !== BLANK_FILTER_VALUE && salePrice.max !== BLANK_FILTER_VALUE
+    if (isSalePriceFilterInUse) {
+        doesPropertyFitCriteria = typeof doesPropertyFitCriteria === 'undefined' ? genericNumberFilter(salePrice, 'Sale_Price', property) : doesPropertyFitCriteria && genericNumberFilter(salePrice, 'Sale_Price', property)
+    }
 
-    const isSaleTypeFilterNotInUse = saleType.length === 0
-    const isInSaleType = !isSaleTypeFilterNotInUse && saleTypeFilter(saleType, property)
+    // Filter field - Sale Type
+    const isSaleTypeFilterInUse = saleType.length !== 0
+    if (isSaleTypeFilterInUse) {
+        doesPropertyFitCriteria = typeof doesPropertyFitCriteria === 'undefined' ? saleTypeFilter(saleType, property) : doesPropertyFitCriteria && saleTypeFilter(saleType, property)
+    }
 
-    const isDateSoldFilterNotInUse = dateSold.min === dateSold.max
-    const isInSaleDateRange = !isDateSoldFilterNotInUse && dateFilter(dateSold, property)
+    // Filter field - Date Sold
+    const isDateSoldFilterInUse = dateSold.min !== dateSold.max
+    if (isDateSoldFilterInUse) {
+        doesPropertyFitCriteria = typeof doesPropertyFitCriteria === 'undefined' ? genericDateFilter(dateSold, 'Sale_Date', property) : doesPropertyFitCriteria && genericDateFilter(dateSold, 'Sale_Date', property)
+    }
 
-    return isInLandAreaRange || isInBuildAreaRange || isInSalePriceRange || isInSaleType || isInSaleDateRange
+    return doesPropertyFitCriteria
 }

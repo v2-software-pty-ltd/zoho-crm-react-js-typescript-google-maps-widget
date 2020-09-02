@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { UnprocessedResultsFromCRM } from '../types'
+import { formatDate, convertToCurrency } from '../utils/utils'
 
 type ResultsTableProps = {
     results: UnprocessedResultsFromCRM[]
@@ -66,8 +67,40 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                                          <td>{result.Deal_Name}</td>
                                          <td>{result.Land_Area_sqm}</td>
                                          <td>{result.Build_Area_sqm}</td>
-                                         <td>{result.Sale_Date}</td>
-                                         <td>{result.Sale_Price}</td>
+                                         <td>{formatDate(result.Sale_Date)}</td>
+                                         <td>{convertToCurrency(result.Sale_Price)}</td>
+                                     </tr>
+                                 )
+                             })}
+                         </tbody>
+                     </table>
+                 </div>
+             )
+            }
+            {props.filterInUse === 'LeasesEvidenceFilter' &&
+             (
+                 <div style={{ padding: '20px' }}>
+                     <table>
+                         <thead>
+                             <tr>
+                                 <th>No.</th>
+                                 <th>Address</th>
+                                 <th>Current $ Per Sqm</th>
+                                 <th>Land Area</th>
+                                 <th>Build Area</th>
+                                 <th>Current Rent (Gross)</th>
+                             </tr>
+                         </thead>
+                         <tbody>
+                             {props.results.map((result, index) => {
+                                 return (
+                                     <tr key={`${result.id}-${index}`}>
+                                         <td>{index + 1}</td>
+                                         <td>{result.Property.name}</td>
+                                         <td>{convertToCurrency(result.Current_Per_Sqm)}</td>
+                                         <td>{result.Land_Area_sqm}</td>
+                                         <td>{result.Build_Area_sqm}</td>
+                                         <td>{convertToCurrency(result.Current_AI_New_Market_Rental)}</td>
                                      </tr>
                                  )
                              })}
