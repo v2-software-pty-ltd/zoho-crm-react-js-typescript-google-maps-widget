@@ -123,22 +123,28 @@ export async function updateMailComment (comment: string, results: UnprocessedRe
     })
 
     // batch updates so we don't exceed the payload limit
-
-    const BATCH_SIZE = 5
+    const BATCH_SIZE = 20
     const batches = []
     for (let i = 0; i < recordData.length; i += BATCH_SIZE) {
         const dataForThisBatch = recordData.slice(i, i + BATCH_SIZE)
         batches.push(dataForThisBatch)
     }
 
+    const waitMilliseconds = async (millisecondsToWait: number) => {
+        return new Promise((resolve) => {
+            setTimeout(resolve, millisecondsToWait)
+        })
+    }
+
     await Promise.all(
-        batches.map(async (messageBatch) => {
+        batches.map(async (messageBatch, idx) => {
             const payload = {
                 arguments: JSON.stringify({
                     results_str: messageBatch,
                     comment: comment
                 })
             }
+            await waitMilliseconds(idx * 500)
             await ZOHO.CRM.FUNCTIONS.execute('update_mail_comment', payload)
         })
     )

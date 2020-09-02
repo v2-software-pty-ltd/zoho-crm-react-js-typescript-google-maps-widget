@@ -69,6 +69,7 @@ export function LeasesSearch (props: LeasesSearchProps) {
                         props.changeSearchParameters({
                             ...props.searchParameters,
                             reviewDate: { min: props.searchParameters.reviewDate.min, max: changeDate || undefined }
+
                         })
                     }}/>
                 </label>

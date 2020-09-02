@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react'
-import { IntersectedSearchAndFilterParams } from '../types'
+import { DEFAULT_SEARCH_PARAMS, IntersectedSearchAndFilterParams } from '../types'
 import { SearchWidget } from './SearchWidget'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
