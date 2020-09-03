@@ -96,11 +96,11 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                                  return (
                                      <tr key={`${result.id}-${index}`}>
                                          <td>{index + 1}</td>
-                                         <td>{result.Full_Address}</td>
-                                         <td>{result.Current_Per_Sqm}</td>
+                                         <td>{result.Property.name}</td>
+                                         <td>{convertToCurrency(result.Current_Per_Sqm)}</td>
                                          <td>{result.Land_Area_sqm}</td>
                                          <td>{result.Build_Area_sqm}</td>
-                                         <td>{result.Current_Rental}</td>
+                                         <td>{convertToCurrency(result.Current_AI_New_Market_Rental)}</td>
                                      </tr>
                                  )
                              })}

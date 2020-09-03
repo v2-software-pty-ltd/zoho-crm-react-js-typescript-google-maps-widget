@@ -29,7 +29,7 @@ function prepareDataForMap (results: UnprocessedResultsFromCRM[], searchAddressP
         },
         addressesToRender: results.map((result) => {
             return {
-                address: result.Deal_Name || result.Full_Address,
+                address: result.Deal_Name || result.Property.name,
                 position: {
                     lat: parseFloat(result.Latitude),
                     lng: parseFloat(result.Longitude)
@@ -125,7 +125,7 @@ function App () {
 
     return (
         <div className="App">
-            <SearchWidgetsWrapper changeSearchParameters={changeSearchParameters} searchParameters={searchParameters} setReadyForSearch={setReadyForSearch} setFilterInUse={setFilterInUse} filterInUse={filterInUse}/>
+            <SearchWidgetsWrapper changeSearchParameters={changeSearchParameters} searchParameters={searchParameters} setReadyForSearch={setReadyForSearch} setFilterInUse={setFilterInUse} filterInUse={filterInUse} updateResults={updateResults}/>
             {isLoading &&
                 <div style={{ padding: '20px' }}>
                     Loading... estimated waiting time 10 seconds.

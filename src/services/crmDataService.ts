@@ -123,7 +123,6 @@ export async function updateMailComment (comment: string, results: UnprocessedRe
     })
 
     // batch updates so we don't exceed the payload limit
-
     const BATCH_SIZE = 20
     const batches = []
     for (let i = 0; i < recordData.length; i += BATCH_SIZE) {

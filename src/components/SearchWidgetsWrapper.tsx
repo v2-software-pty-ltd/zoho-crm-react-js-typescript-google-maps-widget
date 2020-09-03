@@ -2,7 +2,7 @@ import React from 'react'
 import { SearchWidget } from './SearchWidget'
 import { SalesEvidenceSearchWidget } from './SalesEvidenceSearchWidget'
 import { LeasesSearch } from './LeasesSearch'
-import { DEFAULT_SEARCH_PARAMS, IntersectedSearchAndFilterParams } from '../types'
+import { DEFAULT_SEARCH_PARAMS, IntersectedSearchAndFilterParams, UnprocessedResultsFromCRM } from '../types'
 
 type SearchWidgetProps = {
     searchParameters: IntersectedSearchAndFilterParams[]
@@ -10,6 +10,7 @@ type SearchWidgetProps = {
     setReadyForSearch: (isReady: boolean) => void
     setFilterInUse: (stateChange: string) => void
     filterInUse: string
+    updateResults: (results: UnprocessedResultsFromCRM[]) => void
 }
 
 export function SearchWidgetsWrapper (props: SearchWidgetProps) {
@@ -82,16 +83,19 @@ export function SearchWidgetsWrapper (props: SearchWidgetProps) {
                     <label>
                         <div className="radio">
                             <input name='radio' type="radio" checked={props.filterInUse === 'BaseFilter'} onClick={() => {
+                                props.updateResults([])
                                 props.changeSearchParameters([{ ...DEFAULT_SEARCH_PARAMS }])
                                 props.setFilterInUse('BaseFilter')
                             }}/>
                             <span className='radioName'>Map Widget</span>
                             <input type="radio" checked={props.filterInUse === 'SalesEvidenceFilter'} onClick={() => {
+                                props.updateResults([])
                                 props.changeSearchParameters([{ ...DEFAULT_SEARCH_PARAMS }])
                                 props.setFilterInUse('SalesEvidenceFilter')
                             }}/>
                             <span className='radioName'>Sales Evidence Widget</span>
                             <input type="radio" checked={props.filterInUse === 'LeasesEvidenceFilter'} onClick={() => {
+                                props.updateResults([])
                                 props.changeSearchParameters([{ ...DEFAULT_SEARCH_PARAMS }])
                                 props.setFilterInUse('LeasesEvidenceFilter')
                             }}/>

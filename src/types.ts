@@ -169,13 +169,12 @@ export type UnprocessedResultsFromCRM = {
     Sale_Price: number
     Area_sqm: number
     Base_Rental: number
-    Current_Rental: number
+    Current_AI_New_Market_Rental: number
     Start_Date: string
     Last_MR_Start_Date: string
     Property: AddressForLease
-    Full_Address: string
-    per_sqm1: number
     Lessee: TenantNameType
+    Current_Per_Sqm: number
 }
 
 type TenantNameType = {
