@@ -18,22 +18,21 @@ export default function salesEvidenceFilter (filterParameters: SalesEvidenceFilt
     // N.B. to get the sub filters to work as AND logic
     let doesPropertyFitCriteria
 
-
     // Filter field - Land Area m2
     const BLANK_FILTER_VALUE = -1
-    const isLandAreaFilterInUse = landArea.min !== BLANK_FILTER_VALUE && landArea.max !== BLANK_FILTER_VALUE
+    const isLandAreaFilterInUse = landArea.min !== BLANK_FILTER_VALUE || landArea.max !== BLANK_FILTER_VALUE
     if (isLandAreaFilterInUse) {
         doesPropertyFitCriteria = typeof doesPropertyFitCriteria === 'undefined' ? genericNumberFilter(landArea, 'Land_Area_sqm', property) : doesPropertyFitCriteria && genericNumberFilter(landArea, 'Land_Area_sqm', property)
     }
-
+    debugger
     // Filter field - Build Area m2
-    const isBuildAreaFilterInUse = buildArea.min !== BLANK_FILTER_VALUE && buildArea.max !== BLANK_FILTER_VALUE
+    const isBuildAreaFilterInUse = buildArea.min !== BLANK_FILTER_VALUE || buildArea.max !== BLANK_FILTER_VALUE
     if (isBuildAreaFilterInUse) {
         doesPropertyFitCriteria = typeof doesPropertyFitCriteria === 'undefined' ? genericNumberFilter(buildArea, 'Build_Area_sqm', property) : doesPropertyFitCriteria && genericNumberFilter(buildArea, 'Build_Area_sqm', property)
     }
 
     // Filter field - Sale Price $
-    const isSalePriceFilterInUse = salePrice.min !== BLANK_FILTER_VALUE && salePrice.max !== BLANK_FILTER_VALUE
+    const isSalePriceFilterInUse = salePrice.min !== BLANK_FILTER_VALUE || salePrice.max !== BLANK_FILTER_VALUE
     if (isSalePriceFilterInUse) {
         doesPropertyFitCriteria = typeof doesPropertyFitCriteria === 'undefined' ? genericNumberFilter(salePrice, 'Sale_Price', property) : doesPropertyFitCriteria && genericNumberFilter(salePrice, 'Sale_Price', property)
     }
