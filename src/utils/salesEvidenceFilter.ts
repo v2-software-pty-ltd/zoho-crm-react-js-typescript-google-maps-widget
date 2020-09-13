@@ -24,7 +24,7 @@ export default function salesEvidenceFilter (filterParameters: SalesEvidenceFilt
     if (isLandAreaFilterInUse) {
         doesPropertyFitCriteria = typeof doesPropertyFitCriteria === 'undefined' ? genericNumberFilter(landArea, 'Land_Area_sqm', property) : doesPropertyFitCriteria && genericNumberFilter(landArea, 'Land_Area_sqm', property)
     }
-    debugger
+
     // Filter field - Build Area m2
     const isBuildAreaFilterInUse = buildArea.min !== BLANK_FILTER_VALUE || buildArea.max !== BLANK_FILTER_VALUE
     if (isBuildAreaFilterInUse) {
