@@ -1,7 +1,16 @@
 import { UnprocessedResultsFromCRM, MinMaxNumberType, MinMaxDateType, PositionType } from '../types'
 
 export function genericNumberFilter (filterValues: MinMaxNumberType, filterType: string, property: UnprocessedResultsFromCRM) {
-    return typeof property[filterType] === 'number' && (property[filterType] >= filterValues.min && property[filterType] <= filterValues.max)
+    if (typeof property[filterType] === 'number') {
+        if (filterValues.min !== -1) {
+            return property[filterType] >= filterValues.min
+        } else if (filterValues.max !== -1) {
+            return property[filterType] <= filterValues.max
+        } else {
+            return property[filterType] >= filterValues.min && property[filterType] <= filterValues.max
+        }
+    }
+    return false
 }
 
 export function genericDateFilter (dateSold: MinMaxDateType, filterType: string, property: UnprocessedResultsFromCRM): boolean {
@@ -9,6 +18,12 @@ export function genericDateFilter (dateSold: MinMaxDateType, filterType: string,
         const minDate = dateSold.min.toISOString().split('T')[0]
         const maxDate = dateSold.max.toISOString().split('T')[0]
         return !!property[filterType] && property[filterType] >= minDate && property[filterType] <= maxDate
+    } else if (typeof dateSold.min !== 'undefined') {
+        const minDate = dateSold.min.toISOString().split('T')[0]
+        return !!property[filterType] && property[filterType] >= minDate
+    } else if (typeof dateSold.max !== 'undefined') {
+        const maxDate = dateSold.max.toISOString().split('T')[0]
+        return !!property[filterType] && property[filterType] <= maxDate
     }
     return false
 }
