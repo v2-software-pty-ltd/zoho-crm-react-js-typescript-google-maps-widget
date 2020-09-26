@@ -85,6 +85,7 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                              <tr>
                                  <th>No.</th>
                                  <th>Address</th>
+                                 <th>Tenancy Name</th>
                                  <th>Current $ Per Sqm</th>
                                  <th>Land Area</th>
                                  <th>Build Area</th>
@@ -97,6 +98,7 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                                      <tr key={`${result.id}-${index}`}>
                                          <td>{index + 1}</td>
                                          <td>{result.Property.name}</td>
+                                         <td>{result.Name}</td>
                                          <td>{convertToCurrency(result.Current_Per_Sqm)}</td>
                                          <td>{result.Land_Area_sqm}</td>
                                          <td>{result.Build_Area_sqm}</td>

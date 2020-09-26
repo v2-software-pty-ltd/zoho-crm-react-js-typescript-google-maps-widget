@@ -23,7 +23,7 @@ export function DownloadContactListButton (props: DownloadButtonProps) {
             const owner = result.owner_details.find((owner: OwnerType) => owner.Contact_Type === 'Owner')
 
             if (mobile || workPhone) {
-                const newRow = `"${propertyAddress}","${owner?.Name || ''}","${owner?.Mobile || ''}","${owner?.Work_Phone || ''}", ${contact?.Name || ''},"${contact?.Mobile || ''}","${contact?.Work_Phone || ''}"\r\n`
+                const newRow = `"${propertyAddress}","${owner?.Name || ''}","${owner?.Mobile || ''}","${owner?.Work_Phone || ''}",${contact?.Name || ''},"${contact?.Mobile || ''}","${contact?.Work_Phone || ''}"\r\n`
                 return newRow.replace(/null/g, '-')
             }
         }
