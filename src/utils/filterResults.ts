@@ -68,6 +68,8 @@ function checkSalesOrLeaseFilter (searchParams: IntersectedSearchAndFilterParams
 
 export default function filterResults (unsortedPropertyResults: UnprocessedResultsFromCRM[][], searchParameters: IntersectedSearchAndFilterParams[], filterInUse: string): UnprocessedResultsFromCRM[] {
     const matchedProperties: UnprocessedResultsFromCRM[] = []
+    const isSearchMultiProperties = searchParameters.length > 1
+    const searchMultiPropertyDupes: string[] = []
 
     searchParameters.forEach((searchParams: IntersectedSearchAndFilterParams, index: number) => {
         const desiredPropertyTypes = searchParams.propertyTypes
@@ -149,7 +151,13 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                 } else {
                     shouldAddProperty = shouldAddProperty || isUnderNeighbourLimit
                 }
-                if (shouldAddProperty) {
+
+                let shouldAddMultiSearchProperty: boolean = true
+                if (isSearchMultiProperties) {
+                    shouldAddMultiSearchProperty = !searchMultiPropertyDupes.includes(property.id)
+                }
+
+                if (shouldAddProperty && shouldAddMultiSearchProperty) {
                     // N.B. Owner is not required in leases evidence filter
                     if (filterInUse !== 'LeasesEvidenceFilter') {
                         const ownerData = getOwnerData(property)
@@ -206,6 +214,10 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                         matchTallies.neighbour += 1
                     }
                     matchedProperties.push(property)
+
+                    if (isSearchMultiProperties) {
+                        searchMultiPropertyDupes.push(property.id)
+                    }
                 }
             }
         })
