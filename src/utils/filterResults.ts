@@ -152,12 +152,12 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                     shouldAddProperty = shouldAddProperty || isUnderNeighbourLimit
                 }
 
-                let toAddDuplicate: boolean = true
+                let shouldAddMultiSearchProperty: boolean = true
                 if (isSearchMultiProperties) {
-                    toAddDuplicate = !searchMultiPropertyDupes.includes(property.id)
+                    shouldAddMultiSearchProperty = !searchMultiPropertyDupes.includes(property.id)
                 }
 
-                if (shouldAddProperty && toAddDuplicate) {
+                if (shouldAddProperty && shouldAddMultiSearchProperty) {
                     // N.B. Owner is not required in leases evidence filter
                     if (filterInUse !== 'LeasesEvidenceFilter') {
                         const ownerData = getOwnerData(property)
