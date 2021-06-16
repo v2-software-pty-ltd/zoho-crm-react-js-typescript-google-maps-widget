@@ -2,9 +2,9 @@ import { UnprocessedResultsFromCRM, MinMaxNumberType, MinMaxDateType, PositionTy
 
 export function genericNumberFilter (filterValues: MinMaxNumberType, filterType: string, property: UnprocessedResultsFromCRM) {
     if (typeof property[filterType] === 'number') {
-        if (filterValues.min !== -1) {
+        if (filterValues.min !== -1 && filterValues.max === -1) {
             return property[filterType] >= filterValues.min
-        } else if (filterValues.max !== -1) {
+        } else if (filterValues.max !== -1 && filterValues.min === -1) {
             return property[filterType] <= filterValues.max
         } else {
             return property[filterType] >= filterValues.min && property[filterType] <= filterValues.max

@@ -72,8 +72,10 @@ export function SearchWidgetsWrapper (props: SearchWidgetProps) {
                 )
             }
             <div className='button-wrapper hide-show-buttons'>
-                <button onClick={() => {
+                <button onClick={(e) => {
                     props.setReadyForSearch(true)
+                    e.preventDefault()
+                    return false
                 }}>Search
                 </button>
             </div>

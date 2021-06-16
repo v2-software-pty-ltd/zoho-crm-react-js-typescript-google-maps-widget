@@ -111,7 +111,7 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                 const propertyGroupAndTypeMatch = propertyGroupMatch || propertyTypeMatch
 
                 let canAddBasedOnFilters: boolean = propertyGroupAndTypeMatch
-                let salesOrLeaseMatch: boolean | undefined = false
+                let salesOrLeaseMatch: boolean = false
 
                 if (isSubFilterInUse) {
                     // N.B. when using sales evidence filter and type or group aren't used
@@ -120,11 +120,11 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                     }
                     if (filterInUse === 'SalesEvidenceFilter') {
                         salesOrLeaseMatch = salesEvidenceFilter(searchParams, property)
-                        canAddBasedOnFilters = typeof salesOrLeaseMatch === 'undefined' ? canAddBasedOnFilters : canAddBasedOnFilters && salesOrLeaseMatch
+                        canAddBasedOnFilters = canAddBasedOnFilters && salesOrLeaseMatch
                     }
                     if (filterInUse === 'LeasesEvidenceFilter') {
                         salesOrLeaseMatch = leasesEvidenceFilter(searchParams, property)
-                        canAddBasedOnFilters = typeof salesOrLeaseMatch === 'undefined' ? canAddBasedOnFilters : canAddBasedOnFilters && salesOrLeaseMatch
+                        canAddBasedOnFilters = canAddBasedOnFilters && salesOrLeaseMatch
                     }
                 }
 
