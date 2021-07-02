@@ -51,5 +51,5 @@ export default function leasesEvidenceFilter (filterParameters: LeasesEvidenceFi
         doesPropertyFitCriteria = doesPropertyFitCriteria && genericDateFilter(reviewDate, 'Next_MR_Start_Date', property)
     }
 
-    return doesPropertyFitCriteria
+    return doesPropertyFitCriteria && property.Underdeveloped !== 'No'
 }

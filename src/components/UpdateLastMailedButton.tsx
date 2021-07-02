@@ -11,12 +11,12 @@ export function UpdateLastMailedButton (props: UpdateLastMailedProps) {
     return (
         <div className="mail-comment-button-wrapper">
             <textarea value={comment} onChange={(e) => changeComment(e.target.value)}/>
-            <button onClick={async () => {
+            <button onClick={async (e) => {
                 setLoading(true)
                 const test = await updateMailComment(comment, props.results)
-                console.log('test', test)
 
                 setLoading(false)
+                e.preventDefault()
             }}>
                 {isLoading && 'Saving...'} Update Last Mailed
             </button>

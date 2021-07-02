@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import './index.css'
 import { SearchWidgetsWrapper } from './components/SearchWidgetsWrapper'
 import { findMatchingRecords, getGoogleMapsAPIKeyFromCRM, getSearchAddressPosition } from './services/crmDataService'
 import { MapWidget } from './components/MapWidget'

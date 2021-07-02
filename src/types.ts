@@ -151,6 +151,14 @@ export type UnprocessedResultsFromCRM = {
     Latitude: string
     Longitude: string
     Deal_Name: string
+    Contact_Name: {
+        name: string,
+        id: string
+    }
+    Account_Name: {
+        name: string,
+        id: string
+    }
     id: string
     distance: number
     owner_details: OwnerType[]

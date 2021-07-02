@@ -1,6 +1,7 @@
 import { IntersectedSearchAndFilterParams, UnprocessedResultsFromCRM, OwnerType, DEFAULT_BASE_FILTER_PARAMS, SaleTypeEnum, MinMaxDateType, MinMaxNumberType, SalesTypeArray } from '../types'
 import salesEvidenceFilter from './salesEvidenceFilter'
 import leasesEvidenceFilter from './leasesEvidenceFilter'
+import { getRecordFromCrm } from '../services/crmDataService'
 
 type MatchTallies = {
   [index: string]: number
@@ -21,21 +22,46 @@ function matchForPropertyGroups (property: UnprocessedResultsFromCRM, desiredPro
     })
 }
 
-function getOwnerData (property: UnprocessedResultsFromCRM) {
+async function getOwnerData (property: UnprocessedResultsFromCRM) {
     const ownerData: OwnerType[] = []
 
     const parsedPropertyContacts = !property.Property_Contacts ? [] : JSON.parse(property.Property_Contacts)
+    if (parsedPropertyContacts.length === 0) {
+        const contactId = property.Contact_Name?.id
+        if (contactId) {
+            const contactData = await getRecordFromCrm('Contacts', [contactId])
+            parsedPropertyContacts.push(
+                {
+                    Contact_Type: '',
+                    Name: property.Contact_Name?.name || '',
+                    ...contactData?.data?.[0]
+                }
+            )
+        }
+    }
     parsedPropertyContacts.forEach((contact: OwnerType) => {
         contact.Contact_Type = 'Director'
         ownerData.push(contact)
     })
 
     const parsedPropertyOwners = !property.Property_Owners ? [] : JSON.parse(property.Property_Owners)
+    if (parsedPropertyOwners.length === 0) {
+        const accountId = property.Account_Name?.id
+        if (accountId) {
+            const accountData = await getRecordFromCrm('Accounts', [accountId])
 
+            parsedPropertyOwners.push({
+                Contact_Type: '',
+                Name: property.Account_Name?.name || '',
+                ...accountData?.data?.[0]
+            })
+        }
+    }
     parsedPropertyOwners.forEach((owner: OwnerType) => {
         owner.Contact_Type = 'Owner'
         ownerData.push(owner)
     })
+
     return ownerData
 }
 
@@ -102,7 +128,10 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
             propertyGroup: 0
         }
 
-        unsortedPropertyResults[index].forEach((property: UnprocessedResultsFromCRM) => {
+        unsortedPropertyResults[index].forEach(async (property: UnprocessedResultsFromCRM) => {
+            if (property.Deal_Name.includes('Queens')) {
+                debugger
+            }
             const isUnderNeighbourLimit = matchTallies.neighbour < maxNumNeighbours
             const isUnderPropertyTypeLimit = areAnyFiltersBesidesNeighbourFilterEnabled && matchTallies.propertyType < maxResultsForPropertyTypes
             const isUnderPropertyGroupLimit = areAnyFiltersBesidesNeighbourFilterEnabled && matchTallies.propertyGroup < maxResultsForPropertyGroups
@@ -163,7 +192,8 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                 if (shouldAddProperty && shouldAddMultiSearchProperty) {
                     // N.B. Owner is not required in leases evidence filter
                     if (filterInUse !== 'LeasesEvidenceFilter') {
-                        const ownerData = getOwnerData(property)
+                        const ownerData = await getOwnerData(property)
+
                         if (ownerData.length > 0) {
                             property.owner_details = ownerData
                         }

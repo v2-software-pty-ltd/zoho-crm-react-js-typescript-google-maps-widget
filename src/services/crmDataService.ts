@@ -32,6 +32,29 @@ async function getPageOfRecords (pageNumber: number, zohoModuleToUse: string) {
     return response.data
 }
 
+export async function getRecordFromCrm (moduleName: string, recordId: string[]) {
+    const cachedVersion = retrieveRecordsFromLocalStorageIfAvailable(JSON.stringify(recordId))
+    if (cachedVersion) {
+        return {
+            data: cachedVersion
+        }
+    }
+
+    const { data } = await ZOHO.CRM.API.getRecord({
+        Entity: moduleName,
+        RecordID: recordId
+    })
+
+    safelySetLocalStorageItem(JSON.stringify(recordId), JSON.stringify({
+        lastRetrievalDate: new Date().toISOString(),
+        data
+    }))
+
+    return {
+        data
+    }
+}
+
 const retrieveRecordsFromLocalStorageIfAvailable = (localStorageKey: string) => {
     const data = safelyRetrieveLocalStorageItem(localStorageKey)
     const parsedData = JSON.parse(data || '{}')
