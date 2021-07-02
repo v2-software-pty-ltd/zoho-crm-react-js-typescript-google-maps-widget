@@ -3,7 +3,7 @@ import { genericDateFilter, genericNumberFilter } from './filterUtilityFunctions
 
 function saleTypeFilter (saleTypes: SaleTypeEnum[], property: UnprocessedResultsFromCRM): boolean {
     return saleTypes.some((saleType: SaleTypeEnum) => {
-        return property.Sale_Type.includes(saleType)
+        return property.Sale_Type?.includes(saleType)
     })
 }
 
@@ -49,5 +49,5 @@ export default function salesEvidenceFilter (filterParameters: SalesEvidenceFilt
         doesPropertyFitCriteria = doesPropertyFitCriteria && genericDateFilter(dateSold, 'Sale_Date', property)
     }
 
-    return doesPropertyFitCriteria
+    return doesPropertyFitCriteria && property.Underdeveloped !== 'No'
 }

@@ -1,7 +1,6 @@
 import React, { ChangeEvent } from 'react'
 import { PropertyTypeDropdown } from './PropertyTypeDropdown'
 import { PropertyGroupDropdown } from './PropertyGroupDropdown'
-import { ManagedDrop } from './ManagedDrop'
 import { IntersectedSearchAndFilterParams } from '../types'
 
 type SearchWidgetProps = {
@@ -79,13 +78,6 @@ export function SearchWidget (props: SearchWidgetProps) {
                     }
                 }} placeholder="Max" type="number" tabIndex={6} />
             </label>
-
-            <ManagedDrop managed={props.searchParameters.managed} changedManaged={(isManaged) => {
-                props.changeSearchParameters({
-                    ...props.searchParameters,
-                    managed: isManaged
-                })
-            }} />
         </form>
 
     )
