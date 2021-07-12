@@ -14,7 +14,7 @@ export function LeasesSearch (props: LeasesSearchProps) {
         <>
             <SearchWidget changeSearchParameters={props.changeSearchParameters} searchParameters={props.searchParameters} />
             <form className="wrapper">
-                <label className="eight">Land Area m<sup>2</sup><br />
+                <label className="column-1">Land Area m<sup>2</sup><br />
                     <input className="minMaxSize border" id="landAreaMin" onChange={(e: ChangeEvent<HTMLInputElement>) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
@@ -29,7 +29,7 @@ export function LeasesSearch (props: LeasesSearchProps) {
                     }} placeholder="Max" type="number" tabIndex={6} />
                 </label>
 
-                <label className="nine">Build Area m<sup>2</sup><br />
+                <label className="column-1">Build Area m<sup>2</sup><br />
                     <input className="minMaxSize border" id="buildAreaMin" onChange={(e: ChangeEvent<HTMLInputElement>) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
@@ -44,7 +44,22 @@ export function LeasesSearch (props: LeasesSearchProps) {
                     }} placeholder="Max" type="number" tabIndex={4} />
                 </label>
 
-                <label className="twelve">Leases Date<br />
+                <label className="column-1 row-3">Rent Gross $<br />
+                    <input className="minMaxSize border" id="rentGrossMin" onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                        props.changeSearchParameters({
+                            ...props.searchParameters,
+                            rentGross: { min: e.target.valueAsNumber || -1, max: props.searchParameters.rentGross.max }
+                        })
+                    }} placeholder="Min" type="number" tabIndex={6} />
+                    <input className="minMaxSize border " id="rentGrossMax" onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                        props.changeSearchParameters({
+                            ...props.searchParameters,
+                            rentGross: { min: props.searchParameters.rentGross.min, max: e.target.valueAsNumber || -1 }
+                        })
+                    }} placeholder="Max" type="number" tabIndex={6} />
+                </label>
+
+                <label className="column-2 row-1">Leases Date<br />
                     <DatePicker className='border' selected={props.searchParameters.leasedDate.min} dateFormat='dd/MM/yyyy' placeholderText='Min' onChange={(changeDate: Date) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
@@ -58,7 +73,7 @@ export function LeasesSearch (props: LeasesSearchProps) {
                         })
                     }} />
                 </label>
-                <label className="thirteen">Review Date<br />
+                <label className="column-2 row-2">Review Date<br />
                     <DatePicker className='border' selected={props.searchParameters.reviewDate.min} dateFormat='dd/MM/yyyy' placeholderText='Min' onChange={(changeDate: Date) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
@@ -73,7 +88,7 @@ export function LeasesSearch (props: LeasesSearchProps) {
                         })
                     }}/>
                 </label>
-                <label className="eleven ">Rent $/m<sup>2</sup><br />
+                <label className="column-2 row-3">Rent $/m<sup>2</sup><br />
                     <input className="minMaxSize border" id="rentPerDollarMin" onChange={(e: ChangeEvent<HTMLInputElement>) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
@@ -84,21 +99,6 @@ export function LeasesSearch (props: LeasesSearchProps) {
                         props.changeSearchParameters({
                             ...props.searchParameters,
                             rentPerDollarMeter: { min: props.searchParameters.rentPerDollarMeter.min, max: e.target.valueAsNumber || -1 }
-                        })
-                    }} placeholder="Max" type="number" tabIndex={6} />
-                </label>
-
-                <label className="ten ">Rent Gross $<br />
-                    <input className="minMaxSize border" id="rentGrossMin" onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                        props.changeSearchParameters({
-                            ...props.searchParameters,
-                            rentGross: { min: e.target.valueAsNumber || -1, max: props.searchParameters.rentGross.max }
-                        })
-                    }} placeholder="Min" type="number" tabIndex={6} />
-                    <input className="minMaxSize border " id="rentGrossMax" onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                        props.changeSearchParameters({
-                            ...props.searchParameters,
-                            rentGross: { min: props.searchParameters.rentGross.min, max: e.target.valueAsNumber || -1 }
                         })
                     }} placeholder="Max" type="number" tabIndex={6} />
                 </label>

@@ -13,7 +13,8 @@ export default function salesEvidenceFilter (filterParameters: SalesEvidenceFilt
         buildArea,
         salePrice,
         saleType,
-        dateSold
+        dateSold,
+        heightLimit
     } = filterParameters
     // N.B. to get the sub filters to work as AND logic
     let doesPropertyFitCriteria = true
@@ -29,6 +30,12 @@ export default function salesEvidenceFilter (filterParameters: SalesEvidenceFilt
     const isBuildAreaFilterInUse = buildArea.min !== BLANK_FILTER_VALUE || buildArea.max !== BLANK_FILTER_VALUE
     if (isBuildAreaFilterInUse) {
         doesPropertyFitCriteria = doesPropertyFitCriteria && genericNumberFilter(buildArea, 'Build_Area_sqm', property)
+    }
+
+    // Filter field - Height Limit
+    const isHeightLimitInUse = heightLimit.min !== BLANK_FILTER_VALUE || heightLimit.max !== BLANK_FILTER_VALUE
+    if (isHeightLimitInUse) {
+        doesPropertyFitCriteria = doesPropertyFitCriteria && genericNumberFilter(heightLimit, 'Height_Limit_m', property)
     }
 
     // Filter field - Sale Price $

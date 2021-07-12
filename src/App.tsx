@@ -50,8 +50,8 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsA
                                 <div className="download-button-wrapper pagebreak">
                                     <DownloadContactListButton results={results} />
                                     <DownloadMailingListButton results={results} />
-                                    <PrintButton />
                                     <MassMailButton results={results} />
+                                    <PrintButton />
                                 </div>
                                 <UpdateLastMailedButton results={results} />
                             </div>
@@ -61,6 +61,9 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsA
                         (
                             <div className="download-button-wrapper pagebreak">
                                 <DownloadSalesEvidenceListButton results={results} />
+                                <DownloadContactListButton results={results} />
+                                <DownloadMailingListButton results={results} />
+                                <MassMailButton results={results} />
                                 <PrintButton />
                             </div>
                         )

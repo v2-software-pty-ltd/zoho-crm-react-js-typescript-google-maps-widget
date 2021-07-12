@@ -97,12 +97,6 @@ export function SearchWidgetsWrapper (props: SearchWidgetProps) {
                                 props.setFilterInUse('SalesEvidenceFilter')
                             }}/>
                             <label htmlFor='sales-evidence-filter'><span className='radioName'>Sales Evidence Widget</span></label>
-                            <input id='leases-evidence-filter' type="radio" checked={props.filterInUse === 'LeasesEvidenceFilter'} onChange={() => {
-                                props.updateResults([])
-                                props.changeSearchParameters([{ ...DEFAULT_SEARCH_PARAMS }])
-                                props.setFilterInUse('LeasesEvidenceFilter')
-                            }}/>
-                            <label htmlFor='leases-evidence-filter'><span className='radioName'>Leases Evidence Widget</span></label>
                         </div>
                     </label>
                 </div>

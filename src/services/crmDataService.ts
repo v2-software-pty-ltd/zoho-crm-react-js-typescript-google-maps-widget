@@ -113,7 +113,7 @@ export async function findMatchingRecords (searchParameters: IntersectedSearchAn
         return orderResultsByDistance(matchingResults, addressObject.position)
     })
 
-    const matchedProperties = filterResults(resultsOrderedByDistance, searchParameters, filterInUse)
+    const matchedProperties = await filterResults(resultsOrderedByDistance, searchParameters, filterInUse)
     const numberOfUniqueSearchRecords = matchedProperties.length
     return { matchedProperties, numberOfUniqueSearchRecords }
 }

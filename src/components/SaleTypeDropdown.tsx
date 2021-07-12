@@ -15,7 +15,7 @@ export function SaleTypeDropdown (props: DropdownProps) {
     ]
 
     return (
-        <label className="twelve">Sale Type
+        <label className="column-2 row-2">Sale Type
             <Select
                 getValue={props.chosenSaleType}
                 placeholder={''}

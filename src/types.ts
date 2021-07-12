@@ -37,6 +37,10 @@ const SHARED_SALE_LEASE_DEFAULT_PARAMS = {
     buildArea: {
         min: -1,
         max: -1
+    },
+    heightLimit: {
+        min: -1,
+        max: -1
     }
 }
 
@@ -75,6 +79,7 @@ export type BaseSearchParamsType = {
 
 export type SalesEvidenceFilterParams = {
   landArea: MinMaxNumberType
+  heightLimit: MinMaxNumberType
   buildArea: MinMaxNumberType
   dateSold: MinMaxDateType
   salePrice: MinMaxNumberType
