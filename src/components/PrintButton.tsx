@@ -2,7 +2,7 @@ import React from 'react'
 
 export function PrintButton () {
     return (
-        <div>
+        <div className="flex">
             <button className="button" onClick={(e) => {
                 window.print()
                 e.preventDefault()

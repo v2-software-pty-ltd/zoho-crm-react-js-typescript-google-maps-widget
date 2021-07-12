@@ -3,19 +3,21 @@ import Select from 'react-select'
 import { ReactSelectOption } from '../types'
 
 type DropdownProps = {
+    className: string
     chosenPropertyGroups: string[]
     changePropertyGroups: (propertyGroups: string[]) => void
 }
 
 export function PropertyGroupDropdown (props: DropdownProps) {
     const possiblePropertyGroups = [
-        { value: 'Retail', label: 'Retail' },
-        { value: 'Industrial', label: 'Industrial' },
-        { value: 'Commercial', label: 'Commercial' }
+        { 'value': 'Residential', 'label': 'Residential' },
+        { 'value': 'Commercial', 'label': 'Commercial' },
+        { 'value': 'Industrial', 'label': 'Industrial' },
+        { 'value': 'Retail', 'label': 'Retail' }
     ]
 
     return (
-        <label className="six">Property Group (Portals)
+        <label className={props.className}>Property Group (Portals)
             <Select
                 getValue={props.chosenPropertyGroups}
                 id="propertyGroup"

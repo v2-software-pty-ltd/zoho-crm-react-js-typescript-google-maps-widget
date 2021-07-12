@@ -11,7 +11,7 @@ export function UpdateLastMailedButton (props: UpdateLastMailedProps) {
     return (
         <div className="mail-comment-button-wrapper">
             <textarea value={comment} onChange={(e) => changeComment(e.target.value)}/>
-            <button onClick={async (e) => {
+            <button className="button" onClick={async (e) => {
                 setLoading(true)
                 const test = await updateMailComment(comment, props.results)
 

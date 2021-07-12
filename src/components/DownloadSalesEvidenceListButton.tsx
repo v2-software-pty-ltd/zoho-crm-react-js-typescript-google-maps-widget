@@ -14,18 +14,19 @@ export default function DownloadSalesEvidenceListButton (props: DownloadButtonPr
     function generateCSVRow (propertyObject: UnprocessedResultsFromCRM) {
         const propertyAddress = propertyObject.Deal_Name
         const landArea = propertyObject.Land_Area_sqm
+        const heightLimit = propertyObject.Height_Limit_m
         const buildArea = propertyObject.Build_Area_sqm
         const dateSold = formatDate(propertyObject.Sale_Date)
         const salePrice = convertToCurrency(propertyObject.Sale_Price)
 
         let csvRow: string = ''
         if (landArea || buildArea || dateSold || salePrice) {
-            csvRow = `"${propertyAddress}","${landArea}","${buildArea}","${dateSold}","${salePrice}"\r\n`
+            csvRow = `"${propertyAddress}","${landArea}","${buildArea}","${dateSold}","${salePrice}","${heightLimit}\r\n`
         }
         csvRow = csvRow.replace(/null/g, '-')
         return csvRow
     }
-    const HEADER_ROW = 'Property Address,Land Area (sqm),Build Area (sqm),Date Sold,Sale Price\r\n'
+    const HEADER_ROW = 'Property Address,Land Area (sqm),Build Area (sqm),Date Sold,Sale Price,Height Limit\r\n'
     const csvRows = dedupedProperties.map(generateCSVRow).join('')
     const csvData = `${HEADER_ROW}${csvRows}`
     const resultsBlob = new Blob(

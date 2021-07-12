@@ -92,12 +92,12 @@ function checkSalesOrLeaseFilter (searchParams: IntersectedSearchAndFilterParams
     })
 }
 
-export default function filterResults (unsortedPropertyResults: UnprocessedResultsFromCRM[][], searchParameters: IntersectedSearchAndFilterParams[], filterInUse: string): UnprocessedResultsFromCRM[] {
+export default async function filterResults (unsortedPropertyResults: UnprocessedResultsFromCRM[][], searchParameters: IntersectedSearchAndFilterParams[], filterInUse: string): Promise<UnprocessedResultsFromCRM[]> {
     const matchedProperties: UnprocessedResultsFromCRM[] = []
     const isSearchMultiProperties = searchParameters.length > 1
     const searchMultiPropertyDupes: string[] = []
 
-    searchParameters.forEach((searchParams: IntersectedSearchAndFilterParams, index: number) => {
+    const allMatchedProperties = await Promise.all(searchParameters.map(async (searchParams: IntersectedSearchAndFilterParams, index: number) => {
         const desiredPropertyTypes = searchParams.propertyTypes
         const desiredPropertyGroups = searchParams.propertyGroups
         const desiredManaged = searchParams.managed
@@ -128,10 +128,7 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
             propertyGroup: 0
         }
 
-        unsortedPropertyResults[index].forEach(async (property: UnprocessedResultsFromCRM) => {
-            if (property.Deal_Name.includes('Queens')) {
-                debugger
-            }
+        const matchedProperties = await Promise.all(unsortedPropertyResults[index].map(async (property: UnprocessedResultsFromCRM) => {
             const isUnderNeighbourLimit = matchTallies.neighbour < maxNumNeighbours
             const isUnderPropertyTypeLimit = areAnyFiltersBesidesNeighbourFilterEnabled && matchTallies.propertyType < maxResultsForPropertyTypes
             const isUnderPropertyGroupLimit = areAnyFiltersBesidesNeighbourFilterEnabled && matchTallies.propertyGroup < maxResultsForPropertyGroups
@@ -246,14 +243,21 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                     if (isUnderNeighbourLimit && canAddToNeighbourCountBasedOnFilters) {
                         matchTallies.neighbour += 1
                     }
-                    matchedProperties.push(property)
 
-                    if (isSearchMultiProperties) {
-                        searchMultiPropertyDupes.push(property.id)
-                    }
+                    return property
                 }
+
+                return []
             }
-        })
-    })
-    return matchedProperties
+        }))
+        return matchedProperties.flat()
+    }))
+
+    return allMatchedProperties.flatMap((property) => {
+        if (property) {
+            return property
+        }
+
+        return []
+    }) as UnprocessedResultsFromCRM[]
 }

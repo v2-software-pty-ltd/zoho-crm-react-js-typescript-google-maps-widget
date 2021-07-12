@@ -15,7 +15,7 @@ export function SalesEvidenceSearchWidget (props: SearchWidgetProps) {
         <>
             <SearchWidget changeSearchParameters={props.changeSearchParameters} searchParameters={props.searchParameters} />
             <form className="wrapper">
-                <label className="eight">Land Area m<sup>2</sup><br />
+                <label className="column-1 row-1">Land Area m<sup>2</sup><br />
                     <input className="minMaxSize border" id="landAreaMin" onChange={(e: ChangeEvent<HTMLInputElement>) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
@@ -30,7 +30,7 @@ export function SalesEvidenceSearchWidget (props: SearchWidgetProps) {
                     }} placeholder="Max" type="number" tabIndex={6} />
                 </label>
 
-                <label className="nine">Build Area m<sup>2</sup> <br />
+                <label className="column-1 row-2">Build Area m<sup>2</sup> <br />
                     <input className="minMaxSize border" id="buildAreaMin" onChange={(e: ChangeEvent<HTMLInputElement>) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
@@ -45,7 +45,7 @@ export function SalesEvidenceSearchWidget (props: SearchWidgetProps) {
                     }} placeholder="Max" type="number" tabIndex={4} />
                 </label>
 
-                <label className="ten">Date Sold<br />
+                <label className="column-1 row-3">Date Sold<br />
                     <DatePicker className='border' selected={props.searchParameters.dateSold.min} placeholderText='Min' dateFormat='dd/MM/yyyy' onChange={(changeDate: Date) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
@@ -59,7 +59,7 @@ export function SalesEvidenceSearchWidget (props: SearchWidgetProps) {
                         })
                     }}/>
                 </label>
-                <label className="eleven ">Sale Price $<br />
+                <label className="column-2 row-1">Sale Price $<br />
                     <input className="minMaxSize border" id="landAreaMin" onChange={(e: ChangeEvent<HTMLInputElement>) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
@@ -79,6 +79,20 @@ export function SalesEvidenceSearchWidget (props: SearchWidgetProps) {
                         saleType: newSaleTypes
                     })
                 }} />
+                <label className="column-2 row-3">Height Limit (m) <br />
+                    <input className="minMaxSize border" id="heightLimitMin" onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                        props.changeSearchParameters({
+                            ...props.searchParameters,
+                            heightLimit: { min: e.target.valueAsNumber || -1, max: props.searchParameters.heightLimit.max }
+                        })
+                    }} placeholder="Min" type="number" tabIndex={4} />
+                    <input className="minMaxSize border" id="heightLimitMax" onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                        props.changeSearchParameters({
+                            ...props.searchParameters,
+                            heightLimit: { min: props.searchParameters.heightLimit.min, max: e.target.valueAsNumber || -1 }
+                        })
+                    }} placeholder="Max" type="number" tabIndex={4} />
+                </label>
             </form>
         </>
     )

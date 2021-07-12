@@ -12,26 +12,6 @@ body {
   padding: 10px;
 }
 
-.one {
-  grid-column: auto;
-  grid-row: 1;
-}
-
-.two {
-  grid-column: auto;
-  grid-row: 1;
-}
-
-.three {
-  grid-column: auto;
-  grid-row: 2;
-}
-
-.four {
-  grid-column: auto;
-  grid-row: 2;
-}
-
 label {
   height: 75%;
   padding: 4px;
@@ -88,19 +68,12 @@ button {
   font-size: medium;
 }
 
-.button {
-  width: 115px;
-  background-color: #E82620;
-  border: 2px solid  #E82620;
-  padding: 10px;
-  text-align: center;
-  color: white;
-  font-weight: bold;
+#mapNote {
   display: none;
 }
 
-#mapNote {
-  display: none;
+.flex {
+  display: flex;
 }
 
 .wrapperBelowMap {
@@ -175,7 +148,7 @@ body {
 }
 
 .button-wrapper {
-  padding: 20px;
+  padding: 10px;
   display: flex;
 }
 
@@ -194,72 +167,32 @@ body {
   width: auto;
 }
 
-.one {
+.column-1 {
   grid-column: 1;
+}
+
+.column-2 {
+  grid-column: 2;
+}
+
+.row-1 {
   grid-row: 1;
 }
 
-.two {
-  grid-column: 1;
+.row-2 {
   grid-row: 2;
 }
 
-.three {
-  grid-column: 1;
+.row-3 {
   grid-row: 3;
 }
 
-.four {
-  grid-column: 1;
+.row-4 {
   grid-row: 4;
 }
 
-.five {
-  grid-column: 2;
-  grid-row: 3;
-}
-
-.six {
-  grid-column: 2;
-  grid-row: 4;
-}
-
-.seven {
-  grid-column: 2;
-  grid-row: 2;
-}
-.eight {
-  grid-column: 1;
+.row-5 {
   grid-row: 5;
-}
-
-.nine {
-  grid-column: 1;
-  grid-row: 6;
-}
-
-.ten {
-  grid-column: 1;
-  grid-row: 7;
-}
-
-.eleven {
-  grid-column: 2;
-  grid-row: 5;
-}
-
-.twelve {
-  grid-column: 2;
-  grid-row: 6;
-}
-.thirteen {
-  grid-column: 2;
-  grid-row: 7;
-}
-
-.fourteen {
-  grid-column: 1;
-  grid-row: 8;
 }
 
 label {
@@ -337,6 +270,11 @@ button {
   font-weight: bold;
   margin-right: 15px;
   width: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
 }
 
 .download-button-wrapper {
@@ -350,7 +288,6 @@ button {
 
 .mail-comment-button-wrapper button {
   width: 205px;
-  text-decoration: underline;
   font-weight: bold;
 }
 
@@ -461,8 +398,17 @@ td {
   padding-left: .5%;
   padding-right: .5%
 }
+
 .radio-box {
   text-align: center;
+}
+
+.radio-box label {
+  padding: 0;
+}
+
+.radio-box .radio {
+  margin-top: 10px;
 }
 
 .inputSize {

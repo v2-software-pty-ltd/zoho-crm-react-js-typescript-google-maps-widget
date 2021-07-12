@@ -11,7 +11,7 @@ type SearchWidgetProps = {
 export function SearchWidget (props: SearchWidgetProps) {
     return (
         <form className="wrapper">
-            <label className="one">
+            <label className="column-1 row-1">
                 <p>Search Address*</p>
                 <input className='inputSize border' onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     props.changeSearchParameters({
@@ -21,13 +21,13 @@ export function SearchWidget (props: SearchWidgetProps) {
                 }} placeholder="Defaults to 528 Kent St, Sydney, NSW, 2000" id="propertyAddress" required tabIndex={1} />
                 <p className="smaller-font">* Must contain street, suburb, state & postcode with each separated by comma</p>
             </label>
-            <PropertyTypeDropdown chosenPropertyTypes={props.searchParameters.propertyTypes} changePropertyTypes={(newPropertyTypes) => {
+            <PropertyTypeDropdown className="column-2 row-3" chosenPropertyTypes={props.searchParameters.propertyTypes} changePropertyTypes={(newPropertyTypes) => {
                 props.changeSearchParameters({
                     ...props.searchParameters,
                     propertyTypes: newPropertyTypes
                 })
             }} />
-            <label className="two">Neighbours Search (max records) <br />
+            <label className="column-1 row-2">Neighbours Search (max records) <br />
                 <input className="below-label border" id="numberOfRecords" onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     if (Number.isNaN(e.target.valueAsNumber)) {
                         props.changeSearchParameters({
@@ -42,7 +42,7 @@ export function SearchWidget (props: SearchWidgetProps) {
                     }
                 }} placeholder="Max" type="number" tabIndex={4} />
             </label>
-            <label className="three">Property Types Filter Max Records <br />
+            <label className="column-1 row-3">Property Types Filter Max Records <br />
                 <input className="below-label border" id="propertyTypeNumberOfRecords" onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     if (Number.isNaN(e.target.valueAsNumber)) {
                         props.changeSearchParameters({
@@ -57,13 +57,13 @@ export function SearchWidget (props: SearchWidgetProps) {
                     }
                 }} placeholder="Max" type="number" tabIndex={5} />
             </label>
-            <PropertyGroupDropdown chosenPropertyGroups={props.searchParameters.propertyGroups} changePropertyGroups={(newPropertyGroups) => {
+            <PropertyGroupDropdown className="column-2 row-4" chosenPropertyGroups={props.searchParameters.propertyGroups} changePropertyGroups={(newPropertyGroups) => {
                 props.changeSearchParameters({
                     ...props.searchParameters,
                     propertyGroups: newPropertyGroups
                 })
             }} />
-            <label className="four">Property Groups Filter Max Records <br />
+            <label className="column-1 row-4">Property Groups Filter Max Records <br />
                 <input className="below-label border" id="propertyGroupNumberOfRecords" onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     if (Number.isNaN(e.target.valueAsNumber)) {
                         props.changeSearchParameters({

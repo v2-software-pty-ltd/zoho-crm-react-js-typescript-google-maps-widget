@@ -9,11 +9,11 @@ export function MassMailButton (props: MassMailButton) {
     const [isLoading, setIsLoading] = useState(false)
     return (
         <div className="download-button-wrapper">
-            <button className="side-padding" onClick={async (e) => {
+            <button className="button" onClick={async (e) => {
                 setIsLoading(true)
                 await unselectMassEmailField()
                 await massMailResults(props.results)
-                window.open('https://crm.zoho.com/crm/org673963570/tab/CustomModule7/custom-view/3430088000003565042/list', 'Mass_Email_Window', '"menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes"')
+                window.open('https://crm.zoho.com/crm/org641246881/tab/Contacts/custom-view/2347659000018704054/list', 'Mass_Email_Window', '"menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes"')
                 setIsLoading(false)
                 e.preventDefault()
             }}>

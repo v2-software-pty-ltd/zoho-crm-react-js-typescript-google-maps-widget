@@ -55,6 +55,7 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                                  <th>Address</th>
                                  <th>Land Area</th>
                                  <th>Build Area</th>
+                                 <th>Height Limit</th>
                                  <th>Date Sold</th>
                                  <th>Sale Price</th>
                              </tr>
@@ -67,6 +68,7 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                                          <td>{result.Deal_Name}</td>
                                          <td>{result.Land_Area_sqm}</td>
                                          <td>{result.Build_Area_sqm}</td>
+                                         <td>{result.Height_Limit_m	}</td>
                                          <td>{formatDate(result.Sale_Date)}</td>
                                          <td>{convertToCurrency(result.Sale_Price)}</td>
                                      </tr>
