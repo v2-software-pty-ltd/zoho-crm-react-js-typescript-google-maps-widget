@@ -169,10 +169,10 @@ export type UnprocessedResultsFromCRM = {
     owner_details: OwnerType[]
     Postcode: string
     State: string
-    Property_Category_Mailing: string[]
+    Property_Group_Portals: string[]
     Managed: string | boolean
     Reversed_Geocoded_Address: string
-    Property_Type_Portals: string
+    Property_Type_Marketing: string
     Property_Contacts: string
     Property_Owners: string
     Land_Area_sqm: string

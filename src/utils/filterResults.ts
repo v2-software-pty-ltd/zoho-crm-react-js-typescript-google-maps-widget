@@ -4,21 +4,21 @@ import leasesEvidenceFilter from './leasesEvidenceFilter'
 import { getRecordFromCrm } from '../services/crmDataService'
 
 type MatchTallies = {
-  [index: string]: number
-  neighbour: number
-  propertyType: number
-  propertyGroup: number
+    [index: string]: number
+    neighbour: number
+    propertyType: number
+    propertyGroup: number
 }
 
 function matchForPropertyTypes (property: UnprocessedResultsFromCRM, desiredPropertyTypes: string[]): boolean {
     return desiredPropertyTypes.some((propertyType: string) => {
-        return (desiredPropertyTypes.includes('All') || property.Property_Category_Mailing.includes(propertyType))
+        return (desiredPropertyTypes.includes('All') || property.Property_Type_Marketing?.includes(propertyType))
     })
 }
 
 function matchForPropertyGroups (property: UnprocessedResultsFromCRM, desiredPropertyGroups: string[]): boolean {
     return desiredPropertyGroups.some((propertyGroup: string) => {
-        return (desiredPropertyGroups.includes('All') || property.Property_Type_Portals.includes(propertyGroup))
+        return (desiredPropertyGroups.includes('All') || property.Property_Group_Portals?.includes(propertyGroup))
     })
 }
 
@@ -93,7 +93,6 @@ function checkSalesOrLeaseFilter (searchParams: IntersectedSearchAndFilterParams
 }
 
 export default async function filterResults (unsortedPropertyResults: UnprocessedResultsFromCRM[][], searchParameters: IntersectedSearchAndFilterParams[], filterInUse: string): Promise<UnprocessedResultsFromCRM[]> {
-    const matchedProperties: UnprocessedResultsFromCRM[] = []
     const isSearchMultiProperties = searchParameters.length > 1
     const searchMultiPropertyDupes: string[] = []
 
@@ -128,15 +127,16 @@ export default async function filterResults (unsortedPropertyResults: Unprocesse
             propertyGroup: 0
         }
 
-        const matchedProperties = await Promise.all(unsortedPropertyResults[index].map(async (property: UnprocessedResultsFromCRM) => {
+        const matchedProperties = []
+        for (const property of unsortedPropertyResults[index]) {
             const isUnderNeighbourLimit = matchTallies.neighbour < maxNumNeighbours
             const isUnderPropertyTypeLimit = areAnyFiltersBesidesNeighbourFilterEnabled && matchTallies.propertyType < maxResultsForPropertyTypes
             const isUnderPropertyGroupLimit = areAnyFiltersBesidesNeighbourFilterEnabled && matchTallies.propertyGroup < maxResultsForPropertyGroups
             const canAddBasedOnMaxResults = isUnderNeighbourLimit || isUnderPropertyTypeLimit || isUnderPropertyGroupLimit
 
             if (canAddBasedOnMaxResults) {
-                const propertyTypeMatch = isPropertyTypeFilterInUse && isUnderPropertyTypeLimit && matchForPropertyTypes(property, desiredPropertyTypes)
-                const propertyGroupMatch = isPropertyGroupFilterInUse && isUnderPropertyGroupLimit && matchForPropertyGroups(property, desiredPropertyGroups)
+                const propertyTypeMatch = isPropertyTypeFilterInUse && (isUnderPropertyTypeLimit && matchForPropertyTypes(property, desiredPropertyTypes))
+                const propertyGroupMatch = isPropertyGroupFilterInUse && (isUnderPropertyGroupLimit && matchForPropertyGroups(property, desiredPropertyGroups))
                 const propertyGroupAndTypeMatch = propertyGroupMatch || propertyTypeMatch
 
                 let canAddBasedOnFilters: boolean = propertyGroupAndTypeMatch
@@ -181,6 +181,8 @@ export default async function filterResults (unsortedPropertyResults: Unprocesse
                     shouldAddProperty = shouldAddProperty || isUnderNeighbourLimit
                 }
 
+                shouldAddProperty = shouldAddProperty && property.Underdeveloped !== 'No'
+
                 let shouldAddMultiSearchProperty: boolean = true
                 if (isSearchMultiProperties) {
                     shouldAddMultiSearchProperty = !searchMultiPropertyDupes.includes(property.id)
@@ -201,10 +203,12 @@ export default async function filterResults (unsortedPropertyResults: Unprocesse
                     if (propertyGroupMatch && !propertyTypeMatch) {
                         matchTallies.propertyGroup += 1
                     }
+
                     // N.B. to correctly add neighbours to the count depending on what filter is used
                     // and whether managed filter is used. If these filters are used it won't add to
                     // the neighbours count
                     let canAddToNeighbourCountBasedOnFilters: boolean | string = canAddBasedOnFilters
+
                     if (filterInUse === 'BaseFilter') {
                         // Managed in base filter
                         if (isManagedFilterInUse && !isPropertyFiltersInUse) {
@@ -244,12 +248,10 @@ export default async function filterResults (unsortedPropertyResults: Unprocesse
                         matchTallies.neighbour += 1
                     }
 
-                    return property
+                    matchedProperties.push(property)
                 }
-
-                return []
             }
-        }))
+        }
         return matchedProperties.flat()
     }))
 
@@ -259,5 +261,5 @@ export default async function filterResults (unsortedPropertyResults: Unprocesse
         }
 
         return []
-    }) as UnprocessedResultsFromCRM[]
+    })
 }
