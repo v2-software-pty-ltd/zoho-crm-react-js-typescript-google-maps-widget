@@ -80,27 +80,6 @@ export function SearchWidgetsWrapper (props: SearchWidgetProps) {
                 }}>Search
                 </button>
             </div>
-
-            <form>
-                <div className="radio-box">
-                    <label>
-                        <div className="radio">
-                            <input id='base-filter-radio' name='radio' type="radio" checked={props.filterInUse === 'BaseFilter'} onChange={() => {
-                                props.updateResults([])
-                                props.changeSearchParameters([{ ...DEFAULT_SEARCH_PARAMS }])
-                                props.setFilterInUse('BaseFilter')
-                            }}/>
-                            <label htmlFor='base-filter-radio'><span className='radioName'>Map Widget</span></label>
-                            <input id='sales-evidence-filter' type="radio" checked={props.filterInUse === 'SalesEvidenceFilter'} onChange={() => {
-                                props.updateResults([])
-                                props.changeSearchParameters([{ ...DEFAULT_SEARCH_PARAMS }])
-                                props.setFilterInUse('SalesEvidenceFilter')
-                            }}/>
-                            <label htmlFor='sales-evidence-filter'><span className='radioName'>Sales Evidence Widget</span></label>
-                        </div>
-                    </label>
-                </div>
-            </form>
         </div>
     )
 }
