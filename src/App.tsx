@@ -100,7 +100,7 @@ function App () {
     const [isLoading, setLoading] = useState(false)
     const [uniqueSearchRecords, setUniqueSearchRecords] = useState<number>(0)
     const [searchAddressPosition, setSearchAddressPosition] = useState<PositionType>()
-    const [filterInUse, setFilterInUse] = useState<string>('BaseFilter')
+    const [filterInUse, setFilterInUse] = useState<string>('SalesEvidenceFilter')
 
     useEffect(() => {
         if (isReadyForSearch) {
