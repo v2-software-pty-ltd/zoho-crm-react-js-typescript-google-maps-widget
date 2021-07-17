@@ -44,20 +44,19 @@ export function SalesEvidenceSearchWidget (props: SearchWidgetProps) {
                         })
                     }} placeholder="Max" type="number" tabIndex={4} />
                 </label>
-
-                <label className="column-1 row-3">Date Sold<br />
-                    <DatePicker className='border' selected={props.searchParameters.dateSold.min} placeholderText='Min' dateFormat='dd/MM/yyyy' onChange={(changeDate: Date) => {
+                <label className="column-1 row-3">Height Limit (m) <br />
+                    <input className="minMaxSize border" id="heightLimitMin" onChange={(e: ChangeEvent<HTMLInputElement>) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
-                            dateSold: { min: changeDate || undefined, max: props.searchParameters.dateSold.max }
+                            heightLimit: { min: e.target.valueAsNumber || -1, max: props.searchParameters.heightLimit.max }
                         })
-                    }} />
-                    <DatePicker className='border' selected={props.searchParameters.dateSold.max} placeholderText='Max' dateFormat='dd/MM/yyyy' onChange={(changeDate: Date) => {
+                    }} placeholder="Min" type="number" tabIndex={4} />
+                    <input className="minMaxSize border" id="heightLimitMax" onChange={(e: ChangeEvent<HTMLInputElement>) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
-                            dateSold: { min: props.searchParameters.dateSold.min, max: changeDate || undefined }
+                            heightLimit: { min: props.searchParameters.heightLimit.min, max: e.target.valueAsNumber || -1 }
                         })
-                    }}/>
+                    }} placeholder="Max" type="number" tabIndex={4} />
                 </label>
                 <label className="column-2 row-1">Sale Price $<br />
                     <input className="minMaxSize border" id="landAreaMin" onChange={(e: ChangeEvent<HTMLInputElement>) => {
@@ -73,25 +72,19 @@ export function SalesEvidenceSearchWidget (props: SearchWidgetProps) {
                         })
                     }} placeholder="Max" type="number" tabIndex={6} />
                 </label>
-                <SaleTypeDropdown chosenSaleType={props.searchParameters.saleType} changeSaleTypes={(newSaleTypes) => {
-                    props.changeSearchParameters({
-                        ...props.searchParameters,
-                        saleType: newSaleTypes
-                    })
-                }} />
-                <label className="column-2 row-3">Height Limit (m) <br />
-                    <input className="minMaxSize border" id="heightLimitMin" onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                <label className="column-2 row-2">Date Sold<br />
+                    <DatePicker className='border' selected={props.searchParameters.dateSold.min} placeholderText='Min' dateFormat='dd/MM/yyyy' onChange={(changeDate: Date) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
-                            heightLimit: { min: e.target.valueAsNumber || -1, max: props.searchParameters.heightLimit.max }
+                            dateSold: { min: changeDate || undefined, max: props.searchParameters.dateSold.max }
                         })
-                    }} placeholder="Min" type="number" tabIndex={4} />
-                    <input className="minMaxSize border" id="heightLimitMax" onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    }} />
+                    <DatePicker className='border' selected={props.searchParameters.dateSold.max} placeholderText='Max' dateFormat='dd/MM/yyyy' onChange={(changeDate: Date) => {
                         props.changeSearchParameters({
                             ...props.searchParameters,
-                            heightLimit: { min: props.searchParameters.heightLimit.min, max: e.target.valueAsNumber || -1 }
+                            dateSold: { min: props.searchParameters.dateSold.min, max: changeDate || undefined }
                         })
-                    }} placeholder="Max" type="number" tabIndex={4} />
+                    }} />
                 </label>
             </form>
         </>

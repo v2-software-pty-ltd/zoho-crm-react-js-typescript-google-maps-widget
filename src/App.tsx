@@ -59,12 +59,15 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsA
                     }
                     {filterInUse === 'SalesEvidenceFilter' &&
                         (
-                            <div className="download-button-wrapper pagebreak">
-                                <DownloadSalesEvidenceListButton results={results} />
-                                <DownloadContactListButton results={results} />
-                                <DownloadMailingListButton results={results} />
-                                <MassMailButton results={results} />
-                                <PrintButton />
+                            <div style={{ padding: '20px' }}>
+                                <div className="download-button-wrapper pagebreak">
+                                    <DownloadSalesEvidenceListButton results={results} />
+                                    <DownloadContactListButton results={results} />
+                                    <DownloadMailingListButton results={results} />
+                                    <MassMailButton results={results} />
+                                    <PrintButton />
+                                </div>
+                                <UpdateLastMailedButton results={results} />
                             </div>
                         )
                     }

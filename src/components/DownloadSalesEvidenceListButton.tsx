@@ -21,12 +21,12 @@ export default function DownloadSalesEvidenceListButton (props: DownloadButtonPr
 
         let csvRow: string = ''
         if (landArea || buildArea || dateSold || salePrice) {
-            csvRow = `"${propertyAddress}","${landArea}","${buildArea}","${dateSold}","${salePrice}","${heightLimit}\r\n`
+            csvRow = `"${propertyAddress}","${landArea}","${buildArea}","${heightLimit}","${dateSold}","${salePrice}"\r\n`
         }
         csvRow = csvRow.replace(/null/g, '-')
         return csvRow
     }
-    const HEADER_ROW = 'Property Address,Land Area (sqm),Build Area (sqm),Date Sold,Sale Price,Height Limit\r\n'
+    const HEADER_ROW = 'Property Address,Land Area (sqm),Build Area (sqm),Height Limit,Date Sold,Sale Price\r\n'
     const csvRows = dedupedProperties.map(generateCSVRow).join('')
     const csvData = `${HEADER_ROW}${csvRows}`
     const resultsBlob = new Blob(
