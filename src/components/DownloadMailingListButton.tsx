@@ -14,7 +14,7 @@ export function DownloadMailingListButton (props: DownloadButtonProps) {
         let returnToSender
         let postalAddress
         const propertyAddress = propertyObject.Deal_Name
-        const propertyType = propertyObject.Property_Category_Mailing
+        const propertyType = propertyObject.Property_Type_Marketing
         const relatedContact = propertyObject.owner_details?.find((owner: OwnerType) => owner.Contact_Type === 'Director')
         const owner = propertyObject.owner_details?.find((owner: OwnerType) => owner.Contact_Type === 'Owner')
 
