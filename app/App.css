@@ -361,7 +361,7 @@ td {
 }
 
 @media print {
-  .pagebreak { display: block; page-break-before: auto; }
+  .pagebreak { display: block; page-break-before: always; }
 }
 
 @media print {

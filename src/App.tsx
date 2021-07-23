@@ -47,7 +47,7 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsA
                     {filterInUse === 'BaseFilter' &&
                         (
                             <div style={{ padding: '20px' }}>
-                                <div className="download-button-wrapper pagebreak">
+                                <div className="download-button-wrapper">
                                     <DownloadContactListButton results={results} />
                                     <DownloadMailingListButton results={results} />
                                     <MassMailButton results={results} />
@@ -60,7 +60,7 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsA
                     {filterInUse === 'SalesEvidenceFilter' &&
                         (
                             <div style={{ padding: '20px' }}>
-                                <div className="download-button-wrapper pagebreak">
+                                <div className="download-button-wrapper">
                                     <DownloadSalesEvidenceListButton results={results} />
                                     <DownloadContactListButton results={results} />
                                     <DownloadMailingListButton results={results} />
@@ -73,7 +73,7 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsA
                     }
                     {filterInUse === 'LeasesEvidenceFilter' &&
                         (
-                            <div className="download-button-wrapper pagebreak">
+                            <div className="download-button-wrapper">
                                 <DownloadLeasesListButton results={results} />
                                 <PrintButton />
                             </div>

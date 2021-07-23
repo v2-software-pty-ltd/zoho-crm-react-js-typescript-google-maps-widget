@@ -34,7 +34,8 @@ async function getOwnerData (property: UnprocessedResultsFromCRM) {
                 {
                     Contact_Type: '',
                     Name: property.Contact_Name?.name || '',
-                    ...contactData?.data?.[0]
+                    ...contactData?.data?.[0],
+                    Work_Phone: contactData?.data?.[0].Phone
                 }
             )
         }
@@ -53,7 +54,8 @@ async function getOwnerData (property: UnprocessedResultsFromCRM) {
             parsedPropertyOwners.push({
                 Contact_Type: '',
                 Name: property.Account_Name?.name || '',
-                ...accountData?.data?.[0]
+                ...accountData?.data?.[0],
+                Work_Phone: accountData?.data?.[0].Phone
             })
         }
     }
