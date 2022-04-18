@@ -16,7 +16,7 @@ export function MassMailButton (props: MassMailButton) {
                 window.open('https://crm.zoho.com/crm/org673963570/tab/CustomModule7/custom-view/3430088000003565042/list', 'Mass_Email_Window', '"menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes"')
                 setIsLoading(false)
             }}>
-                {isLoading ? <span>Please wait while emails are processed!</span> : <span>Mass Email Results</span>}
+                {isLoading ? <span>Please wait while emails are processed!</span> : <span>Tag Results</span>}
             </button>
         </div>
     )
