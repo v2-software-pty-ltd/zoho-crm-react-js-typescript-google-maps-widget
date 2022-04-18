@@ -116,7 +116,10 @@ export default async function filterResults (unsortedPropertyResults: Unprocesse
         const isSubFilterInUse = filterInUse === 'SalesEvidenceFilter' || filterInUse === 'LeasesEvidenceFilter'
 
         let maxNumNeighbours = searchParams.neighboursSearchMaxRecords
-        if ((isBaseFiltersInUse || isSalesOrLeaseFiltersInUse) && !isNeighbourMaxInUse) {
+
+        const areAnyFiltersBesidesNeighbourFilterEnabled = (isBaseFiltersInUse || isSalesOrLeaseFiltersInUse) && !isNeighbourMaxInUse
+
+        if (areAnyFiltersBesidesNeighbourFilterEnabled) {
             maxNumNeighbours = 0
         }
 
@@ -129,8 +132,8 @@ export default async function filterResults (unsortedPropertyResults: Unprocesse
         const matchedProperties = []
         for (const property of unsortedPropertyResults[index]) {
             const isUnderNeighbourLimit = matchTallies.neighbour < maxNumNeighbours
-            const isUnderPropertyTypeLimit = matchTallies.propertyType < maxResultsForPropertyTypes
-            const isUnderPropertyGroupLimit = matchTallies.propertyGroup < maxResultsForPropertyGroups
+            const isUnderPropertyTypeLimit = areAnyFiltersBesidesNeighbourFilterEnabled && matchTallies.propertyType < maxResultsForPropertyTypes
+            const isUnderPropertyGroupLimit = areAnyFiltersBesidesNeighbourFilterEnabled && matchTallies.propertyGroup < maxResultsForPropertyGroups
             const canAddBasedOnMaxResults = isUnderNeighbourLimit || isUnderPropertyTypeLimit || isUnderPropertyGroupLimit
 
             if (canAddBasedOnMaxResults) {

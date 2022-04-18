@@ -13,7 +13,6 @@ export function DownloadMailingListButton (props: DownloadButtonProps) {
         let doNotMail
         let returnToSender
         let postalAddress
-        let email
         const propertyAddress = propertyObject.Deal_Name
         const propertyType = propertyObject.Property_Type_Marketing
         const relatedContact = propertyObject.owner_details?.find((owner: OwnerType) => owner.Contact_Type === 'Director')
@@ -24,18 +23,16 @@ export function DownloadMailingListButton (props: DownloadButtonProps) {
             doNotMail = owner.Do_Not_Mail
             returnToSender = owner.Return_to_Sender
             postalAddress = owner.Postal_Address
-            email = owner.Email
             ownerOrRelatedContact = owner
         } else if (relatedContact) {
             doNotMail = relatedContact.Do_Not_Mail
             returnToSender = relatedContact.Return_to_Sender
             postalAddress = relatedContact.Postal_Address
-            email = relatedContact.Email
             ownerOrRelatedContact = relatedContact
         }
 
         const isDupe = ownerContactDupeRemoval.includes(`${ownerOrRelatedContact?.Postal_Address}-${ownerOrRelatedContact?.Name}`)
-        if (!doNotMail && !returnToSender && !email) {
+        if (!doNotMail && !returnToSender) {
             if (propertyAddress && postalAddress) {
                 if (!isDupe) {
                     ownerContactDupeRemoval.push(`${ownerOrRelatedContact?.Postal_Address}-${ownerOrRelatedContact?.Name}`)

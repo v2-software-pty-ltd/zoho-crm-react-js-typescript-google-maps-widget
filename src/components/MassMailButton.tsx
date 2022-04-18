@@ -17,7 +17,7 @@ export function MassMailButton (props: MassMailButton) {
                 setIsLoading(false)
                 e.preventDefault()
             }}>
-                {isLoading ? "Please wait while emails are processed!" : "Mass Email Results"}
+                {isLoading ? "Please wait while emails are processed!" : "Tag Results"}
             </button>
         </div>
     )
