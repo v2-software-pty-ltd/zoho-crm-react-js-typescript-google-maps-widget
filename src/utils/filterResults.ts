@@ -177,13 +177,7 @@ export default async function filterResults (unsortedPropertyResults: Unprocesse
                     shouldAddProperty = canAddBasedOnFilters
                 }
 
-                if (isSubFilterInUse && isNeighbourMaxInUse && !isSalesOrLeaseFiltersInUse && !isPropertyFiltersInUse) {
-                    shouldAddProperty = canAddBasedOnFilters && isUnderNeighbourLimit
-                } else {
-                    shouldAddProperty = shouldAddProperty || isUnderNeighbourLimit
-                }
-
-                shouldAddProperty = shouldAddProperty && property.Underdeveloped !== 'No'
+                shouldAddProperty = (shouldAddProperty || isUnderNeighbourLimit) && property.Underdeveloped !== 'No'
 
                 let shouldAddMultiSearchProperty: boolean = true
                 if (isSearchMultiProperties) {

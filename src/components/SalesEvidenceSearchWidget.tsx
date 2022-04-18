@@ -3,7 +3,7 @@ import { IntersectedSearchAndFilterParams } from '../types'
 import { SearchWidget } from './SearchWidget'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-import { SaleTypeDropdown } from './SaleTypeDropdown'
+// import { SaleTypeDropdown } from './SaleTypeDropdown'
 
 type SearchWidgetProps = {
     searchParameters: IntersectedSearchAndFilterParams

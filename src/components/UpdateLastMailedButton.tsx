@@ -13,7 +13,7 @@ export function UpdateLastMailedButton (props: UpdateLastMailedProps) {
             <textarea value={comment} onChange={(e) => changeComment(e.target.value)}/>
             <button className="button" onClick={async (e) => {
                 setLoading(true)
-                const test = await updateMailComment(comment, props.results)
+                await updateMailComment(comment, props.results)
 
                 setLoading(false)
                 e.preventDefault()
