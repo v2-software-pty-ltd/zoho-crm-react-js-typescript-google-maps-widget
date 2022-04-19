@@ -16,7 +16,7 @@ export default function salesEvidenceFilter (filterParameters: SalesEvidenceFilt
         dateSold
     } = filterParameters
     // N.B. to get the sub filters to work as AND logic
-    let doesPropertyFitCriteria = true
+    let doesPropertyFitCriteria = false
 
     // Filter field - Land Area m2
     const BLANK_FILTER_VALUE = -1

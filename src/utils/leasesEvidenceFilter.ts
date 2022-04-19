@@ -12,7 +12,7 @@ export default function leasesEvidenceFilter (filterParameters: LeasesEvidenceFi
         reviewDate
     } = filterParameters
     // N.B. to get the sub filters to work as AND logic
-    let doesPropertyFitCriteria = true
+    let doesPropertyFitCriteria = false
 
     // Filter field - Land Area m2
     const FILTER_NOT_USED_NUM_TYPE = -1

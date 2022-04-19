@@ -149,11 +149,7 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                     shouldAddProperty = canAddBasedOnFilters
                 }
 
-                if (isSubFilterInUse && isNeighbourMaxInUse && !isSalesOrLeaseFiltersInUse && !isPropertyFiltersInUse) {
-                    shouldAddProperty = canAddBasedOnFilters && isUnderNeighbourLimit
-                } else {
-                    shouldAddProperty = shouldAddProperty || isUnderNeighbourLimit
-                }
+                shouldAddProperty = shouldAddProperty || isUnderNeighbourLimit
 
                 let shouldAddMultiSearchProperty: boolean = true
                 if (isSearchMultiProperties) {
