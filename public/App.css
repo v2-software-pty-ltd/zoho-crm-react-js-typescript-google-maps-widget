@@ -1,0 +1,459 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+body {
+  font: 90%/1.5 "ProximaNovaRegular", "Lucida Grande", "Lucida Sans", Tahoma,
+    Verdana, sans-serif;
+  color: #000000;
+}
+
+/* App.tsx styling */
+
+.app-wrapper {
+  width: 98%;
+  height: fit-content;
+  margin: auto;
+  margin-top: 1%;
+  margin-bottom: 1%;
+}
+
+.form-and-map {
+  display: grid;
+  grid-template-columns: 60% 40%;
+  grid-gap: 3em;
+  justify-content: space-between;
+  height: fit-content;
+}
+
+.form-and-map-fw {
+  display: grid;
+  grid-template-columns: 100%;
+  grid-row-gap: 1em;
+  height: fit-content;
+}
+
+.map-div-fw {
+  grid-column: 1;
+  grid-row: 1;
+  width: 100%;
+  height: 95vh;
+  text-align: center;
+  margin-top: 30px;
+}
+
+.map-div-text {
+  text-align: center;
+  text-decoration: underline;
+  margin: 0.5em;
+}
+
+.map-div-text:hover {
+  cursor: pointer;
+}
+
+.map-div {
+  grid-column: 2;
+  grid-row: 1;
+  width: 90%;
+  height: 32em;
+  text-align: center;
+  margin-top: 30px;
+}
+
+/* SearchWidgetsWrapper styling */
+
+.main-wrapper {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.main-wrapper-fw {
+  grid-column: 1;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  width: 60%;
+}
+
+.search-params-wrapper {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.button-wrapper {
+  padding: 20px 20px 20px 0px;
+  display: flex;
+}
+
+.control-buttons {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.button-wrapper-1 {
+  padding: 20px 0px;
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-gap: 0.5em;
+  grid-row-gap: 1em;
+  height: auto;
+  width: 100%;
+}
+
+.search-button {
+  width: fit-content;
+  margin-left: 5px;
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.search-button-2 {
+  width: fit-content;
+  margin-left: 5px;
+}
+
+.search-widget-form {
+  display: grid;
+  grid-template-columns: auto;
+  grid-gap: 0.5em;
+  grid-row-gap: 1em;
+  height: auto;
+  width: auto;
+  width: 100%;
+}
+
+.search-widget {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.one {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.two {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.three {
+  grid-column: 1;
+  grid-row: 3;
+}
+
+.four {
+  grid-column: 1;
+  grid-row: 4;
+}
+
+.five {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+.six {
+  grid-column: 2;
+  grid-row: 4;
+}
+
+.seven {
+  grid-column: 2;
+  grid-row: 2;
+}
+.eight {
+  grid-column: 1;
+  grid-row: 5;
+}
+
+.nine {
+  grid-column: 1;
+  grid-row: 6;
+}
+
+.ten {
+  grid-column: 1;
+  grid-row: 7;
+}
+
+.eleven {
+  grid-column: 2;
+  grid-row: 5;
+}
+
+.twelve {
+  grid-column: 2;
+  grid-row: 6;
+}
+.thirteen {
+  grid-column: 2;
+  grid-row: 7;
+}
+
+.fourteen {
+  grid-column: 1;
+  grid-row: 8;
+}
+
+label {
+  height: 75%;
+  width: 350px;
+  padding: 4px;
+  margin-top: 1px;
+}
+
+input {
+  clear: both;
+  border: 2px solid #000000;
+  font-size: small;
+}
+
+.minWidth {
+  min-width: 70%;
+}
+
+input.below-label {
+  float: initial;
+  clear: initial;
+}
+
+#numberOfRecords {
+  min-width: 67%;
+}
+
+select {
+  min-width: 68%;
+  float: right;
+  clear: both;
+  border: 2px solid #000000;
+  font-size: small;
+}
+
+.smaller-font {
+  font-size: xx-small;
+}
+
+.align-paragraph {
+  text-align: center;
+  margin-left: 6em;
+  margin-top: 0.5em;
+  margin-bottom: 0;
+}
+
+/* Not a standard hence all the name craziness https://css-tricks.com/almanac/selectors/p/placeholder/ */
+::-webkit-input-placeholder {
+  /* Chrome/Opera/Safari */
+  font-weight: lighter;
+  font-style: italic;
+}
+::-moz-placeholder {
+  /* Firefox 19+ */
+  font-weight: lighter;
+  font-style: italic;
+}
+:-ms-input-placeholder {
+  /* IE 10+ */
+  font-weight: lighter;
+  font-style: italic;
+}
+:-moz-placeholder {
+  /* Firefox 18- */
+  font-weight: lighter;
+  font-style: italic;
+}
+
+/* Results Widget Styling */
+
+button {
+  max-width: 100%;
+  padding: 4px;
+  background-color: #e82620;
+  border: 2px solid #e82620;
+  color: white;
+  font-size: medium;
+}
+
+.button {
+  background-color: #e82620;
+  border: 2px solid #e82620;
+  padding: 5px;
+  text-align: center;
+  color: white;
+  font-weight: bold;
+  margin-right: 10px;
+  width: 180px;
+  height: min-content;
+}
+
+.download-button-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0;
+  margin-left: 7px;
+}
+
+.mail-comment-button-wrapper {
+  display: flex;
+  padding: 10px 0;
+  margin-left: 10px;
+}
+
+.mail-comment-button-wrapper button {
+  width: 205px;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.mail-comment-button-wrapper textarea {
+  margin-right: 13px;
+  width: 200px;
+}
+
+button.danger {
+  background-color: black;
+  color: white;
+  border-color: black;
+  margin-left: 4px;
+}
+
+button.secondary {
+  background-color: orange;
+  color: white;
+  border-color: orange;
+}
+
+.wrapperBelowMap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 8px;
+  padding-top: 16px;
+  align-items: center;
+}
+
+.break {
+  flex-basis: 100%;
+  height: 0;
+}
+
+#searchResults {
+  padding-right: 2em;
+}
+
+table {
+  border: 2px solid #000000;
+  border-collapse: collapse;
+}
+
+th {
+  border-bottom: 2px solid #000000;
+  border-left: 2px solid #000000;
+  text-align: left;
+  padding: 5px;
+}
+
+td {
+  border-left: 2px solid #000000;
+  text-align: left;
+  padding: 5px;
+}
+
+.side-padding {
+  margin-left: 0;
+  padding: 5px;
+  height: min-content;
+}
+
+@media print {
+  .pagebreak {
+    display: block;
+    page-break-before: auto;
+  }
+}
+
+@media print {
+  table {
+    page-break-inside: avoid;
+  }
+}
+.border {
+  background-color: hsl(0, 0%, 100%);
+  border-color: hsl(0, 0%, 80%);
+  border-radius: 4px;
+  border-style: solid;
+  border-width: 1px;
+  min-height: 38px;
+}
+.minMaxSize {
+  min-width: 10% !important;
+  margin-right: 5%;
+}
+
+.react-datepicker-wrapper {
+  margin-right: 5%;
+}
+
+.buttonSize {
+  margin-right: 0.3%;
+}
+
+.inputSize {
+  min-width: 75%;
+}
+
+/* FilterForm Styling */
+
+.radioName {
+  padding-left: 0.5%;
+  padding-right: 0.5%;
+  font-size: medium;
+}
+.radio-box {
+  text-align: left;
+}
+
+/* MapWidget Styling */
+
+#map {
+  padding: 0;
+  margin: 0;
+  height: 30em;
+  width: 100%;
+}
+
+#map-fw {
+  padding: 0;
+  margin: 0;
+  height: 90vh;
+  width: 100%;
+}
+
+#map
+  div.gmnoprint.gm-bundled-control.gm-bundled-control-on-bottom
+  > div:nth-child(1)
+  > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
