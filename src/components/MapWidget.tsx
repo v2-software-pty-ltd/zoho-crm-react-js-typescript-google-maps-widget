@@ -12,8 +12,8 @@ type MapProps = {
 
 export function MapWidget (props: MapProps) {
     const containerStyle = {
-        width: "100%",
-        height: "100%"
+        width: '100%',
+        height: '100%'
     }
     let rangeOfPropertiesSameGeoLocation: number[] = []
     return (
