@@ -7,7 +7,7 @@ type MapProps = {
     addressesToRender: AddressType[]
     centrePoint: PositionType
     mapsApiKey: string
-    mapFullScreen: boolean
+    isMapFullScreen: boolean
 }
 
 export function MapWidget (props: MapProps) {
@@ -17,7 +17,7 @@ export function MapWidget (props: MapProps) {
     }
     let rangeOfPropertiesSameGeoLocation: number[] = []
     return (
-        <div id={props.mapFullScreen ? 'map-fw' : 'map'}>
+        <div id={props.isMapFullScreen ? 'map-fw' : 'map'}>
             <LoadScript
                 googleMapsApiKey={props.mapsApiKey}
             >

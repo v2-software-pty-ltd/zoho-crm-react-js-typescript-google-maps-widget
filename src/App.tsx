@@ -104,8 +104,8 @@ function renderMapWidget (
     googleMapsApiKey: string | undefined,
     isLoading: boolean,
     searchAddressPosition: PositionType,
-    mapFullScreen: boolean,
-    toggleMapSize: (mapFulScreen: boolean) => void
+    isMapFullScreen: boolean,
+    toggleMapSize: (isMapFulScreen: boolean) => void
 ) {
     const dataForMap = prepareDataForMap(results, searchAddressPosition)
 
@@ -116,13 +116,13 @@ function renderMapWidget (
                     addressesToRender={dataForMap.addressesToRender}
                     centrePoint={dataForMap.centrePoint}
                     mapsApiKey={googleMapsApiKey}
-                    mapFullScreen={mapFullScreen}
+                    isMapFullScreen={isMapFullScreen}
                 />
                 <p
                     className="map-div-text"
-                    onClick={() => toggleMapSize(mapFullScreen)}
+                    onClick={() => toggleMapSize(isMapFullScreen)}
                 >
-                    {mapFullScreen ? 'Minimize' : 'View Full-Screen'}
+                    {isMapFullScreen ? 'Minimize' : 'View Full-Screen'}
                 </p>
             </div>
         )
@@ -141,7 +141,7 @@ function App () {
     const [searchAddressPosition, setSearchAddressPosition] =
     useState<PositionType>()
     const [filterInUse, setFilterInUse] = useState<string>('BaseFilter')
-    const [mapFullScreen, setMapFullScreen] = useState<boolean>(false)
+    const [isMapFullScreen, setIsMapFullScreen] = useState<boolean>(false)
 
     useEffect(() => {
         if (isReadyForSearch) {
@@ -177,13 +177,13 @@ function App () {
     }, [])
 
     function toggleMapSize (mapFullScreen: boolean) {
-        return setMapFullScreen(!mapFullScreen)
+        return setIsMapFullScreen(!mapFullScreen)
     }
 
     return (
         <div className="App">
             <div className="app-wrapper">
-                <div className={mapFullScreen ? 'form-and-map-fw' : 'form-and-map'}>
+                <div className={isMapFullScreen ? 'form-and-map-fw' : 'form-and-map'}>
                     <SearchWidgetsWrapper
                         changeSearchParameters={changeSearchParameters}
                         searchParameters={searchParameters}
@@ -191,9 +191,9 @@ function App () {
                         setFilterInUse={setFilterInUse}
                         filterInUse={filterInUse}
                         updateResults={updateResults}
-                        mapFullScreen={mapFullScreen}
+                        mapFullScreen={isMapFullScreen}
                     />
-                    <div className={mapFullScreen ? 'map-div-fw' : 'map-div'}>
+                    <div className={isMapFullScreen ? 'map-div-fw' : 'map-div'}>
                         {isLoading && <p>Loading map...</p>}
                         {searchAddressPosition &&
               renderMapWidget(
@@ -201,7 +201,7 @@ function App () {
                   googleMapsApiKey,
                   isLoading,
                   searchAddressPosition,
-                  mapFullScreen,
+                  isMapFullScreen,
                   toggleMapSize
               )}
                     </div>
