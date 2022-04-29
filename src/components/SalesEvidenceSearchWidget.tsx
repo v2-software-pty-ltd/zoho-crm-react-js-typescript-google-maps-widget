@@ -5,8 +5,8 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { SaleTypeDropdown } from './SaleTypeDropdown'
 
 import {
-    IntersectedSearchAndFilterParams,
-    UnprocessedResultsFromCRM
+    IntersectedSearchAndFilterParams
+
 } from '../types'
 
 type SearchWidgetProps = {
@@ -14,26 +14,17 @@ type SearchWidgetProps = {
   changeSearchParameters: (
     newParameters: IntersectedSearchAndFilterParams
   ) => void;
-  changeSearchParametersForm: (
-    newParameters: IntersectedSearchAndFilterParams[]
-  ) => void;
-  setFilterInUse: (stateChange: string) => void;
-  filterInUse: string;
-  updateResults: (results: UnprocessedResultsFromCRM[]) => void;
-  setReadyForSearch: (isReady: boolean) => void;
+
 }
 
 export function SalesEvidenceSearchWidget (props: SearchWidgetProps) {
     return (
         <>
             <SearchWidget
-                setReadyForSearch={props.setReadyForSearch}
+
                 changeSearchParameters={props.changeSearchParameters}
-                changeSearchParametersForm={props.changeSearchParametersForm}
                 searchParameters={props.searchParameters}
-                setFilterInUse={props.setFilterInUse}
-                filterInUse={props.filterInUse}
-                updateResults={props.updateResults}
+
             />
             <form className="search-widget-form">
                 <label className="eight">

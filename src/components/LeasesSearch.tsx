@@ -4,8 +4,8 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
 import {
-    IntersectedSearchAndFilterParams,
-    UnprocessedResultsFromCRM
+    IntersectedSearchAndFilterParams
+
 } from '../types'
 
 type LeasesSearchProps = {
@@ -13,26 +13,16 @@ type LeasesSearchProps = {
   changeSearchParameters: (
     newParameters: IntersectedSearchAndFilterParams
   ) => void;
-  changeSearchParametersForm: (
-    newParameters: IntersectedSearchAndFilterParams[]
-  ) => void;
-  setFilterInUse: (stateChange: string) => void;
-  filterInUse: string;
-  updateResults: (results: UnprocessedResultsFromCRM[]) => void;
-  setReadyForSearch: (isReady: boolean) => void;
 }
 
 export function LeasesSearch (props: LeasesSearchProps) {
     return (
         <>
             <SearchWidget
-                setReadyForSearch={props.setReadyForSearch}
+
                 changeSearchParameters={props.changeSearchParameters}
-                changeSearchParametersForm={props.changeSearchParametersForm}
                 searchParameters={props.searchParameters}
-                setFilterInUse={props.setFilterInUse}
-                filterInUse={props.filterInUse}
-                updateResults={props.updateResults}
+
             />
             <form className="search-widget-form">
                 <label className="eight">

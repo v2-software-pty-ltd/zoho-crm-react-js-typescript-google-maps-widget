@@ -14,7 +14,7 @@ type FilterFormProps = {
     updateResults: (results: UnprocessedResultsFromCRM[]) => void;
   }
 
-export function FilterForm (props: FilterFormProps) {
+export function FilterRadioGroup (props: FilterFormProps) {
     return (
         <form>
             <div className="radio-box">

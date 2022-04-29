@@ -2,10 +2,8 @@ import React, { ChangeEvent } from 'react'
 import { PropertyTypeDropdown } from './PropertyTypeDropdown'
 import { PropertyGroupDropdown } from './PropertyGroupDropdown'
 import { ManagedDrop } from './ManagedDrop'
-import { FilterForm } from './FilterForm'
 import {
-    IntersectedSearchAndFilterParams,
-    UnprocessedResultsFromCRM
+    IntersectedSearchAndFilterParams
 } from '../types'
 
 type SearchWidgetProps = {
@@ -13,24 +11,12 @@ type SearchWidgetProps = {
   changeSearchParameters: (
     newParameters: IntersectedSearchAndFilterParams
   ) => void;
-  changeSearchParametersForm: (
-    newParameters: IntersectedSearchAndFilterParams[]
-  ) => void;
-  setFilterInUse: (stateChange: string) => void;
-  filterInUse: string;
-  updateResults: (results: UnprocessedResultsFromCRM[]) => void;
-  setReadyForSearch: (isReady: boolean) => void;
+
 }
 
 export function SearchWidget (props: SearchWidgetProps) {
     return (
         <div className="search-widget">
-            <FilterForm
-                changeSearchParameters={props.changeSearchParametersForm}
-                setFilterInUse={props.setFilterInUse}
-                filterInUse={props.filterInUse}
-                updateResults={props.updateResults}
-            />
             <form className="search-widget-form">
                 <label className="one">
                     <p>Search Address*</p>

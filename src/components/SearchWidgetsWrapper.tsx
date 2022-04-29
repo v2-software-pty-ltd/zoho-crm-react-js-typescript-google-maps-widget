@@ -2,6 +2,7 @@ import React from 'react'
 import { SearchWidget } from './SearchWidget'
 import { SalesEvidenceSearchWidget } from './SalesEvidenceSearchWidget'
 import { LeasesSearch } from './LeasesSearch'
+import { FilterRadioGroup } from './FilterRadioGroup'
 import {
     DEFAULT_SEARCH_PARAMS,
     IntersectedSearchAndFilterParams,
@@ -23,17 +24,20 @@ type SearchWidgetProps = {
 export function SearchWidgetsWrapper (props: SearchWidgetProps) {
     return (
         <div className={props.mapFullScreen ? 'main-wrapper-fw' : 'main-wrapper'}>
+            <FilterRadioGroup
+                changeSearchParameters={props.changeSearchParameters}
+                setFilterInUse={props.setFilterInUse}
+                filterInUse={props.filterInUse}
+                updateResults={props.updateResults}
+            />
             {props.filterInUse === 'BaseFilter' &&
         props.searchParameters.map((searchParameters, idx) => {
             return (
                 <div className="search-params-wrapper" key={searchParameters.id}>
                     <SearchWidget
-                        setFilterInUse={props.setFilterInUse}
-                        filterInUse={props.filterInUse}
-                        updateResults={props.updateResults}
+
                         searchParameters={searchParameters}
-                        setReadyForSearch={props.setReadyForSearch}
-                        changeSearchParametersForm={props.changeSearchParameters}
+
                         changeSearchParameters={(newSearchParams) => {
                             const updatedSearchParams = [...props.searchParameters]
                             updatedSearchParams[idx] = newSearchParams
@@ -88,11 +92,7 @@ export function SearchWidgetsWrapper (props: SearchWidgetProps) {
                     key={props.searchParameters[0].id}
                 >
                     <SalesEvidenceSearchWidget
-                        setReadyForSearch={props.setReadyForSearch}
-                        setFilterInUse={props.setFilterInUse}
-                        filterInUse={props.filterInUse}
-                        updateResults={props.updateResults}
-                        changeSearchParametersForm={props.changeSearchParameters}
+
                         searchParameters={props.searchParameters[0]}
                         changeSearchParameters={(newSearchParams) => {
                             const updatedSearchParams = [...props.searchParameters]
@@ -108,11 +108,7 @@ export function SearchWidgetsWrapper (props: SearchWidgetProps) {
                     key={props.searchParameters[0].id}
                 >
                     <LeasesSearch
-                        setReadyForSearch={props.setReadyForSearch}
-                        setFilterInUse={props.setFilterInUse}
-                        filterInUse={props.filterInUse}
-                        updateResults={props.updateResults}
-                        changeSearchParametersForm={props.changeSearchParameters}
+
                         searchParameters={props.searchParameters[0]}
                         changeSearchParameters={(newSearchParams) => {
                             const updatedSearchParams = [...props.searchParameters]
