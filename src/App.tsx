@@ -11,21 +11,12 @@ import { DownloadMailingListButton } from './components/DownloadMailingListButto
 import { DownloadContactListButton } from './components/DownloadContactListButton'
 import DownloadSalesEvidenceListButton from './components/DownloadSalesEvidenceListButton'
 import DownloadLeasesListButton from './components/DownloadLeasesListButton'
-import {
-    UnprocessedResultsFromCRM,
-    ResultsType,
-    DEFAULT_SEARCH_PARAMS,
-    PositionType,
-    IntersectedSearchAndFilterParams
-} from './types'
+import { UnprocessedResultsFromCRM, ResultsType, DEFAULT_SEARCH_PARAMS, PositionType, IntersectedSearchAndFilterParams } from './types'
 import { UpdateLastMailedButton } from './components/UpdateLastMailedButton'
 import { MassMailButton } from './components/MassMailButton'
 import { PrintButton } from './components/PrintButton'
 
-function prepareDataForMap (
-    results: UnprocessedResultsFromCRM[],
-    searchAddressPosition: PositionType
-): ResultsType | undefined {
+function prepareDataForMap (results: UnprocessedResultsFromCRM[], searchAddressPosition: PositionType): ResultsType | undefined {
     if (!results || results.length === 0) {
         return undefined
     }
@@ -51,14 +42,7 @@ function prepareDataForMap (
     }
 }
 
-function renderResultsWidgets (
-    results: UnprocessedResultsFromCRM[],
-    googleMapsApiKey: string | undefined,
-    isLoading: boolean,
-    uniqueSearchRecords: number,
-    searchAddressPosition: PositionType,
-    filterInUse: string
-) {
+function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsApiKey: string | undefined, isLoading: boolean, uniqueSearchRecords: number, searchAddressPosition: PositionType, filterInUse: string) {
     const dataForMap = prepareDataForMap(results, searchAddressPosition)
     if (results && dataForMap && googleMapsApiKey && !isLoading) {
         return (
@@ -90,7 +74,7 @@ function renderResultsWidgets (
                 </div>
                 <div className="pagebreak">
                     <p style={{ padding: '0px 20px' }}>
-            Unique Search Results: {uniqueSearchRecords}
+                        Unique Search Results: {uniqueSearchRecords}
                     </p>
                     <ResultsTableWidget results={results} filterInUse={filterInUse} />
                 </div>
@@ -99,47 +83,26 @@ function renderResultsWidgets (
     }
 }
 
-function renderMapWidget (
-    results: UnprocessedResultsFromCRM[],
-    googleMapsApiKey: string | undefined,
-    isLoading: boolean,
-    searchAddressPosition: PositionType,
-    isMapFullScreen: boolean,
-    toggleMapSize: (isMapFulScreen: boolean) => void
-) {
+function renderMapWidget (results: UnprocessedResultsFromCRM[], googleMapsApiKey: string | undefined, isLoading: boolean, searchAddressPosition: PositionType, isMapFullScreen: boolean, toggleMapSize: (isMapFulScreen: boolean) => void) {
     const dataForMap = prepareDataForMap(results, searchAddressPosition)
-
     if (results && dataForMap && googleMapsApiKey && !isLoading) {
         return (
             <div>
-                <MapWidget
-                    addressesToRender={dataForMap.addressesToRender}
-                    centrePoint={dataForMap.centrePoint}
-                    mapsApiKey={googleMapsApiKey}
-                    isMapFullScreen={isMapFullScreen}
-                />
-                <p
-                    className="map-div-text"
-                    onClick={() => toggleMapSize(isMapFullScreen)}
-                >
-                    {isMapFullScreen ? 'Minimize' : 'View Full-Screen'}
-                </p>
+                <MapWidget addressesToRender={dataForMap.addressesToRender} centrePoint={dataForMap.centrePoint} mapsApiKey={googleMapsApiKey} isMapFullScreen={isMapFullScreen}/>
+                <p className="map-div-text" onClick={() => toggleMapSize(isMapFullScreen)}>{isMapFullScreen ? 'Minimize' : 'View Full-Screen'}</p>
             </div>
         )
     }
 }
 
 function App () {
-    const [searchParameters, changeSearchParameters] = useState<
-    IntersectedSearchAndFilterParams[]
-  >([{ ...DEFAULT_SEARCH_PARAMS }])
+    const [searchParameters, changeSearchParameters] = useState<IntersectedSearchAndFilterParams[]>([{ ...DEFAULT_SEARCH_PARAMS }])
     const [isReadyForSearch, setReadyForSearch] = useState<boolean>(false)
     const [results, updateResults] = useState<UnprocessedResultsFromCRM[]>([])
     const [googleMapsApiKey, updateGoogleMapsApiKey] = useState()
     const [isLoading, setLoading] = useState(false)
     const [uniqueSearchRecords, setUniqueSearchRecords] = useState<number>(0)
-    const [searchAddressPosition, setSearchAddressPosition] =
-    useState<PositionType>()
+    const [searchAddressPosition, setSearchAddressPosition] = useState<PositionType>()
     const [filterInUse, setFilterInUse] = useState<string>('BaseFilter')
     const [isMapFullScreen, setIsMapFullScreen] = useState<boolean>(false)
 
@@ -147,15 +110,8 @@ function App () {
         if (isReadyForSearch) {
             const getDataFromCrm = async () => {
                 setLoading(true)
-                const searchAddressPosition = await getSearchAddressPosition(
-                    searchParameters
-                )
-                const { matchedProperties, numberOfUniqueSearchRecords } =
-          await findMatchingRecords(
-              searchParameters,
-              filterInUse,
-              searchAddressPosition
-          )
+                const searchAddressPosition = await getSearchAddressPosition(searchParameters)
+                const { matchedProperties, numberOfUniqueSearchRecords } = await findMatchingRecords(searchParameters, filterInUse, searchAddressPosition)
                 setSearchAddressPosition(searchAddressPosition[0].position)
                 setUniqueSearchRecords(numberOfUniqueSearchRecords)
                 updateResults(matchedProperties)
@@ -184,43 +140,18 @@ function App () {
         <div className="App">
             <div className="app-wrapper">
                 <div className={isMapFullScreen ? 'form-and-map-fw' : 'form-and-map'}>
-                    <SearchWidgetsWrapper
-                        changeSearchParameters={changeSearchParameters}
-                        searchParameters={searchParameters}
-                        setReadyForSearch={setReadyForSearch}
-                        setFilterInUse={setFilterInUse}
-                        filterInUse={filterInUse}
-                        updateResults={updateResults}
-                        mapFullScreen={isMapFullScreen}
-                    />
+                    <SearchWidgetsWrapper changeSearchParameters={changeSearchParameters} searchParameters={searchParameters} setReadyForSearch={setReadyForSearch} setFilterInUse={setFilterInUse} filterInUse={filterInUse} updateResults={updateResults} isMapFullScreen={isMapFullScreen}/>
                     <div className={isMapFullScreen ? 'map-div-fw' : 'map-div'}>
                         {isLoading && <p>Loading map...</p>}
-                        {searchAddressPosition &&
-              renderMapWidget(
-                  results,
-                  googleMapsApiKey,
-                  isLoading,
-                  searchAddressPosition,
-                  isMapFullScreen,
-                  toggleMapSize
-              )}
+                        {searchAddressPosition && renderMapWidget(results, googleMapsApiKey, isLoading, searchAddressPosition, isMapFullScreen, toggleMapSize)}
                     </div>
                 </div>
-
                 {isLoading && (
                     <div style={{ padding: '20px' }}>
-            Loading...estimated waiting time 10 seconds.
+                        Loading...estimated waiting time 10 seconds.
                     </div>
                 )}
-                {searchAddressPosition &&
-          renderResultsWidgets(
-              results,
-              googleMapsApiKey,
-              isLoading,
-              uniqueSearchRecords,
-              searchAddressPosition,
-              filterInUse
-          )}
+                {searchAddressPosition && renderResultsWidgets(results, googleMapsApiKey, isLoading, uniqueSearchRecords, searchAddressPosition, filterInUse)}
             </div>
         </div>
     )
