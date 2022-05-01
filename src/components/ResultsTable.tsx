@@ -13,7 +13,7 @@ export function ResultsTableWidget (props: ResultsTableProps) {
         <div>
             {props.filterInUse === 'BaseFilter' &&
              (
-                 <div style={{ padding: '20px' }}>
+                 <div style={{ padding: '30px 20px' }}>
                      <table>
                          <thead>
                              <tr>
@@ -47,7 +47,7 @@ export function ResultsTableWidget (props: ResultsTableProps) {
             }
             {props.filterInUse === 'SalesEvidenceFilter' &&
              (
-                 <div style={{ padding: '20px' }}>
+                 <div style={{ padding: '30px 20px' }}>
                      <table>
                          <thead>
                              <tr>
@@ -79,7 +79,7 @@ export function ResultsTableWidget (props: ResultsTableProps) {
             }
             {props.filterInUse === 'LeasesEvidenceFilter' &&
              (
-                 <div style={{ padding: '20px' }}>
+                 <div style={{ padding: '30px 20px' }}>
                      <table>
                          <thead>
                              <tr>
@@ -88,7 +88,7 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                                  <th>Tenancy Name</th>
                                  <th>Current $ Per Sqm</th>
                                  <th>Land Area</th>
-                                 <th>Build Area</th>
+                                 <th>Area(sqm)</th>
                                  <th>Current Rent (Gross)</th>
                              </tr>
                          </thead>
@@ -101,7 +101,7 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                                          <td>{result.Name}</td>
                                          <td>{convertToCurrency(result.Current_Per_Sqm)}</td>
                                          <td>{result.Land_Area_sqm}</td>
-                                         <td>{result.Build_Area_sqm}</td>
+                                         <td>{result.Area_sqm}</td>
                                          <td>{convertToCurrency(result.Current_AI_New_Market_Rental)}</td>
                                      </tr>
                                  )

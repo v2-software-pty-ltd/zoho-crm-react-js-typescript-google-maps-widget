@@ -1,40 +1,150 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
 body {
-  font: 90%/1.5  "ProximaNovaRegular", "Lucida Grande", "Lucida Sans", Tahoma, Verdana, sans-serif;
+  font: 90%/1.5 "ProximaNovaRegular", "Lucida Grande", "Lucida Sans", Tahoma,
+    Verdana, sans-serif;
   color: #000000;
 }
 
-.button-wrapper {
-  padding: 20px;
+/* App.tsx styling */
+
+.app-wrapper {
+  width: 98%;
+  height: fit-content;
+  margin: auto;
+  margin-top: 1%;
+  margin-bottom: 1%;
+}
+
+.form-and-map {
+  display: grid;
+  grid-template-columns: 60% 40%;
+  grid-gap: 3em;
+  justify-content: space-between;
+  height: fit-content;
+}
+
+.form-and-map-fw {
+  display: grid;
+  grid-template-columns: 100%;
+  grid-row-gap: 1em;
+  height: fit-content;
+}
+
+.map-div-text {
+  text-align: center;
+  text-decoration: underline;
+  margin: 0.5em;
+}
+
+.map-div-text:hover {
+  cursor: pointer;
+}
+
+.map-div {
+  grid-column: 2;
+  grid-row: 1;
+  width: 90%;
+  height: 32em;
+  text-align: center;
+  margin-top: 30px;
+}
+
+.map-div-fw {
+  grid-column: 1;
+  grid-row: 1;
+  width: 100%;
+  height: 95vh;
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* SearchWidgetsWrapper styling */
+
+.main-wrapper {
+  grid-column: 1;
+  grid-row: 1;
   display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.main-wrapper-fw {
+  grid-column: 1;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  width: 60%;
 }
 
 .search-params-wrapper {
-  padding: 10px;
-  margin: 10px;
-  border: 1px solid black;
+  padding: 0;
+  margin: 0;
+  width: 100%;
 }
 
-.wrapper {
+.button-wrapper {
+  padding: 20px 20px 20px 0px;
+  display: flex;
+}
+
+.control-buttons {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.button-wrapper-1 {
+  padding: 20px 0px;
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-gap: 0.5em;
+  grid-row-gap: 1em;
+  height: auto;
+  width: 100%;
+}
+
+.search-button {
+  width: fit-content;
+  margin-left: 5px;
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.search-button-2 {
+  width: fit-content;
+  margin-left: 5px;
+}
+
+.search-widget-form {
   display: grid;
   grid-template-columns: auto;
   grid-gap: 0.5em;
   grid-row-gap: 1em;
   height: auto;
   width: auto;
+  width: 100%;
+}
+
+.search-widget {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .one {
@@ -107,7 +217,7 @@ body {
 
 label {
   height: 75%;
-  width: 500px;
+  width: 350px;
   padding: 4px;
   margin-top: 1px;
 }
@@ -146,55 +256,67 @@ select {
 .align-paragraph {
   text-align: center;
   margin-left: 6em;
-  margin-top: .5em;
+  margin-top: 0.5em;
   margin-bottom: 0;
 }
 
 /* Not a standard hence all the name craziness https://css-tricks.com/almanac/selectors/p/placeholder/ */
-::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+::-webkit-input-placeholder {
+  /* Chrome/Opera/Safari */
   font-weight: lighter;
   font-style: italic;
 }
-::-moz-placeholder { /* Firefox 19+ */
+::-moz-placeholder {
+  /* Firefox 19+ */
   font-weight: lighter;
   font-style: italic;
 }
-:-ms-input-placeholder { /* IE 10+ */
+:-ms-input-placeholder {
+  /* IE 10+ */
   font-weight: lighter;
   font-style: italic;
 }
-:-moz-placeholder { /* Firefox 18- */
+:-moz-placeholder {
+  /* Firefox 18- */
   font-weight: lighter;
   font-style: italic;
 }
 
+/* Results Widget Styling */
+
 button {
   max-width: 100%;
   padding: 4px;
-  background-color: #E82620;
-  border: 2px solid  #E82620;
+  background-color: #e82620;
+  border: 2px solid #e82620;
   color: white;
   font-size: medium;
 }
 
 .button {
-  background-color: #E82620;
-  border: 2px solid  #E82620;
-  padding: 10px;
+  background-color: #e82620;
+  border: 2px solid #e82620;
+  padding: 5px;
   text-align: center;
   color: white;
   font-weight: bold;
-  margin-right: 15px;
+  margin-right: 10px;
   width: 180px;
+  height: min-content;
 }
 
 .download-button-wrapper {
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0;
+  margin-left: 7px;
 }
 
 .mail-comment-button-wrapper {
   display: flex;
   padding: 10px 0;
+  margin-left: 10px;
 }
 
 .mail-comment-button-wrapper button {
@@ -257,33 +379,27 @@ td {
   padding: 5px;
 }
 
-#map {
-  padding-top: 10px;
-  height: 700px;
-  width: auto;
-}
-
-#map div.gmnoprint.gm-bundled-control.gm-bundled-control-on-bottom > div:nth-child(1) > div {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
 .side-padding {
-  padding: 0 4px
+  margin-left: 0;
+  padding: 5px;
+  height: min-content;
 }
 
 @media print {
-  .pagebreak { display: block; page-break-before: auto; }
+  .pagebreak {
+    display: block;
+    page-break-before: auto;
+  }
 }
 
 @media print {
   table {
-      page-break-inside: avoid;
+    page-break-inside: avoid;
   }
 }
 .border {
-  background-color: hsl(0,0%,100%);
-  border-color: hsl(0,0%,80%);
+  background-color: hsl(0, 0%, 100%);
+  border-color: hsl(0, 0%, 80%);
   border-radius: 4px;
   border-style: solid;
   border-width: 1px;
@@ -295,25 +411,49 @@ td {
 }
 
 .react-datepicker-wrapper {
- margin-right: 5%;
+  margin-right: 5%;
 }
-.hide-show-buttons {
-  display:flex;
-  flex-direction: row;
-  justify-content: center;
-}
+
 .buttonSize {
   margin-right: 0.3%;
 }
 
-.radioName {
-  padding-left: .5%;
-  padding-right: .5%
-}
-.radio-box {
-  text-align: center;
+.inputSize {
+  min-width: 75%;
 }
 
-.inputSize {
-  min-width: 67%;
+/* FilterForm Styling */
+
+.radioName {
+  padding-left: 0.5%;
+  padding-right: 0.5%;
+  font-size: medium;
+}
+.radio-box {
+  text-align: left;
+}
+
+/* MapWidget Styling */
+
+#map {
+  padding: 0;
+  margin: 0;
+  height: 30em;
+  width: 100%;
+}
+
+#map-fw {
+  padding: 0;
+  margin: 0;
+  height: 90vh;
+  width: 100%;
+}
+
+#map
+  div.gmnoprint.gm-bundled-control.gm-bundled-control-on-bottom
+  > div:nth-child(1)
+  > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }

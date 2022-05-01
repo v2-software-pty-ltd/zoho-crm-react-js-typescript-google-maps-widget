@@ -1,4 +1,3 @@
-
 import React from 'react'
 import { UnprocessedResultsFromCRM, OwnerType } from '../types'
 import getUniqueListBy from '../utils/getUniqueListBy'

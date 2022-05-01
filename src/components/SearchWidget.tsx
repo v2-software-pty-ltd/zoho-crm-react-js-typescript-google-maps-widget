@@ -11,7 +11,7 @@ type SearchWidgetProps = {
 
 export function SearchWidget (props: SearchWidgetProps) {
     return (
-        <form className="wrapper">
+        <form className="search-widget-form">
             <label className="one">
                 <p>Search Address*</p>
                 <input className='inputSize border' onChange={(e: ChangeEvent<HTMLInputElement>) => {

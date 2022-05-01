@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import './index.css'
 import { SearchWidgetsWrapper } from './components/SearchWidgetsWrapper'
-import { findMatchingRecords, getGoogleMapsAPIKeyFromCRM, getSearchAddressPosition } from './services/crmDataService'
+import {
+    findMatchingRecords,
+    getGoogleMapsAPIKeyFromCRM,
+    getSearchAddressPosition
+} from './services/crmDataService'
 import { MapWidget } from './components/MapWidget'
 import { ResultsTableWidget } from './components/ResultsTable'
 import { DownloadMailingListButton } from './components/DownloadMailingListButton'
@@ -43,45 +46,50 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsA
     const dataForMap = prepareDataForMap(results, searchAddressPosition)
     if (results && dataForMap && googleMapsApiKey && !isLoading) {
         return (
-            <div style={{ padding: '20px' }}>
+            <div>
                 <div>
-                    {filterInUse === 'BaseFilter' &&
-                        (
-                            <div style={{ padding: '20px' }}>
-                                <div className="download-button-wrapper pagebreak">
-                                    <DownloadContactListButton results={results} />
-                                    <DownloadMailingListButton results={results} />
-                                    <PrintButton />
-                                    <MassMailButton results={results} />
-                                </div>
+                    {filterInUse === 'BaseFilter' && (
+                        <div>
+                            <div className="download-button-wrapper pagebreak">
+                                <DownloadContactListButton results={results} />
+                                <DownloadMailingListButton results={results} />
+                                <PrintButton />
+                                <MassMailButton results={results} />
                                 <UpdateLastMailedButton results={results} />
                             </div>
-                        )
-                    }
-                    {filterInUse === 'SalesEvidenceFilter' &&
-                        (
-                            <div className="download-button-wrapper pagebreak">
-                                <DownloadSalesEvidenceListButton results={results} />
-                                <PrintButton />
-                            </div>
-                        )
-                    }
-                    {filterInUse === 'LeasesEvidenceFilter' &&
-                        (
-                            <div className="download-button-wrapper pagebreak">
-                                <DownloadLeasesListButton results={results} />
-                                <PrintButton />
-                            </div>
-                        )
-                    }
+                        </div>
+                    )}
+                    {filterInUse === 'SalesEvidenceFilter' && (
+                        <div className="download-button-wrapper pagebreak">
+                            <DownloadSalesEvidenceListButton results={results} />
+                            <PrintButton />
+                        </div>
+                    )}
+                    {filterInUse === 'LeasesEvidenceFilter' && (
+                        <div className="download-button-wrapper pagebreak">
+                            <DownloadLeasesListButton results={results} />
+                            <PrintButton />
+                        </div>
+                    )}
                 </div>
                 <div className="pagebreak">
-                    <MapWidget addressesToRender={dataForMap.addressesToRender} centrePoint={dataForMap.centrePoint} mapsApiKey={googleMapsApiKey} />
-                </div>
-                <div className="pagebreak">
-                    <p>Unique Search Results: {uniqueSearchRecords}</p>
+                    <p style={{ padding: '0px 20px' }}>
+                        Unique Search Results: {uniqueSearchRecords}
+                    </p>
                     <ResultsTableWidget results={results} filterInUse={filterInUse} />
                 </div>
+            </div>
+        )
+    }
+}
+
+function renderMapWidget (results: UnprocessedResultsFromCRM[], googleMapsApiKey: string | undefined, isLoading: boolean, searchAddressPosition: PositionType, isMapFullScreen: boolean, toggleMapSize: (isMapFulScreen: boolean) => void) {
+    const dataForMap = prepareDataForMap(results, searchAddressPosition)
+    if (results && dataForMap && googleMapsApiKey && !isLoading) {
+        return (
+            <div>
+                <MapWidget addressesToRender={dataForMap.addressesToRender} centrePoint={dataForMap.centrePoint} mapsApiKey={googleMapsApiKey} isMapFullScreen={isMapFullScreen}/>
+                <p className="map-div-text" onClick={() => toggleMapSize(isMapFullScreen)}>{isMapFullScreen ? 'Minimize' : 'View Full-Screen'}</p>
             </div>
         )
     }
@@ -96,6 +104,7 @@ function App () {
     const [uniqueSearchRecords, setUniqueSearchRecords] = useState<number>(0)
     const [searchAddressPosition, setSearchAddressPosition] = useState<PositionType>()
     const [filterInUse, setFilterInUse] = useState<string>('BaseFilter')
+    const [isMapFullScreen, setIsMapFullScreen] = useState<boolean>(false)
 
     useEffect(() => {
         if (isReadyForSearch) {
@@ -123,15 +132,27 @@ function App () {
         void getMapsAPIKeyFromCRM()
     }, [])
 
+    function toggleMapSize (mapFullScreen: boolean) {
+        return setIsMapFullScreen(!mapFullScreen)
+    }
+
     return (
         <div className="App">
-            <SearchWidgetsWrapper changeSearchParameters={changeSearchParameters} searchParameters={searchParameters} setReadyForSearch={setReadyForSearch} setFilterInUse={setFilterInUse} filterInUse={filterInUse} updateResults={updateResults}/>
-            {isLoading &&
-                <div style={{ padding: '20px' }}>
-                    Loading... estimated waiting time 10 seconds.
+            <div className="app-wrapper">
+                <div className={isMapFullScreen ? 'form-and-map-fw' : 'form-and-map'}>
+                    <SearchWidgetsWrapper changeSearchParameters={changeSearchParameters} searchParameters={searchParameters} setReadyForSearch={setReadyForSearch} setFilterInUse={setFilterInUse} filterInUse={filterInUse} updateResults={updateResults} isMapFullScreen={isMapFullScreen}/>
+                    <div className={isMapFullScreen ? 'map-div-fw' : 'map-div'}>
+                        {isLoading && <p>Loading map...</p>}
+                        {searchAddressPosition && renderMapWidget(results, googleMapsApiKey, isLoading, searchAddressPosition, isMapFullScreen, toggleMapSize)}
+                    </div>
                 </div>
-            }
-            {searchAddressPosition && renderResultsWidgets(results, googleMapsApiKey, isLoading, uniqueSearchRecords, searchAddressPosition, filterInUse)}
+                {isLoading && (
+                    <div style={{ padding: '20px' }}>
+                        Loading...estimated waiting time 10 seconds.
+                    </div>
+                )}
+                {searchAddressPosition && renderResultsWidgets(results, googleMapsApiKey, isLoading, uniqueSearchRecords, searchAddressPosition, filterInUse)}
+            </div>
         </div>
     )
 }

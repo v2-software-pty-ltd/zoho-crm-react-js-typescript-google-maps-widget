@@ -15,7 +15,7 @@ export function PropertyGroupDropdown (props: DropdownProps) {
     ]
 
     return (
-        <label className="six">Property Group (Portals)
+        <label className="five">Property Group (Portals)
             <Select
                 getValue={props.chosenPropertyGroups}
                 id="propertyGroup"
