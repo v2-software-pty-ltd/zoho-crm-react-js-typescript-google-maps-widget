@@ -26,7 +26,7 @@ export function PropertyTypeDropdown (props: DropdownProps) {
     ]
 
     return (
-        <label className="six">Property Type (Marketing)
+        <label className="five">Property Type (Marketing)
             <Select
                 getValue={props.chosenPropertyTypes}
                 isMulti
