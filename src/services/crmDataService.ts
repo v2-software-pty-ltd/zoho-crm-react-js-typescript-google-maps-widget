@@ -45,7 +45,7 @@ const retrieveRecordsFromLocalStorageIfAvailable = (localStorageKey: string) => 
     }
 }
 
-async function updateProperties (): Promise<void> {
+function updateCacheForGeocodingAndOwnerData () {
     void ZOHO.CRM.FUNCTIONS.execute(
         'update_contact_owner_cache_in_properties',
         {}
@@ -76,7 +76,7 @@ const retrieveRecords = async function (pageNumber: number, retrievedProperties:
 
     const thisPageResults = await getPageOfRecords(pageNumber, zohoModuleToUse)
 
-    void updateProperties()
+    void updateCacheForGeocodingAndOwnerData()
 
     if (thisPageResults.length === 0) {
         safelySetLocalStorageItem(localStorageKey, JSON.stringify({
