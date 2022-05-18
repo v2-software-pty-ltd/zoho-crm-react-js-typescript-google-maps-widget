@@ -45,6 +45,18 @@ const retrieveRecordsFromLocalStorageIfAvailable = (localStorageKey: string) => 
     }
 }
 
+function updateCacheForGeocodingAndOwnerData () {
+    void ZOHO.CRM.FUNCTIONS.execute(
+        'update_contact_owner_cache_in_properties',
+        {}
+    )
+
+    void ZOHO.CRM.FUNCTIONS.execute(
+        'geocode_property_addresses',
+        {}
+    )
+}
+
 const retrieveRecords = async function (pageNumber: number, retrievedProperties: UnprocessedResultsFromCRM[], zohoModuleToUse: string, retrieveFromLocalStorage = true): Promise<UnprocessedResultsFromCRM[]> {
     const localStorageKey = `cached${zohoModuleToUse}`
     if (retrieveFromLocalStorage) {
@@ -63,6 +75,9 @@ const retrieveRecords = async function (pageNumber: number, retrievedProperties:
     }
 
     const thisPageResults = await getPageOfRecords(pageNumber, zohoModuleToUse)
+
+    void updateCacheForGeocodingAndOwnerData()
+
     if (thisPageResults.length === 0) {
         safelySetLocalStorageItem(localStorageKey, JSON.stringify({
             lastRetrievalDate: new Date().toISOString(),

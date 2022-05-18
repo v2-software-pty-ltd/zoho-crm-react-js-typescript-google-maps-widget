@@ -43,7 +43,7 @@ export function SearchWidget (props: SearchWidgetProps) {
                     }
                 }} placeholder="Max" type="number" tabIndex={4} />
             </label>
-            <label className="three">Property Types Filter Max Records <br />
+            <label className="four">Property Types Filter Max Records <br />
                 <input className="below-label border" id="propertyTypeNumberOfRecords" onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     if (Number.isNaN(e.target.valueAsNumber)) {
                         props.changeSearchParameters({
@@ -64,7 +64,7 @@ export function SearchWidget (props: SearchWidgetProps) {
                     propertyGroups: newPropertyGroups
                 })
             }} />
-            <label className="four">Property Groups Filter Max Records <br />
+            <label className="three">Property Groups Filter Max Records <br />
                 <input className="below-label border" id="propertyGroupNumberOfRecords" onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     if (Number.isNaN(e.target.valueAsNumber)) {
                         props.changeSearchParameters({
