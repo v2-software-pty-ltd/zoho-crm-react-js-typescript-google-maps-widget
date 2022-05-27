@@ -17,3 +17,10 @@ export function convertToCurrency (dollarAmount: number): string {
     }
     return ''
 }
+
+export function clearCacheAndReload () {
+    window.localStorage.clear()
+    setTimeout(() => {
+        window.location.reload()
+    }, 100)
+}

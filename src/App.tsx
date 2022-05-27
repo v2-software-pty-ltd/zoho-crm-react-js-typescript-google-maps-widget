@@ -16,6 +16,7 @@ import { UnprocessedResultsFromCRM, ResultsType, DEFAULT_SEARCH_PARAMS, Position
 import { UpdateLastMailedButton } from './components/UpdateLastMailedButton'
 import { MassMailButton } from './components/MassMailButton'
 import { PrintButton } from './components/PrintButton'
+import { clearCacheAndReload } from './utils/utils'
 
 function prepareDataForMap (results: UnprocessedResultsFromCRM[], searchAddressPosition: PositionType): ResultsType | undefined {
     if (!results || results.length === 0) {
@@ -133,13 +134,14 @@ function App () {
         void getMapsAPIKeyFromCRM()
     }, [])
 
-    function toggleMapSize (mapFullScreen: boolean) {
-        return setIsMapFullScreen(!mapFullScreen)
+    function toggleMapSize (isMapFullScreen: boolean) {
+        return setIsMapFullScreen(!isMapFullScreen)
     }
 
     return (
         <div className="App">
             <div className="app-wrapper">
+                <button onClick={clearCacheAndReload} className='refresh-button'>Refresh</button>
                 <div className={isMapFullScreen ? 'form-and-map-fw' : 'form-and-map'}>
                     <SearchWidgetsWrapper changeSearchParameters={changeSearchParameters} searchParameters={searchParameters} setReadyForSearch={setReadyForSearch} setFilterInUse={setFilterInUse} filterInUse={filterInUse} updateResults={updateResults} isMapFullScreen={isMapFullScreen}/>
                     <div className={isMapFullScreen ? 'map-div-fw' : 'map-div'}>

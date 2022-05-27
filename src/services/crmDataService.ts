@@ -52,7 +52,7 @@ function updateCacheForGeocodingAndOwnerData () {
     )
 
     void ZOHO.CRM.FUNCTIONS.execute(
-        'geocode_property_addresses',
+        'geocode_property_addresses1',
         {}
     )
 }
