@@ -194,3 +194,8 @@ export type ReactSelectOptionEnum = {
     value: SaleTypeEnum
     label: SaleTypeEnum
   }
+
+export type CachedDataType = {
+    lastRetrievalDate: string
+    data: UnprocessedResultsFromCRM[]
+}
