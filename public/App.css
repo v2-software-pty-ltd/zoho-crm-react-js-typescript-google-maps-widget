@@ -28,6 +28,12 @@ body {
   margin-bottom: 1%;
 }
 
+.refresh-button {
+  position: absolute;
+  right: 1%;
+  top: 2%;
+}
+
 .form-and-map {
   display: grid;
   grid-template-columns: 60% 40%;
@@ -59,7 +65,7 @@ body {
   width: 90%;
   height: 32em;
   text-align: center;
-  margin-top: 30px;
+  margin-top: 40px;
 }
 
 .map-div-fw {
