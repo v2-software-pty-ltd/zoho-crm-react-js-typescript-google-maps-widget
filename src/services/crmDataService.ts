@@ -1,20 +1,27 @@
-import { IntersectedSearchAndFilterParams, UnprocessedResultsFromCRM, AddressType } from '../types'
+import { IntersectedSearchAndFilterParams, UnprocessedResultsFromCRM, AddressType, CachedDataType } from '../types'
 import { ZOHO } from '../vendor/ZSDK'
 import filterResults from '../utils/filterResults'
 import emailAndIdExtract from '../utils/emailAndIdExtract'
 import { orderResultsByDistance } from '../utils/filterUtilityFunctions'
+import localforage from 'localforage'
 
-function safelyRetrieveLocalStorageItem (storageKey: string) {
+async function safelyRetrieveLocalStorageItem (storageKey: string): Promise<CachedDataType> {
+    let dataFromCache: CachedDataType = { lastRetrievalDate: new Date().toISOString(), data: [] }
     try {
-        return localStorage.getItem(storageKey)
+        const data = await localforage.getItem<CachedDataType>(storageKey)
+        if (data) {
+            dataFromCache = data
+        }
     } catch (e) {
         console.error('Issue retrieving data from local storage')
     }
+
+    return dataFromCache
 }
 
-export function safelySetLocalStorageItem (storageKey: string, value: string) {
+export function safelySetLocalStorageItem (storageKey: string, value: CachedDataType) {
     try {
-        return localStorage.setItem(storageKey, value)
+        return localforage.setItem(storageKey, value)
     } catch (e) {
         console.error('Issue setting data in local storage')
     }
@@ -32,27 +39,33 @@ async function getPageOfRecords (pageNumber: number, zohoModuleToUse: string) {
     return response.data
 }
 
-const retrieveRecordsFromLocalStorageIfAvailable = (localStorageKey: string) => {
-    const data = safelyRetrieveLocalStorageItem(localStorageKey)
-    const parsedData = JSON.parse(data || '{}')
+const retrieveRecordsFromLocalStorageIfAvailable = async (localStorageKey: string): Promise<UnprocessedResultsFromCRM[]> => {
+    const data = await safelyRetrieveLocalStorageItem(localStorageKey)
+    console.log(data)
     const MILLISECONDS_IN_ONE_HOUR = 1000 * 60 * 60
 
-    if (parsedData.lastRetrievalDate) {
-        const millisecondsSinceLastRetrieval = new Date().valueOf() - new Date(parsedData.lastRetrievalDate).valueOf()
-        if (millisecondsSinceLastRetrieval < MILLISECONDS_IN_ONE_HOUR && parsedData.data) {
-            return parsedData.data
+    let propertiesData: UnprocessedResultsFromCRM[] = []
+
+    if (data?.lastRetrievalDate) {
+        const millisecondsSinceLastRetrieval = new Date().valueOf() - new Date(data.lastRetrievalDate).valueOf()
+        if (millisecondsSinceLastRetrieval < MILLISECONDS_IN_ONE_HOUR && data.data) {
+            propertiesData = data.data
         }
     }
+
+    return propertiesData
 }
 
-function updateCacheForGeocodingAndOwnerData () {
+export function updateCacheForGeocodingAndOwnerData () {
     void ZOHO.CRM.FUNCTIONS.execute(
         'update_contact_owner_cache_in_properties',
         {}
     )
 
     void ZOHO.CRM.FUNCTIONS.execute(
-        'geocode_property_addresses1',
+
+        'geocode_addresses1',
+
         {}
     )
 }
@@ -60,12 +73,10 @@ function updateCacheForGeocodingAndOwnerData () {
 const retrieveRecords = async function (pageNumber: number, retrievedProperties: UnprocessedResultsFromCRM[], zohoModuleToUse: string, retrieveFromLocalStorage = true): Promise<UnprocessedResultsFromCRM[]> {
     const localStorageKey = `cached${zohoModuleToUse}`
     if (retrieveFromLocalStorage) {
-        const dataFromLocalStorage = retrieveRecordsFromLocalStorageIfAvailable(localStorageKey)
-
-        if (dataFromLocalStorage) {
+        const dataFromLocalStorage = await retrieveRecordsFromLocalStorageIfAvailable(localStorageKey)
+        if (dataFromLocalStorage.length > 0) {
             return dataFromLocalStorage
         }
-
         return retrieveRecords(
             pageNumber,
             [],
@@ -76,13 +87,11 @@ const retrieveRecords = async function (pageNumber: number, retrievedProperties:
 
     const thisPageResults = await getPageOfRecords(pageNumber, zohoModuleToUse)
 
-    void updateCacheForGeocodingAndOwnerData()
-
     if (thisPageResults.length === 0) {
-        safelySetLocalStorageItem(localStorageKey, JSON.stringify({
+        void safelySetLocalStorageItem(localStorageKey, {
             lastRetrievalDate: new Date().toISOString(),
             data: retrievedProperties
-        }))
+        })
         return retrievedProperties
     }
     return retrieveRecords(

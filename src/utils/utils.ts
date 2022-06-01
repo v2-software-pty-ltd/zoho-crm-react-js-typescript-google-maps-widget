@@ -1,3 +1,5 @@
+import localforage from 'localforage'
+
 export function formatDate (date: string): string {
     if (date) {
         const splitDate = date.split('-')
@@ -19,7 +21,9 @@ export function convertToCurrency (dollarAmount: number): string {
 }
 
 export function clearCacheAndReload () {
-    window.localStorage.clear()
+
+    void localforage.clear()
+
     setTimeout(() => {
         window.location.reload()
     }, 100)

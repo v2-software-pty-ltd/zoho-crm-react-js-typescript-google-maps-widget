@@ -4,7 +4,8 @@ import { SearchWidgetsWrapper } from './components/SearchWidgetsWrapper'
 import {
     findMatchingRecords,
     getGoogleMapsAPIKeyFromCRM,
-    getSearchAddressPosition
+    getSearchAddressPosition,
+    updateCacheForGeocodingAndOwnerData
 } from './services/crmDataService'
 import { MapWidget } from './components/MapWidget'
 import { ResultsTableWidget } from './components/ResultsTable'
@@ -132,6 +133,10 @@ function App () {
         }
 
         void getMapsAPIKeyFromCRM()
+
+        setTimeout(() => {
+            void updateCacheForGeocodingAndOwnerData()
+        }, 500)
     }, [])
 
     function toggleMapSize (isMapFullScreen: boolean) {
