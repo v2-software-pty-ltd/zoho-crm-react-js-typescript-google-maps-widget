@@ -30,7 +30,7 @@ export function DownloadMailingListButton (props: DownloadButtonProps) {
                     if (!isDupe) {
                         const lastMailed = arrayItem.Last_Mailed || 'Last mailed has not been found'
                         ownerContactDupeRemoval.push(`${postalAddress}-${arrayItem?.Name}`)
-                        csvRowsForProperty += `"${propertyAddress}","${arrayItem?.Company}","${arrayItem?.Name}","${arrayItem?.First_Name}","${arrayItem?.Last_Name}","${postalAddress}","${arrayItem?.Postal_Suburb}","${arrayItem?.Postal_State}","${arrayItem?.Postal_Postcode}","${arrayItem?.Salutation_Dear}",${propertyType},${lastMailed}\r\n`
+                        csvRowsForProperty += `"${propertyAddress}","${arrayItem?.Name}","${arrayItem?.First_Name}","${arrayItem?.Last_Name}","${postalAddress}","${arrayItem?.Postal_Suburb}","${arrayItem?.Postal_State}","${arrayItem?.Postal_Postcode}","${arrayItem?.Salutation_Dear}","${arrayItem?.Email}",${propertyType},${lastMailed}\r\n`
                         csvRowsForProperty = csvRowsForProperty.replace(/null/g, '-')
                     }
                 }
@@ -39,7 +39,7 @@ export function DownloadMailingListButton (props: DownloadButtonProps) {
         return csvRowsForProperty
     }
 
-    const HEADER_ROW = 'Property Address,Owner - Name On Title,Contact Name,First Name,Last Name,Mailing Street Address,Mailing Suburb,Mailing State,Mailing Postcode,Salutation,Property Type (Marketing),Last Mailed\r\n'
+    const HEADER_ROW = 'Property Address,Contact Name,First Name,Last Name,Mailing Street Address,Mailing Suburb,Mailing State,Mailing Postcode,Salutation,Email,Property Type (Marketing),Last Mailed\r\n'
     const csvRows = matchingPropertiesAndOwners.map(generateCSVRow).join('')
     const csvData = `${HEADER_ROW}${csvRows}`
     const resultsBlob = new Blob(
