@@ -21,13 +21,15 @@ export function DownloadMailingListButton (props: DownloadButtonProps) {
         const propertyType = propertyObject.Property_Category_Mailing.join('; ')
         const ownersArray = propertyObject.owner_details
 
+        const resultIsSearchedAddress = propertyReverseGeocodedAddress.includes(searchedAddress)
+        console.log(resultIsSearchedAddress)
         ownersArray.forEach(function (arrayItem) {
             doNotMail = arrayItem.Do_Not_Mail
             returnToSender = arrayItem.Return_to_Sender
             postalAddress = `${arrayItem.Postal_Street_No} ${arrayItem.Postal_Street}, ${arrayItem.Postal_Suburb}`
             const isDupe = ownerContactDupeRemoval.includes(`${postalAddress}-${arrayItem?.Name}`)
             if (!doNotMail && !returnToSender) {
-                if (!postalAddress.includes('null') && searchedAddress !== propertyReverseGeocodedAddress) {
+                if (!postalAddress.includes('null') && !resultIsSearchedAddress) {
                     if (!isDupe) {
                         const lastMailed = arrayItem.Last_Mailed || 'Last mailed has not been found'
                         ownerContactDupeRemoval.push(`${postalAddress}-${arrayItem?.Name}`)
