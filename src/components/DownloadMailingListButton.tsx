@@ -15,11 +15,13 @@ export function DownloadMailingListButton (props: DownloadButtonProps) {
         let doNotMail
         let returnToSender
         let postalAddress
+
         const propertyAddress = propertyObject.Deal_Name
         const propertyType = propertyObject.Property_Category_Mailing.join('; ')
         const ownersArray = propertyObject.owner_details
         const propertyFullAddress = `${propertyObject.Deal_Name}, ${propertyObject.State}, ${propertyObject.Postcode}`
         const isExactMatchForSearchAddress = propertyFullAddress.includes(searchedAddress)
+
         ownersArray.forEach(function (arrayItem) {
             doNotMail = arrayItem.Do_Not_Mail
             returnToSender = arrayItem.Return_to_Sender
