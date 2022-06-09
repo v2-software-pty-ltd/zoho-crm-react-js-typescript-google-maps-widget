@@ -6,7 +6,6 @@ type DownloadButtonProps = {
     results: UnprocessedResultsFromCRM[]
 }
 export function DownloadMailingListButton (props: DownloadButtonProps) {
-    // const searchedAddress = '122 Parramatta Rd, Croydon NSW 2132, Australia'
     const searchedAddress = props.searchParameters[0].searchAddress
     let downloadUrl = null
     const matchingPropertiesAndOwners = props.results
@@ -21,15 +20,14 @@ export function DownloadMailingListButton (props: DownloadButtonProps) {
         const propertyType = propertyObject.Property_Category_Mailing.join('; ')
         const ownersArray = propertyObject.owner_details
 
-        const resultIsSearchedAddress = propertyReverseGeocodedAddress.includes(searchedAddress)
-        console.log(resultIsSearchedAddress)
+        const isExactMatchForSearchAddress = propertyReverseGeocodedAddress.includes(searchedAddress)
         ownersArray.forEach(function (arrayItem) {
             doNotMail = arrayItem.Do_Not_Mail
             returnToSender = arrayItem.Return_to_Sender
             postalAddress = `${arrayItem.Postal_Street_No} ${arrayItem.Postal_Street}, ${arrayItem.Postal_Suburb}`
             const isDupe = ownerContactDupeRemoval.includes(`${postalAddress}-${arrayItem?.Name}`)
             if (!doNotMail && !returnToSender) {
-                if (!postalAddress.includes('null') && !resultIsSearchedAddress) {
+                if (!postalAddress.includes('null') && !isExactMatchForSearchAddress) {
                     if (!isDupe) {
                         const lastMailed = arrayItem.Last_Mailed || 'Last mailed has not been found'
                         ownerContactDupeRemoval.push(`${postalAddress}-${arrayItem?.Name}`)
