@@ -135,6 +135,8 @@ export type OwnerType = {
     Postal_Postcode: string
     Postal_State: string
     Postal_Address: string
+    Postal_Street: string
+    Postal_Street_No: string
     Postal_Suburb: string
     Name: string
     Contact_Type: string
@@ -144,6 +146,9 @@ export type OwnerType = {
     id: number
     Last_Mailed: string
     Last_Mailed_Date: string
+    First_Name: string
+    Last_Name: string
+    Salutation_Dear: string
 }
 
 export type UnprocessedResultsFromCRM = {
@@ -158,7 +163,7 @@ export type UnprocessedResultsFromCRM = {
     State: string
     Property_Category_Mailing: string[]
     Managed: string | boolean
-    Reversed_Geocoded_Address: string
+    Reverse_Geocoded_Address: string
     Property_Type_Portals: string
     Property_Contacts: string
     Property_Owners: string

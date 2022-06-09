@@ -45,7 +45,7 @@ function prepareDataForMap (results: UnprocessedResultsFromCRM[], searchAddressP
     }
 }
 
-function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsApiKey: string | undefined, isLoading: boolean, uniqueSearchRecords: number, searchAddressPosition: PositionType, filterInUse: string) {
+function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsApiKey: string | undefined, isLoading: boolean, uniqueSearchRecords: number, searchAddressPosition: PositionType, filterInUse: string, searchParameters: IntersectedSearchAndFilterParams[]) {
     const dataForMap = prepareDataForMap(results, searchAddressPosition)
     if (results && dataForMap && googleMapsApiKey && !isLoading) {
         return (
@@ -55,7 +55,7 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsA
                         <div>
                             <div className="download-button-wrapper pagebreak">
                                 <DownloadContactListButton results={results} />
-                                <DownloadMailingListButton results={results} />
+                                <DownloadMailingListButton results={results} searchParameters={searchParameters} />
                                 <PrintButton />
                                 <MassMailButton results={results} />
                                 <UpdateLastMailedButton results={results} />
@@ -159,7 +159,7 @@ function App () {
                         Loading...estimated waiting time 10 seconds.
                     </div>
                 )}
-                {searchAddressPosition && renderResultsWidgets(results, googleMapsApiKey, isLoading, uniqueSearchRecords, searchAddressPosition, filterInUse)}
+                {searchAddressPosition && renderResultsWidgets(results, googleMapsApiKey, isLoading, uniqueSearchRecords, searchAddressPosition, filterInUse, searchParameters)}
             </div>
         </div>
     )
