@@ -15,12 +15,13 @@ export function DownloadMailingListButton (props: DownloadButtonProps) {
         let doNotMail
         let returnToSender
         let postalAddress
-        const propertyReverseGeocodedAddress = propertyObject.Reverse_Geocoded_Address
+
+        const dealName = propertyObject.Deal_Name
         const propertyAddress = propertyObject.Deal_Name
         const propertyType = propertyObject.Property_Category_Mailing.join('; ')
         const ownersArray = propertyObject.owner_details
+        const isExactMatchForSearchAddress = dealName.includes(searchedAddress)
 
-        const isExactMatchForSearchAddress = propertyReverseGeocodedAddress.includes(searchedAddress)
         ownersArray.forEach(function (arrayItem) {
             doNotMail = arrayItem.Do_Not_Mail
             returnToSender = arrayItem.Return_to_Sender
