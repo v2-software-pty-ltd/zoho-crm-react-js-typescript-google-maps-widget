@@ -6,6 +6,7 @@ type DownloadButtonProps = {
     results: UnprocessedResultsFromCRM[]
 }
 export function DownloadMailingListButton (props: DownloadButtonProps) {
+    console.log(props.results)
     const searchedAddress = props.searchParameters[0].searchAddress
     let downloadUrl = null
     const matchingPropertiesAndOwners = props.results
@@ -21,27 +22,30 @@ export function DownloadMailingListButton (props: DownloadButtonProps) {
         const ownersArray = propertyObject.owner_details
         const propertyFullAddress = `${propertyObject.Deal_Name}, ${propertyObject.State}, ${propertyObject.Postcode}`
         const isExactMatchForSearchAddress = propertyFullAddress.includes(searchedAddress)
+        const ownerData = propertyObject.owner_details?.find((owner) => owner.Contact_Type === 'Owner')
 
-        ownersArray.forEach(function (arrayItem) {
-            doNotMail = arrayItem.Do_Not_Mail
-            returnToSender = arrayItem.Return_to_Sender
-            postalAddress = `${arrayItem.Postal_Street_No} ${arrayItem.Postal_Street}, ${arrayItem.Postal_Suburb}`
-            const isDupe = ownerContactDupeRemoval.includes(`${postalAddress}-${arrayItem?.Name}`)
-            if (!doNotMail && !returnToSender) {
-                if (!postalAddress.includes('null') && !isExactMatchForSearchAddress) {
-                    if (!isDupe) {
-                        const lastMailed = arrayItem.Last_Mailed || 'Last mailed has not been found'
-                        ownerContactDupeRemoval.push(`${postalAddress}-${arrayItem?.Name}`)
-                        csvRowsForProperty += `"${propertyAddress}","${arrayItem?.Name}","${arrayItem?.First_Name}","${arrayItem?.Last_Name}","${postalAddress}","${arrayItem?.Postal_Suburb}","${arrayItem?.Postal_State}","${arrayItem?.Postal_Postcode}","${arrayItem?.Salutation_Dear}","${arrayItem?.Email}",${propertyType},${lastMailed}\r\n`
-                        csvRowsForProperty = csvRowsForProperty.replace(/null/g, '-')
+        if (ownersArray) {
+            ownersArray.forEach(function (arrayItem) {
+                doNotMail = arrayItem.Do_Not_Mail
+                returnToSender = arrayItem.Return_to_Sender
+                postalAddress = `${arrayItem.Postal_Street_No} ${arrayItem.Postal_Street}, ${arrayItem.Postal_Suburb}`
+                const isDupe = ownerContactDupeRemoval.includes(`${postalAddress}-${arrayItem?.Name}`)
+                if (!doNotMail && !returnToSender) {
+                    if (!postalAddress.includes('null') && !isExactMatchForSearchAddress) {
+                        if (!isDupe) {
+                            const lastMailed = arrayItem.Last_Mailed || 'Last mailed has not been found'
+                            ownerContactDupeRemoval.push(`${postalAddress}-${arrayItem?.Name}`)
+                            csvRowsForProperty += `"${propertyAddress}","${ownerData?.Name || ''}","${arrayItem?.First_Name} ${arrayItem?.Last_Name}","${postalAddress}","${arrayItem?.Postal_Suburb}","${arrayItem?.Postal_State}","${arrayItem?.Postal_Postcode}","${arrayItem?.Salutation_Dear}","${arrayItem?.Email}",${propertyType},${lastMailed}\r\n`
+                            csvRowsForProperty = csvRowsForProperty.replace(/null/g, '')
+                        }
                     }
                 }
-            }
-        })
-        return csvRowsForProperty
+            })
+            return csvRowsForProperty
+        }
     }
 
-    const HEADER_ROW = 'Property Address,Contact Name,First Name,Last Name,Mailing Street Address,Mailing Suburb,Mailing State,Mailing Postcode,Salutation,Email,Property Type (Marketing),Last Mailed\r\n'
+    const HEADER_ROW = 'Property Address,Owner - Name On Title,Contact Name,Mailing Street Address,Mailing Suburb,Mailing State,Mailing Postcode,Salutation,Email,Property Type (Marketing),Last Mailed\r\n'
     const csvRows = matchingPropertiesAndOwners.map(generateCSVRow).join('')
     const csvData = `${HEADER_ROW}${csvRows}`
     const resultsBlob = new Blob(

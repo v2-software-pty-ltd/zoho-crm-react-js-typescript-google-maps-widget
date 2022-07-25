@@ -21,7 +21,6 @@ export function convertToCurrency (dollarAmount: number): string {
 }
 
 export function clearCacheAndReload () {
-
     void localforage.clear()
 
     setTimeout(() => {
