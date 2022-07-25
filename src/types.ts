@@ -144,6 +144,7 @@ export type OwnerType = {
     Postal_Street: string
     Postal_Street_No: string
     Postal_Suburb: string
+    Postal_Unit: string
     Name: string
     Contact_Type: string
     Company: string

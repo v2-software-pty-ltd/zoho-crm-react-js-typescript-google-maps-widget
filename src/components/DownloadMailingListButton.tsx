@@ -6,7 +6,6 @@ type DownloadButtonProps = {
     results: UnprocessedResultsFromCRM[]
 }
 export function DownloadMailingListButton (props: DownloadButtonProps) {
-    console.log(props.results)
     const searchedAddress = props.searchParameters[0].searchAddress
     let downloadUrl = null
     const matchingPropertiesAndOwners = props.results
@@ -28,14 +27,15 @@ export function DownloadMailingListButton (props: DownloadButtonProps) {
             ownersArray.forEach(function (arrayItem) {
                 doNotMail = arrayItem.Do_Not_Mail
                 returnToSender = arrayItem.Return_to_Sender
-                postalAddress = `${arrayItem.Postal_Street_No} ${arrayItem.Postal_Street}, ${arrayItem.Postal_Suburb}`
+                let ownerNameOnTitle = arrayItem.Contact_Type === 'Owner' ? arrayItem?.Company : ownerData?.Name
+                postalAddress = arrayItem.Postal_Address ? arrayItem.Postal_Address.split(', ')[0]  :  `${arrayItem.Postal_Unit ? `${arrayItem.Postal_Unit}/` : ''} ${arrayItem.Postal_Street_No} ${arrayItem.Postal_Street}`
                 const isDupe = ownerContactDupeRemoval.includes(`${postalAddress}-${arrayItem?.Name}`)
                 if (!doNotMail && !returnToSender) {
                     if (!postalAddress.includes('null') && !isExactMatchForSearchAddress) {
                         if (!isDupe) {
                             const lastMailed = arrayItem.Last_Mailed || 'Last mailed has not been found'
                             ownerContactDupeRemoval.push(`${postalAddress}-${arrayItem?.Name}`)
-                            csvRowsForProperty += `"${propertyAddress}","${ownerData?.Name || ''}","${arrayItem?.First_Name} ${arrayItem?.Last_Name}","${postalAddress}","${arrayItem?.Postal_Suburb}","${arrayItem?.Postal_State}","${arrayItem?.Postal_Postcode}","${arrayItem?.Salutation_Dear}","${arrayItem?.Email}",${propertyType},${lastMailed}\r\n`
+                            csvRowsForProperty += `"${propertyAddress}","${ownerNameOnTitle || ''}","${arrayItem?.First_Name} ${arrayItem?.Last_Name}","${postalAddress}","${arrayItem?.Postal_Suburb}","${arrayItem?.Postal_State}","${arrayItem?.Postal_Postcode}","${arrayItem?.Salutation_Dear}","${arrayItem?.Email}",${propertyType},${lastMailed}\r\n`
                             csvRowsForProperty = csvRowsForProperty.replace(/null/g, '')
                         }
                     }
