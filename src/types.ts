@@ -128,6 +128,12 @@ export type ResultsType = {
     centrePoint: PositionType
 }
 
+type TitleOwner = {
+    email: string
+    id: string
+    name: string
+}
+
 export type OwnerType = {
     Email: string
     Do_Not_Mail: boolean
@@ -138,6 +144,7 @@ export type OwnerType = {
     Postal_Street: string
     Postal_Street_No: string
     Postal_Suburb: string
+    Postal_Unit: string
     Name: string
     Contact_Type: string
     Company: string
@@ -149,6 +156,7 @@ export type OwnerType = {
     First_Name: string
     Last_Name: string
     Salutation_Dear: string
+    Owner: TitleOwner
 }
 
 export type UnprocessedResultsFromCRM = {

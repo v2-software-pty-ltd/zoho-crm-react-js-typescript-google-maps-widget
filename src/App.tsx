@@ -88,6 +88,9 @@ function renderResultsWidgets (results: UnprocessedResultsFromCRM[], googleMapsA
 
 function renderMapWidget (results: UnprocessedResultsFromCRM[], googleMapsApiKey: string | undefined, isLoading: boolean, searchAddressPosition: PositionType, isMapFullScreen: boolean, toggleMapSize: (isMapFulScreen: boolean) => void) {
     const dataForMap = prepareDataForMap(results, searchAddressPosition)
+    if (results) {
+        console.log('Fetched Properties:', results)
+    }
     if (results && dataForMap && googleMapsApiKey && !isLoading) {
         return (
             <div>
