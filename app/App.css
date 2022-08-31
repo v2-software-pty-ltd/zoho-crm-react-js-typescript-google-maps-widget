@@ -102,6 +102,7 @@ table {
   border: 2px solid #000000;
   border-bottom: none;
   border-collapse: collapse;
+  width: 100%;
 }
 
 th {
@@ -111,8 +112,14 @@ th {
 
 td {
   border-left: 2px solid #000000;
+  vertical-align: top !important;
 }
-
+th.nested_table{
+  width: 33% !important;
+}
+td.nested_table{
+  width: 33% !important;
+}
 .loading {
   display: none;
 }
@@ -330,6 +337,7 @@ button.secondary {
 table {
   border: 2px solid #000000;
   border-collapse: collapse;
+  width: 100%;
 }
 
 th {
@@ -343,6 +351,7 @@ td {
   border-left: 2px solid #000000;
   text-align: left;
   padding: 5px;
+  vertical-align: top !important;
 }
 
 #map {

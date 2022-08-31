@@ -1,4 +1,4 @@
-import { IntersectedSearchAndFilterParams, UnprocessedResultsFromCRM, OwnerType, DEFAULT_BASE_FILTER_PARAMS, SaleTypeEnum, MinMaxDateType, MinMaxNumberType, SalesTypeArray } from '../types'
+import { IntersectedSearchAndFilterParams, UnprocessedResultsFromCRM, OwnerType, DEFAULT_BASE_FILTER_PARAMS, SaleTypeEnum, MinMaxDateType, MinMaxNumberType, SalesTypeArray, NameOnTitlePropertyType, NameOnTitleContactType } from '../types'
 import salesEvidenceFilter from './salesEvidenceFilter'
 import leasesEvidenceFilter from './leasesEvidenceFilter'
 
@@ -37,6 +37,30 @@ function getOwnerData (property: UnprocessedResultsFromCRM) {
         ownerData.push(owner)
     })
     return ownerData
+}
+function getNameonTitlePropertyData (property: UnprocessedResultsFromCRM) {
+    const nameOnTitleData: NameOnTitlePropertyType[] = []
+
+    const parsedmeonTitleProperty = !property.Name_on_Title_data_cache ? [] : JSON.parse(property.Name_on_Title_data_cache)
+    parsedmeonTitleProperty.forEach((owner: NameOnTitlePropertyType) => {
+        console.log(owner)
+        nameOnTitleData.push(owner)
+    })
+
+    
+    return nameOnTitleData
+}
+function getNameonTitleContactData (property: UnprocessedResultsFromCRM) {
+    const nameOnTitleContactData: NameOnTitleContactType[] = []
+
+    const parsedmeonTitleProperty = !property.Name_on_Title_contacts_cache ? [] : JSON.parse(property.Name_on_Title_contacts_cache)
+    parsedmeonTitleProperty.forEach((contact: NameOnTitleContactType) => {
+        console.log(contact)
+        nameOnTitleContactData.push(contact)
+    })
+
+    
+    return nameOnTitleContactData
 }
 
 function checkSalesOrLeaseFilter (searchParams: IntersectedSearchAndFilterParams) {
@@ -162,6 +186,24 @@ export default function filterResults (unsortedPropertyResults: UnprocessedResul
                         const ownerData = getOwnerData(property)
                         if (ownerData.length > 0) {
                             property.owner_details = ownerData
+                        }
+                        let nameOnTitlePropertyData = getNameonTitlePropertyData(property)
+                        property.NameOnTitlePropertyDetails = nameOnTitlePropertyData
+                        if (nameOnTitlePropertyData.length > 2) {
+                            for (let i = 0; i < nameOnTitlePropertyData.length; ++i)
+                                for (let j = 0; j < nameOnTitlePropertyData.length; ++j)
+                                    if (i !== j && nameOnTitlePropertyData[i].Name_On_Title.id === nameOnTitlePropertyData[j].Name_On_Title.id)
+                                    nameOnTitlePropertyData.splice(j, 1); 
+                            property.NameOnTitlePropertyDetails = nameOnTitlePropertyData
+                        }
+                        let nameOnTitleContactData = getNameonTitleContactData(property)
+                        property.NameOnTitleContactDetails = nameOnTitleContactData
+                        if (nameOnTitleContactData.length > 2) {
+                            for (let i = 0; i < nameOnTitleContactData.length; ++i)
+                                for (let j = 0; j < nameOnTitleContactData.length; ++j)
+                                    if (i !== j && nameOnTitleContactData[i].Contact.id === nameOnTitleContactData[j].Contact.id && nameOnTitleContactData[i].Name_On_Title.id === nameOnTitleContactData[j].Name_On_Title.id )
+                                    nameOnTitleContactData.splice(j, 1);  
+                            property.NameOnTitleContactDetails = nameOnTitleContactData
                         }
                     }
                     if (propertyTypeMatch) {

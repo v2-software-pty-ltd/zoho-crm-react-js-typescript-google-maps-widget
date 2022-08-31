@@ -370,6 +370,7 @@ body {
   table {
     border: 2px solid #000000;
     border-collapse: collapse;
+    width: 100%;
   }
   
   th {
@@ -378,11 +379,17 @@ body {
     text-align: left;
     padding: 5px;
   }
-  
+  th.nested_table{
+    width: 33% !important;
+  }
+  td.nested_table{
+    width: 33% !important;
+  }
   td {
     border-left: 2px solid #000000;
     text-align: left;
     padding: 5px;
+    vertical-align: top !important;
   }
   
   .side-padding {

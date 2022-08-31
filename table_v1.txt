@@ -18,10 +18,20 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                          <thead>
                              <tr>
                                  <th>No.</th>
-                                 
                                  <th>Property Address</th>
                                  
-                                 <th style={{ textAlign : 'center' }}>Property Details</th>
+                                 <th>Property Details
+                                    <br></br>
+                                    <table>
+                                    <tr>
+                                                    
+                                                    <th className={'nested_table'}>Name on Title</th>
+                                                    <th className={'nested_table'}>Owner</th>
+                                                    <th className={'nested_table'}>Contacts</th>
+                                                   
+                                                </tr>
+                                    </table>
+                                 </th>
                                 
                                  
                              </tr>
@@ -37,80 +47,56 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                                  const ownerData = result.owner_details?.find((owner) => owner.Contact_Type === 'Owner')
                                  const contactData = result.owner_details?.find((owner) => owner.Contact_Type === 'Director')
                                  const nameOnTitleProperty_list = (result.NameOnTitlePropertyDetails);
-                                //  let nameOnTitleProperty = result.NameOnTitlePropertyDetails?.find((owner) => owner.Property.id === result.id)
+                                 let nameOnTitleProperty = result.NameOnTitlePropertyDetails?.find((owner) => owner.Property.id === result.id)
                                  let nameOnTitleContact_list = result.NameOnTitleContactDetails;
-                                 console.log(nameOnTitleProperty_list.length);
-                                if (nameOnTitleProperty_list.length > 0 ){
+                                //  const nameOnTitleContact_list_stringtify = JSON.stringify(nameOnTitleContact_list);
+                                //  let nameOnTitleContact_list_str = nameOnTitleContact_list_stringtify.toString();
+                                //  for (let i = 0; i < nameOnTitleContact_list.length; ++i)
+                                //     for (let j = 0; j < nameOnTitleContact_list.length; ++j)
+                                //         if (i !== j && nameOnTitleContact_list[i].id === nameOnTitleContact_list[j].id)
+                                //         nameOnTitleContact_list.splice(j, 1);    
+                                //  console.log(typeof(nameOnTitleContact_list_stringtify));
+                                if (nameOnTitleProperty_list){
                                     return (
                                         <tr key={`${result.id}-${index}`}>
                                             <td>{index + 1}</td>
                                             <td>{propertyAddress}</td>
                                             
-                                            
                                             <td>
                                                 <table>
-                                                <tr>
+                                                {/* <tr>
                                                     
-                                                    <th className={'nested_table'}>Name on Title </th>
-                                                   
-                                                    
+                                                    <th className={'nested_table'}>Name on Title</th>
+                                                    <th className={'nested_table'}>Owner</th>
                                                     <th className={'nested_table'}>Contacts</th>
-                                                    
                                                    
-                                                </tr>
+                                                </tr> */}
                                                 
                                                 {nameOnTitleProperty_list.map((property_details, index_property) => (
                                                     <tr data-index={index_property}> 
-                                                        <td>{property_details.Name_On_Title.name || 'Name on Title is not found'} &nbsp;
-                                                             <br></br>
-                                                            {/* {JSON.stringify(nameOnTitleProperty_list)} */}
+                                                        <td className={'nested_table'}>{property_details.Name_On_Title.name} &nbsp;  &nbsp;
+                                                            ({property_details.Name})
                                                         </td>  
-                                                        
-                                                        <td>
+                                                        <td className={'nested_table'}>{property_details.Owner.name}</td>  
+                                                        <td className={'nested_table'}>
                                                         
                                                         {nameOnTitleContact_list.map((contact_details, index_contact) => {
-                                                            if (nameOnTitleContact_list.length > 0){
-                                                                console.log(JSON.stringify(nameOnTitleContact_list).includes(contact_details.Name_On_Title.id));
-                                                                // let list_str = "".join(str(elem) for elem in nameOnTitleContact_list)
-                                                                if (JSON.stringify(nameOnTitleContact_list).includes(contact_details.Name_On_Title.id) === false){
+                                                                
+                                                                if (contact_details.Name_On_Title.id === property_details.Name_On_Title.id ){
+                                                                    
                                                                     return (
-                                                                        <span>{'Contact is not found'} <br></br></span> 
+                                                                        <span>{contact_details?.Contact.name} <br></br></span> 
                                                                     )
                                                                 }
+
+
+
+
                                                                 else{
-                                                                    if (contact_details.Name_On_Title.id.concat(contact_details.Name_On_Title.name)  === property_details.Name_On_Title.id.concat(property_details.Name_On_Title.name)){
-                                                                        if (contact_details?.Contact.name !== ""){
-                                                                            console.log(property_details?.Name_On_Title.name);
-                                                                            console.log(contact_details?.Contact.name);
-                                                                            return (
-                                                                                <span>{contact_details?.Contact.name || 'Contact is not found'} <br></br></span> 
-                                                                            )
-                                                                        }
-                                                                        else{
-                                                                            return (
-                                                                                <span>{'Contact is not found'} <br></br></span> 
-                                                                            )
-                                                                        }
-                                                                        
-                                                                    }
-                                                                    
+                                                                    return(
+                                                                        <span></span>
+                                                                    )
                                                                 }
-                                                            }
-                                                            else{
-                                                                return (
-                                                                    <span>{'Contact is not found'} <br></br></span> 
-                                                                )
-                                                            }
-                                                                
-                                                                
-
-
-                                                                
-                                                                // else{
-                                                                //     return(
-                                                                //         <span></span>
-                                                                //     )
-                                                                // }
                                                                 
                                                                     
                                                                 
@@ -137,28 +123,33 @@ export function ResultsTableWidget (props: ResultsTableProps) {
                                         </tr>
                                     )
                                 }
-                                // else{
+                                 
+                                // if (nameOnTitleProperty)
+                                // {
+                                //     console.log(nameOnTitleContact)
                                 //     return (
                                 //         <tr key={`${result.id}-${index}`}>
                                 //             <td>{index + 1}</td>
                                 //             <td>{propertyAddress}</td>
-                                            
                                 //             <td>
-                                //                 {'No Cache Data'}
-                                                   
                                                 
+                                //                 <strong>Name on Title : </strong>{nameOnTitleProperty?.Name_On_Title.name || '(Name on Title)  on Is Not Found'}<br></br>
+                                //                 <strong>Owner : </strong>{nameOnTitleProperty?.Owner.name || '(Owner)  Is Not Found'} <br></br>
                                                
                                                 
                                 //             </td>
                                             
-                                            
+                                //             <td>
+                                               
+                                //                 <strong>Contact :</strong> {nameOnTitleContact?.Contact.name || '(Contact) on Is Not Found'}<br></br>
+                                                
+                                                
+                                //             </td>
                                             
                                            
                                 //         </tr>
                                 //     )
                                 // }
-                                 
-                                
                                 
                                     
                                         

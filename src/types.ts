@@ -133,7 +133,10 @@ type TitleOwner = {
     id: string
     name: string
 }
-
+type lookupField = {
+    name:string
+    id:string
+}
 export type OwnerType = {
     Email: string
     Do_Not_Mail: boolean
@@ -158,9 +161,23 @@ export type OwnerType = {
     Salutation_Dear: string
     Owner: TitleOwner
 }
-
+export type NameOnTitlePropertyType = {
+    Name: string
+    Owner: TitleOwner
+    id: number
+    Name_On_Title:lookupField
+    Property:lookupField
+    Contact_DONOTUSE:lookupField
+}
+export type NameOnTitleContactType = {
+    Name: string
+    Owner: TitleOwner
+    id: number
+    Name_On_Title:lookupField
+    Contact:lookupField
+}
 export type UnprocessedResultsFromCRM = {
-    [index: string]: string | number | OwnerType[] | string[] | AddressForLease | Date | boolean
+    [index: string]: string | number | OwnerType[] | string[] | AddressForLease | Date | boolean | NameOnTitlePropertyType[] | NameOnTitleContactType[]
     Latitude: string
     Longitude: string
     Deal_Name: string
@@ -188,6 +205,12 @@ export type UnprocessedResultsFromCRM = {
     Property: AddressForLease
     Lessee: TenantNameType
     Current_Per_Sqm: number
+    Name_on_Title_data_cache : string
+    Name_on_Title_contacts_cache : string
+    NameOnTitlePropertyDetails : NameOnTitlePropertyType[]
+    NameOnTitleContactDetails : NameOnTitleContactType[]
+    
+    
 }
 
 type TenantNameType = {
