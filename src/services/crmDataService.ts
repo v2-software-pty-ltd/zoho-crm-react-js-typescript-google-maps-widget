@@ -41,7 +41,7 @@ async function getPageOfRecords (pageNumber: number, zohoModuleToUse: string) {
 
 const retrieveRecordsFromLocalStorageIfAvailable = async (localStorageKey: string): Promise<UnprocessedResultsFromCRM[]> => {
     const data = await safelyRetrieveLocalStorageItem(localStorageKey)
-    console.log(data)
+    
     const MILLISECONDS_IN_ONE_HOUR = 1000 * 60 * 60
 
     let propertiesData: UnprocessedResultsFromCRM[] = []

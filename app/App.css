@@ -102,6 +102,7 @@ table {
   border: 2px solid #000000;
   border-bottom: none;
   border-collapse: collapse;
+  width: 100%;
 }
 
 th {
@@ -111,8 +112,14 @@ th {
 
 td {
   border-left: 2px solid #000000;
+  vertical-align: top ;
 }
-
+th.nested_table{
+  width: 33% ;
+}
+td.nested_table{
+  width: 33% ;
+}
 .loading {
   display: none;
 }
@@ -330,6 +337,7 @@ button.secondary {
 table {
   border: 2px solid #000000;
   border-collapse: collapse;
+  width: 100%;
 }
 
 th {
@@ -343,6 +351,7 @@ td {
   border-left: 2px solid #000000;
   text-align: left;
   padding: 5px;
+  vertical-align: top ;
 }
 
 #map {
@@ -378,7 +387,7 @@ td {
   min-height: 38px;
 }
 .minMaxSize {
-  min-width: 10% !important;
+  min-width: 10% ;
   margin-right: 5%;
 }
 

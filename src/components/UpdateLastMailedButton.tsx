@@ -14,7 +14,7 @@ export function UpdateLastMailedButton (props: UpdateLastMailedProps) {
             <button onClick={async () => {
                 setLoading(true)
                 await updateMailComment(comment, props.results)
-                console.log('test', test)
+                
 
                 setLoading(false)
             }}>

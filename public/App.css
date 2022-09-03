@@ -370,6 +370,7 @@ button.secondary {
 table {
   border: 2px solid #000000;
   border-collapse: collapse;
+  width: 100%;
 }
 
 th {
@@ -378,11 +379,17 @@ th {
   text-align: left;
   padding: 5px;
 }
-
+th.nested_table{
+  width: 33% ;
+}
+td.nested_table{
+  width: 33% ;
+}
 td {
   border-left: 2px solid #000000;
   text-align: left;
   padding: 5px;
+  vertical-align: top ;
 }
 
 .side-padding {
@@ -412,7 +419,7 @@ td {
   min-height: 38px;
 }
 .minMaxSize {
-  min-width: 10% !important;
+  min-width: 10% ;
   margin-right: 5%;
 }
 
