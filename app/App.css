@@ -112,13 +112,13 @@ th {
 
 td {
   border-left: 2px solid #000000;
-  vertical-align: top !important;
+  vertical-align: top ;
 }
 th.nested_table{
-  width: 33% !important;
+  width: 33% ;
 }
 td.nested_table{
-  width: 33% !important;
+  width: 33% ;
 }
 .loading {
   display: none;
@@ -351,7 +351,7 @@ td {
   border-left: 2px solid #000000;
   text-align: left;
   padding: 5px;
-  vertical-align: top !important;
+  vertical-align: top ;
 }
 
 #map {
@@ -387,7 +387,7 @@ td {
   min-height: 38px;
 }
 .minMaxSize {
-  min-width: 10% !important;
+  min-width: 10% ;
   margin-right: 5%;
 }
 
